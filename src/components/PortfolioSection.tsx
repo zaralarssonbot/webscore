@@ -207,7 +207,7 @@ const PortfolioSection = () => {
                   className="group relative cursor-pointer"
                 >
                   {/* Card with glow + depth */}
-                  <div className="glass-card rounded-2xl overflow-hidden relative transition-all duration-500 hover:shadow-[0_12px_50px_hsla(175,90%,55%,0.12)] hover:translate-y-[-4px] border border-border/30 hover:border-primary/25">
+                  <div className="rounded-2xl overflow-hidden relative transition-all duration-500 hover:shadow-[0_12px_50px_hsla(175,90%,55%,0.12)] hover:translate-y-[-4px] bg-white/[0.02] border border-white/[0.06] hover:border-neon-cyan/25">
                     {/* Ambient glow behind card on hover */}
                     <div
                       className="absolute -inset-1 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-xl -z-10"
@@ -423,7 +423,7 @@ const PortfolioSection = () => {
                   {selectedProject.caseDescription}
                 </p>
 
-                <div className="glass-card rounded-xl p-5 space-y-3">
+                <div className="rounded-xl p-5 space-y-3 bg-white/[0.02] border border-white/[0.06]">
                   <h4 className="text-[0.8125rem] font-semibold tracking-[0.1em] uppercase text-primary/80">
                     Vad som förbättrades
                   </h4>

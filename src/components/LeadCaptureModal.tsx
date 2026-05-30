@@ -166,7 +166,7 @@ const LeadCaptureModal = ({ open, onClose, scanId, title = "Boka gratis analys",
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative glass-card-hero glow-border p-8 sm:p-10 max-w-md w-full my-auto"
+            className="relative rounded-3xl border border-neon-cyan/15 bg-card/90 backdrop-blur-xl shadow-2xl p-8 sm:p-10 max-w-md w-full my-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <button

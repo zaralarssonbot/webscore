@@ -106,7 +106,7 @@ const EmailReportModal = ({ open, onClose, scanId, reportData }: EmailReportModa
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative glass-card-hero glow-border p-8 sm:p-10 max-w-md w-full"
+            className="relative rounded-3xl border border-neon-cyan/15 bg-card/90 backdrop-blur-xl shadow-2xl p-8 sm:p-10 max-w-md w-full"
             onClick={(e) => e.stopPropagation()}
           >
             <button onClick={handleClose} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors">

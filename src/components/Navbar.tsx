@@ -95,7 +95,7 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="md:hidden glass-card rounded-xl p-4 mb-4 space-y-1 border border-white/[0.08]"
+            className="md:hidden rounded-xl p-4 mb-4 space-y-1 border border-white/[0.08] bg-background/95 backdrop-blur-xl shadow-xl"
           >
             {links.map((l) => (
               <a key={l.href} href={l.href} onClick={(e) => handleNav(e, l.href)} className="block data-label text-[0.62rem] text-muted-foreground hover:text-foreground py-2.5 cursor-pointer">
