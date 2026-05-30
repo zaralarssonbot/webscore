@@ -16,10 +16,17 @@ import LoadingState from "@/components/LoadingState";
 import ResultsSection from "@/components/ResultsSection";
 import LeadCaptureModal from "@/components/LeadCaptureModal";
 import { createScan, fetchScreenshot, fetchGoogleBusiness, runAnalysis, type ScanResult, type GoogleBusinessData } from "@/lib/scan-service";
+import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 
 type AppState = "hero" | "loading" | "results";
 
 const Index = () => {
+  useDocumentMeta({
+    title: "Webscore – Få betyg på din hemsida",
+    description:
+      "Analysera din hemsida på 60 sekunder. Få ett tydligt betyg, se vad som håller sidan tillbaka och upptäck var den kan förbättras — gratis och utan förpliktelser.",
+    canonical: "https://webscore.se/",
+  });
   const [state, setState] = useState<AppState>("hero");
   const [domain, setDomain] = useState("");
   const [scanId, setScanId] = useState<string>();

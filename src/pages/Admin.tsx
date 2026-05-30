@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { LEAD_STATUS_LABELS, type LeadStatus } from "@/lib/lead-service";
 import BackgroundEffect from "@/components/BackgroundEffect";
+import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 
 interface Lead {
   id: string;
@@ -46,6 +47,12 @@ const scoreColor = (score: number | null) => {
 };
 
 const Admin = () => {
+  useDocumentMeta({
+    title: "Lead Dashboard – Webscore",
+    description: "Intern adminvy.",
+    canonical: "https://webscore.se/admin",
+    noindex: true,
+  });
   const navigate = useNavigate();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
