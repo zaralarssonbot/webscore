@@ -17,6 +17,12 @@ interface ScoreGaugeProps {
    * "brand" uses the teal→blue brand gradient regardless of value — for the hero example.
    */
   accent?: "score" | "brand";
+  /**
+   * Indeterminate "scanning" state — used during analysis, before a real score
+   * exists. Shows a sweeping arc + pulsing readout instead of a value. Honest:
+   * no number is fabricated until the real result arrives.
+   */
+  scanning?: boolean;
   className?: string;
 }
 
@@ -34,25 +40,29 @@ const BRAND = { c: "hsl(190 90% 55%)", glow: "hsla(190,90%,52%,0.45)" };
  * count-up, a slow rotating scan-ring and a breathing glow. Reusable for the
  * real result score (value-coloured) and the hero example (brand-coloured).
  */
-const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, accent = "score", className }: ScoreGaugeProps) => {
+const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, accent = "score", scanning = false, className }: ScoreGaugeProps) => {
   const [display, setDisplay] = useState(0);
   const [armed, setArmed] = useState(false);
   const raf = useRef<number>();
-  const isBrand = accent === "brand";
-  const { c, glow } = isBrand ? BRAND : colorFor(value);
+  // While scanning, force the teal→blue brand look (no value to colour by yet).
+  const isBrand = accent === "brand" || scanning;
+  const { c, glow } = scanning ? BRAND : isBrand ? BRAND : colorFor(value);
   const stroke = isBrand ? "url(#scoreGaugeBrand)" : c;
 
   const r = 42;
   const circ = 2 * Math.PI * r;
   const progress = armed ? circ - (display / 100) * circ : circ;
+  // A ~100° sweeping segment for the indeterminate scanning arc.
+  const scanArc = circ * 0.28;
 
   useEffect(() => {
+    if (scanning) return;
     const t = setTimeout(() => setArmed(true), delay * 1000);
     return () => clearTimeout(t);
-  }, [delay]);
+  }, [delay, scanning]);
 
   useEffect(() => {
-    if (!armed) return;
+    if (!armed || scanning) return;
     const duration = 1600;
     let startTs: number | null = null;
     const tick = (ts: number) => {
@@ -64,7 +74,7 @@ const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, 
     };
     raf.current = requestAnimationFrame(tick);
     return () => { if (raf.current) cancelAnimationFrame(raf.current); };
-  }, [armed, value]);
+  }, [armed, value, scanning]);
 
   return (
     <div className={`relative flex flex-col items-center ${className ?? ""}`} style={{ width: size }}>
@@ -110,26 +120,53 @@ const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, 
             />
           );
         })}
-        {/* Progress arc */}
-        <circle
-          cx="50" cy="50" r={r} fill="none"
-          stroke={stroke} strokeWidth="4.5" strokeLinecap="round"
-          strokeDasharray={circ}
-          strokeDashoffset={progress}
-          style={{ transition: "stroke-dashoffset 1.6s cubic-bezier(0.16,1,0.3,1)", filter: `drop-shadow(0 0 6px ${glow})` }}
-        />
+        {/* Progress arc — fills to the real value; or sweeps while scanning */}
+        {scanning ? (
+          <circle
+            cx="50" cy="50" r={r} fill="none"
+            stroke={stroke} strokeWidth="4.5" strokeLinecap="round"
+            strokeDasharray={`${scanArc} ${circ - scanArc}`}
+            className="animate-[spin_2.2s_linear_infinite]"
+            style={{ transformBox: "fill-box", transformOrigin: "center", filter: `drop-shadow(0 0 6px ${glow})` }}
+          />
+        ) : (
+          <circle
+            cx="50" cy="50" r={r} fill="none"
+            stroke={stroke} strokeWidth="4.5" strokeLinecap="round"
+            strokeDasharray={circ}
+            strokeDashoffset={progress}
+            style={{ transition: "stroke-dashoffset 1.6s cubic-bezier(0.16,1,0.3,1)", filter: `drop-shadow(0 0 6px ${glow})` }}
+          />
+        )}
       </svg>
 
       {/* Center readout */}
       <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ paddingTop: size * 0.02 }}>
         {label && <span className="data-label text-[0.6rem] text-muted-foreground/70 mb-1">{label}</span>}
-        <span
-          className={`font-mono font-bold tabular-nums leading-none ${isBrand ? "gradient-text" : ""}`}
-          style={{ fontSize: size * 0.28, color: isBrand ? undefined : c, textShadow: isBrand ? undefined : `0 0 40px ${glow}, 0 0 80px ${glow.replace("0.45", "0.2")}` }}
-        >
-          {display}
-        </span>
-        <span className="font-mono text-muted-foreground/40 text-sm mt-1">/ 100</span>
+        {scanning ? (
+          // Indeterminate readout — no fabricated number until the result lands.
+          <span className="flex items-center gap-1.5" style={{ height: size * 0.28 }} aria-label="Analyserar">
+            {[0, 1, 2].map((i) => (
+              <motion.span
+                key={i}
+                className="rounded-full"
+                style={{ width: size * 0.045, height: size * 0.045, background: c, boxShadow: `0 0 12px ${glow}` }}
+                animate={{ opacity: [0.25, 1, 0.25], scale: [0.85, 1, 0.85] }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut", delay: i * 0.18 }}
+              />
+            ))}
+          </span>
+        ) : (
+          <>
+            <span
+              className={`font-mono font-bold tabular-nums leading-none ${isBrand ? "gradient-text" : ""}`}
+              style={{ fontSize: size * 0.28, color: isBrand ? undefined : c, textShadow: isBrand ? undefined : `0 0 40px ${glow}, 0 0 80px ${glow.replace("0.45", "0.2")}` }}
+            >
+              {display}
+            </span>
+            <span className="font-mono text-muted-foreground/40 text-sm mt-1">/ 100</span>
+          </>
+        )}
       </div>
 
       {caption && (

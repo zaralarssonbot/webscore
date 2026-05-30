@@ -31,13 +31,10 @@ const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary }: S
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="glass-card-hero p-8 sm:p-10 relative overflow-hidden"
+      className="card-surface p-8 sm:p-10 relative overflow-hidden"
     >
-      {/* Multi-layered glow */}
-      <div className="absolute inset-0 rounded-3xl" style={{ background: `radial-gradient(ellipse at 50% 30%, ${glow.replace("0.3", "0.1")} 0%, transparent 50%)` }} />
-      <div className="absolute inset-0 rounded-3xl" style={{ background: "radial-gradient(circle at 50% 80%, hsla(215,100%,60%,0.03) 0%, transparent 50%)" }} />
-      <div className="absolute inset-0 rounded-3xl" style={{ background: "radial-gradient(circle at 80% 20%, hsla(320,90%,60%,0.03) 0%, transparent 40%)" }} />
-      <div className="absolute inset-0 rounded-3xl opacity-25" style={{ boxShadow: `inset 0 0 100px ${glow}` }} />
+      {/* Single restrained glow — tinted by the (semantic) score colour */}
+      <div className="absolute inset-0 rounded-2xl" style={{ background: `radial-gradient(ellipse at 50% 25%, ${glow.replace("0.3", "0.08")} 0%, transparent 55%)` }} />
       <div className="accent-line-top accent-line-cyan" />
 
       <div className="relative flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
@@ -118,10 +115,9 @@ const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary }: S
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.9, duration: 0.6 }}
-          className="relative mt-8 p-5 rounded-2xl border border-border/10"
-          style={{ background: "linear-gradient(135deg, hsla(215,100%,60%,0.04) 0%, hsla(175,95%,50%,0.03) 50%, hsla(320,90%,60%,0.03) 100%)" }}
+          className="relative mt-8 p-5 rounded-2xl border border-white/[0.06] bg-white/[0.02]"
         >
-          <div className="absolute top-0 left-0 right-0 h-[1px]" style={{ background: "linear-gradient(90deg, transparent 10%, hsla(175,95%,50%,0.2) 50%, transparent 90%)" }} />
+          <div className="absolute top-0 left-0 right-0 h-[1px]" style={{ background: "linear-gradient(90deg, transparent 10%, hsl(var(--neon-cyan) / 0.2) 50%, transparent 90%)" }} />
           <div className="flex items-start gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border border-neon-cyan/15 mt-0.5" style={{ background: "hsla(175,95%,50%,0.08)" }}>
               <BarChart3 className="w-4 h-4 text-neon-cyan" />

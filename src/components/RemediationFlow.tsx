@@ -239,7 +239,7 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
             <AnimatePresence mode="wait">
               {/* STEP 1: Problems */}
               {step === "problems" && (
-                <motion.div key="problems" initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.35 }} className="glass-card-hero p-8 sm:p-12 rounded-3xl glow-border">
+                <motion.div key="problems" initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.35 }} className="rounded-3xl border border-neon-cyan/15 bg-card/70 backdrop-blur-xl shadow-2xl p-8 sm:p-12">
                   <div className="text-center mb-8">
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-score-low/10 border border-score-low/15 text-score-low text-sm font-medium mb-4">
                       <AlertTriangle className="w-4 h-4" />
@@ -296,7 +296,7 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 + i * 0.12, duration: 0.5 }}
-                        className={`glass-card p-6 sm:p-7 rounded-2xl relative overflow-hidden flex flex-col transition-all duration-500 hover:-translate-y-1 group ${pkg.popular ? "ring-1" : ""}`}
+                        className={`card-surface p-6 sm:p-7 relative overflow-hidden flex flex-col group ${pkg.popular ? "ring-1" : ""}`}
                         style={{
                           borderColor: pkg.colorBorder,
                           ...(pkg.popular ? { boxShadow: `0 0 40px ${pkg.colorGlow}, inset 0 0 40px ${pkg.colorBg}`, ringColor: pkg.color } : {}),
@@ -361,7 +361,7 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
 
               {/* STEP 3: Contact form */}
               {step === "contact" && (
-                <motion.div key="contact" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.35 }} className="glass-card-hero p-8 sm:p-12 rounded-3xl glow-border max-w-lg mx-auto">
+                <motion.div key="contact" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.35 }} className="rounded-3xl border border-neon-cyan/15 bg-card/70 backdrop-blur-xl shadow-2xl p-8 sm:p-12 max-w-lg mx-auto">
                   <div className="text-center mb-8">
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/15 text-primary text-sm font-medium mb-4">
                       <Sparkles className="w-4 h-4" />
@@ -507,10 +507,9 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
 
               {/* STEP 4: Confirmation */}
               {step === "confirmation" && (
-                <motion.div key="confirmation" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: "spring", damping: 20, stiffness: 200 }} className="glass-card-hero p-10 sm:p-14 rounded-3xl glow-border max-w-lg mx-auto text-center relative overflow-hidden">
-                  {/* Background glow */}
+                <motion.div key="confirmation" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: "spring", damping: 20, stiffness: 200 }} className="rounded-3xl border border-neon-cyan/15 bg-card/70 backdrop-blur-xl shadow-2xl p-10 sm:p-14 max-w-lg mx-auto text-center relative overflow-hidden">
+                  {/* Background glow — single teal */}
                   <div className="absolute inset-0" style={{ background: "radial-gradient(circle at 50% 30%, hsla(175,95%,50%,0.08) 0%, transparent 60%)" }} />
-                  <div className="absolute inset-0" style={{ background: "radial-gradient(circle at 30% 70%, hsla(320,90%,60%,0.04) 0%, transparent 50%)" }} />
 
                   <motion.div
                     initial={{ scale: 0 }}
@@ -537,10 +536,10 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
                     transition={{ delay: 0.5 }}
                     className="text-muted-foreground font-light leading-relaxed max-w-md mx-auto mb-8 relative text-sm sm:text-base"
                   >
-                    Vi kontaktar dig inom <span className="text-foreground font-semibold">24 timmar</span> för att gå igenom resultatet och visa hur din hemsida kan utvecklas till ett starkare verktyg för{" "}
-                    <span className="text-primary font-medium">ökad synlighet</span>,{" "}
-                    <span className="text-neon-blue font-medium">fler affärer</span> och{" "}
-                    <span className="text-neon-magenta font-medium">högre förtroende</span>{" "}
+                    Vi kontaktar dig inom <span className="text-primary font-semibold">24 timmar</span> för att gå igenom resultatet och visa hur din hemsida kan utvecklas till ett starkare verktyg för{" "}
+                    <span className="text-foreground font-medium">ökad synlighet</span>,{" "}
+                    <span className="text-foreground font-medium">fler affärer</span> och{" "}
+                    <span className="text-foreground font-medium">högre förtroende</span>{" "}
                     hos dina kunder.
                   </motion.p>
 

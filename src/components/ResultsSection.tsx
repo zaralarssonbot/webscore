@@ -66,9 +66,9 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
 
         {/* Domain tag */}
         <motion.div variants={fadeUp} className="text-center">
-          <span className="glass-card px-5 py-2.5 text-sm text-muted-foreground inline-flex items-center gap-2 rounded-full border border-border/20">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/[0.07] bg-white/[0.02] px-5 py-2.5 text-sm text-muted-foreground">
             <Globe className="w-3.5 h-3.5 text-neon-cyan" />
-            Resultat för <span className="text-primary font-semibold">{domain}</span>
+            Resultat för <span className="font-mono text-foreground">{domain}</span>
           </span>
         </motion.div>
 
@@ -110,16 +110,16 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
         {/* 3. Competitors (Konkurrentgap) */}
         {data.nearbyCompetitors && data.nearbyCompetitors.length > 0 && (
           <motion.div variants={fadeUp}>
-            <div className="glass-card-elevated p-6 sm:p-8 rounded-2xl relative overflow-hidden">
-              <div className="accent-line-top" style={{ background: "linear-gradient(90deg, transparent, hsla(25,100%,58%,0.5), hsla(320,90%,60%,0.3), transparent)" }} />
+            <div className="card-surface p-6 sm:p-8 relative overflow-hidden">
+              <div className="accent-line-top accent-line-cyan" />
 
                <div className="flex items-center gap-3 mb-6 relative">
-                <div className="w-9 h-9 rounded-xl bg-neon-orange/10 flex items-center justify-center border border-neon-orange/15">
-                  <MapPin className="w-4 h-4 text-neon-orange" />
+                <div className="w-9 h-9 rounded-xl bg-neon-cyan/10 flex items-center justify-center border border-neon-cyan/15">
+                  <MapPin className="w-4 h-4 text-neon-cyan" />
                 </div>
                 <div>
                   <h2 className="text-base font-semibold font-display">Här är varför de får kunderna före dig</h2>
-                  <p className="text-foreground/70 text-xs font-light">Företag i ditt område som presterar bättre digitalt</p>
+                  <p className="data-label text-[0.5rem] text-muted-foreground/50 mt-0.5">Företag i ditt område som presterar bättre</p>
                 </div>
               </div>
 
@@ -136,7 +136,7 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
                           <Crown className="w-2.5 h-2.5" /> Bäst positionerad
                         </div>
                       )}
-                      <div className="w-11 h-11 rounded-lg flex items-center justify-center shrink-0 font-bold text-base font-display" style={{ background: sc.bg, color: sc.text, boxShadow: `0 0 14px ${sc.glow}` }}>
+                      <div className="w-11 h-11 rounded-lg flex items-center justify-center shrink-0 font-bold text-base font-mono tabular-nums" style={{ background: sc.bg, color: sc.text, boxShadow: `0 0 14px ${sc.glow}` }}>
                         {comp.score}
                       </div>
                       <img
@@ -165,7 +165,7 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
                             </span>
                           )}
                           {comp.design_rating != null && (
-                            <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-neon-purple/8 text-neon-purple border border-neon-purple/12 flex items-center gap-0.5">
+                            <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-neon-cyan/8 text-neon-cyan border border-neon-cyan/12 flex items-center gap-0.5 font-mono tabular-nums">
                               <Palette className="w-2.5 h-2.5" />{comp.design_rating}/5
                             </span>
                           )}
@@ -177,7 +177,7 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
                         </div>
                       </div>
                       <div className="flex flex-col items-end gap-1 shrink-0">
-                        <div className="text-xs font-bold px-2.5 py-1 rounded-full font-display" style={{ color: sc.text, background: sc.bg }}>
+                        <div className="text-xs font-bold px-2.5 py-1 rounded-full font-mono tabular-nums" style={{ color: sc.text, background: sc.bg }}>
                           +{comp.score - data.score}
                         </div>
                         {comp.distance_km && (
@@ -231,9 +231,8 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
         </motion.div>
 
         {/* Service offering section */}
-        <motion.div variants={fadeUp} className="glass-card-elevated p-6 sm:p-8 rounded-2xl relative overflow-hidden">
+        <motion.div variants={fadeUp} className="card-surface p-6 sm:p-8 relative overflow-hidden">
           <div className="accent-line-top accent-line-cyan" />
-          <div className="absolute inset-0 rounded-2xl" style={{ boxShadow: "inset 0 0 60px hsla(175,95%,50%,0.02)" }} />
 
           <div className="flex items-center gap-3 mb-4 relative">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center border border-neon-cyan/15" style={{ background: "hsla(175,95%,50%,0.08)" }}>
@@ -241,7 +240,7 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
             </div>
             <div>
               <h2 className="text-base font-semibold font-display">Vi bygger hemsidor som faktiskt genererar kunder</h2>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Expertis inom hemsidor, SEO och digital synlighet</p>
+              <p className="data-label text-[0.5rem] text-muted-foreground/50 mt-0.5">Expertis inom hemsidor, SEO och digital synlighet</p>
             </div>
           </div>
 
@@ -273,7 +272,7 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
         </motion.div>
 
         {/* Email capture – simplified */}
-        <motion.div variants={fadeUp} className="glass-card p-5 sm:p-6 rounded-2xl flex flex-col sm:flex-row items-center gap-4 border border-neon-cyan/10">
+        <motion.div variants={fadeUp} className="card-surface p-5 sm:p-6 flex flex-col sm:flex-row items-center gap-4">
           <div className="w-10 h-10 rounded-xl bg-neon-cyan/10 flex items-center justify-center border border-neon-cyan/15 shrink-0">
             <Mail className="w-5 h-5 text-neon-cyan" />
           </div>
@@ -287,15 +286,15 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
         </motion.div>
 
         {/* 5. Final CTA (Lösning) */}
-        <motion.div variants={fadeUp} className="glass-card-hero p-8 sm:p-10 text-center glow-border relative overflow-hidden">
+        <motion.div variants={fadeUp} className="card-surface p-8 sm:p-10 text-center relative overflow-hidden">
+          <div className="accent-line-top accent-line-cyan" />
           <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, hsla(175,95%,50%,0.05) 0%, transparent 60%)" }} />
-          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 70% 30%, hsla(320,90%,60%,0.03) 0%, transparent 50%)" }} />
           <h2 className="text-xl sm:text-2xl font-bold mb-2 relative font-display">Vill du se exakt hur detta kan förbättras för er?</h2>
           <p className="text-muted-foreground mb-6 font-light relative max-w-lg mx-auto text-sm">
             Vi går igenom din sida och visar vad som bör byggas om för att få bättre resultat.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center relative">
-            <Button variant="glow-magenta" size="xl" onClick={handleBook} className="group">
+            <Button variant="glow" size="xl" onClick={handleBook} className="group glow-precision">
               Boka 20 min genomgång <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
             <Button variant="glow-outline" size="xl" onClick={() => setEmailModalOpen(true)}>
