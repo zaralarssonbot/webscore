@@ -48,7 +48,7 @@ interface Project {
   badges: Badge[];
   caseDescription: string;
   improvements: string[];
-  result: string;
+  result?: string;
   gallery?: string[];
 }
 
@@ -60,7 +60,6 @@ const projects: Project[] = [
     badges: ["Webbdesign", "SEO", "Conversion"],
     caseDescription: "Ett etablerat byggföretag som behövde en digital närvaro som matchade deras professionalism. Vi byggde en tydlig, förtroendeskapande sajt optimerad för att generera förfrågningar.",
     improvements: ["Lead-generering genom formulär", "SEO för bygg-relaterade sökord", "Tydlig tjänstestruktur och CTA:er"],
-    result: "3x fler förfrågningar via hemsidan jämfört med tidigare.",
     gallery: [wendtviks1, wendtviks2, wendtviks3, wendtviks4, wendtviks5, wendtviks6, wendtviks7],
   },
   {
@@ -70,7 +69,6 @@ const projects: Project[] = [
     badges: ["Webbdesign", "Branding", "SEO"],
     caseDescription: "En mysig restaurang vid Mälaren som behövde en hemsida som förmedlade deras unika atmosfär. Vi byggde en visuellt varm sajt med integrerad meny och bokningssystem.",
     improvements: ["Visuell storytelling", "Integrerad meny och bokning", "Lokal SEO för Kvicksund-området"],
-    result: "Ökad synlighet lokalt och fler bordsbokningar online.",
     gallery: [papajun1, papajun2, papajun3, papajun4, papajun5, papajun6],
   },
   {
@@ -80,7 +78,6 @@ const projects: Project[] = [
     badges: ["Webbdesign", "SEO", "Branding", "Conversion"],
     caseDescription: "En prestigefull advokatbyrå som behövde en digital närvaro som utstrålade kompetens och förtroende. Vi levererade en elegant, mörk design med tydliga konverteringsvägar.",
     improvements: ["Premiumkänsla i design", "SEO för juridiska söktermer", "Konverteringsoptimerade kontaktytor"],
-    result: "Markant ökning av kvalificerade konsultationsförfrågningar.",
     gallery: [
       nordstrom1,
       nordstrom2,
@@ -99,7 +96,6 @@ const projects: Project[] = [
     badges: ["Webbdesign", "Branding", "Conversion"],
     caseDescription: "En exklusiv eventplattform som behövde en digital närvaro i klass med sina fysiska upplevelser. Vi skapade en visuellt slående hemsida med fokus på konvertering och varumärkeskänsla.",
     improvements: ["Helt ny visuell identitet online", "Konverteringsoptimerade landningssidor", "Premium känsla genom typografi och bildval"],
-    result: "Ökad bokningsgrad och starkare varumärkesuppfattning hos målgruppen.",
     gallery: [invito1, invito2, invito3, invito4, invito5, invito6],
   },
   {
@@ -109,7 +105,6 @@ const projects: Project[] = [
     badges: ["Webbdesign", "SEO", "Conversion"],
     caseDescription: "Stockholms mest eftertraktade burgare förtjänade en hemsida som matchade smakupplevelsen. Vi byggde en mörk, stämningsfull sajt med fokus på lokal SEO och beställningar.",
     improvements: ["Lokal SEO-strategi för Stockholm", "Online-beställning integrerat", "Mobiloptimerad menyupplevelse"],
-    result: "Fördubblad onlinetrafik och 40% fler onlinebeställningar.",
     gallery: [midnightgrill1, midnightgrill2],
   },
   {
@@ -119,7 +114,6 @@ const projects: Project[] = [
     badges: ["Webbdesign", "Branding"],
     caseDescription: "En premium japansk restaurang med omakase-upplevelser. Vi skapade en minimalistisk, elegant digital upplevelse som speglar restaurangens filosofi om hantverk och precision.",
     improvements: ["Exklusiv varumärkeskänsla", "Bokningssystem integrerat", "Storytelling genom visuell design"],
-    result: "Starkare varumärke och fler bokningar via hemsidan.",
   },
 ];
 
@@ -442,15 +436,6 @@ const PortfolioSection = () => {
                       </li>
                     ))}
                   </ul>
-                </div>
-
-                <div className="glass-card rounded-xl p-5">
-                  <h4 className="text-[0.8125rem] font-semibold tracking-[0.1em] uppercase text-primary/80 mb-2">
-                    Resultat
-                  </h4>
-                  <p className="text-[0.9375rem] text-foreground/90 leading-[1.7]">
-                    {selectedProject.result}
-                  </p>
                 </div>
 
                 <button

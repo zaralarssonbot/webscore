@@ -12,6 +12,11 @@ interface ScoreGaugeProps {
   caption?: string;
   /** Delay (s) before the count-up + fill begins */
   delay?: number;
+  /**
+   * "score" (default) colours by value (green/yellow/red) — for the real result.
+   * "brand" uses the teal→blue brand gradient regardless of value — for the hero example.
+   */
+  accent?: "score" | "brand";
   className?: string;
 }
 
@@ -22,22 +27,25 @@ const colorFor = (v: number) => {
   return { c: "hsl(0 80% 60%)", glow: "hsla(0,80%,60%,0.45)" };
 };
 
+const BRAND = { c: "hsl(190 90% 55%)", glow: "hsla(190,90%,52%,0.45)" };
+
 /**
  * The hero score visualization: a glowing radial gauge with an animated fill,
  * count-up, a slow rotating scan-ring and a breathing glow. Reusable for the
- * real result score as well as the hero's example readout.
+ * real result score (value-coloured) and the hero example (brand-coloured).
  */
-const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, className }: ScoreGaugeProps) => {
+const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, accent = "score", className }: ScoreGaugeProps) => {
   const [display, setDisplay] = useState(0);
   const [armed, setArmed] = useState(false);
   const raf = useRef<number>();
-  const { c, glow } = colorFor(value);
+  const isBrand = accent === "brand";
+  const { c, glow } = isBrand ? BRAND : colorFor(value);
+  const stroke = isBrand ? "url(#scoreGaugeBrand)" : c;
 
   const r = 42;
   const circ = 2 * Math.PI * r;
   const progress = armed ? circ - (display / 100) * circ : circ;
 
-  // Kick off after the requested delay, then count up with an ease-out curve.
   useEffect(() => {
     const t = setTimeout(() => setArmed(true), delay * 1000);
     return () => clearTimeout(t);
@@ -79,6 +87,12 @@ const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, 
       />
 
       <svg width={size} height={size} viewBox="0 0 100 100" className="relative -rotate-90">
+        <defs>
+          <linearGradient id="scoreGaugeBrand" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="hsl(175 90% 55%)" />
+            <stop offset="100%" stopColor="hsl(215 92% 58%)" />
+          </linearGradient>
+        </defs>
         {/* Track */}
         <circle cx="50" cy="50" r={r} fill="none" stroke="hsl(var(--secondary))" strokeWidth="3" opacity="0.5" />
         {/* Tick marks */}
@@ -99,7 +113,7 @@ const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, 
         {/* Progress arc */}
         <circle
           cx="50" cy="50" r={r} fill="none"
-          stroke={c} strokeWidth="4.5" strokeLinecap="round"
+          stroke={stroke} strokeWidth="4.5" strokeLinecap="round"
           strokeDasharray={circ}
           strokeDashoffset={progress}
           style={{ transition: "stroke-dashoffset 1.6s cubic-bezier(0.16,1,0.3,1)", filter: `drop-shadow(0 0 6px ${glow})` }}
@@ -110,8 +124,8 @@ const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, 
       <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ paddingTop: size * 0.02 }}>
         {label && <span className="data-label text-[0.6rem] text-muted-foreground/70 mb-1">{label}</span>}
         <span
-          className="font-mono font-bold tabular-nums leading-none"
-          style={{ fontSize: size * 0.28, color: c, textShadow: `0 0 40px ${glow}, 0 0 80px ${glow.replace("0.45", "0.2")}` }}
+          className={`font-mono font-bold tabular-nums leading-none ${isBrand ? "gradient-text" : ""}`}
+          style={{ fontSize: size * 0.28, color: isBrand ? undefined : c, textShadow: isBrand ? undefined : `0 0 40px ${glow}, 0 0 80px ${glow.replace("0.45", "0.2")}` }}
         >
           {display}
         </span>

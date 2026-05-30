@@ -87,7 +87,7 @@ const FinalCTASection = ({ onAnalyze, onBookMeeting }: FinalCTASectionProps) => 
                     className="flex-1 bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/50 px-3 py-3 text-base font-mono tracking-tight min-w-0"
                     maxLength={253}
                   />
-                  <Button type="submit" variant="glow" size="lg" className="shrink-0 glow-precision">
+                  <Button type="submit" variant="glow-gradient" size="lg" className="shrink-0 glow-precision">
                     <span className="relative z-10 flex items-center gap-2 font-medium">
                       Analysera
                       <ArrowRight className="w-4 h-4" />

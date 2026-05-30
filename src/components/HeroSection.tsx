@@ -1,39 +1,9 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { motion, type Variants } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Search, ArrowRight } from "lucide-react";
 import { validateDomain } from "@/lib/domain";
 import ScoreGauge from "@/components/ScoreGauge";
-
-const useCountUp = (end: number, duration = 2000) => {
-  const [count, setCount] = useState(0);
-  const [started, setStarted] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting && !started) setStarted(true); },
-      { threshold: 0.5 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [started]);
-
-  useEffect(() => {
-    if (!started) return;
-    let start = 0;
-    const step = (timestamp: number) => {
-      if (!start) start = timestamp;
-      const progress = Math.min((timestamp - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.floor(eased * end));
-      if (progress < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }, [started, end, duration]);
-
-  return { count, ref };
-};
 
 interface HeroSectionProps {
   onAnalyze: (domain: string) => void;
@@ -41,33 +11,25 @@ interface HeroSectionProps {
   errorMessage?: string | null;
 }
 
-// NOTE: these figures are placeholders flagged under ROADMAP item B (real proof).
-const stats = [
-  { value: 100, suffix: "+", label: "HEMSIDOR SKAPADE" },
-  { value: 93, suffix: "%", label: "NÖJDA KUNDER" },
-  { value: 995, prefix: "från ", suffix: ":-", label: "/MÅN I 12 MÅN" },
+// Honest offer stats — what we actually promise, no fabricated metrics.
+const offers = [
+  { value: "GRATIS", label: "INGEN REGISTRERING" },
+  { value: "60 SEK", label: "TILL DITT BETYG" },
+  { value: "FRÅN 995 KR/MÅN", label: "INGEN BINDNING" },
 ];
 
-const StatStrip = () => {
-  const c0 = useCountUp(stats[0].value, 2000);
-  const c1 = useCountUp(stats[1].value, 1800);
-  const c2 = useCountUp(stats[2].value, 2200);
-  const counts = [c0, c1, c2];
-
-  return (
-    <div className="grid grid-cols-3 gap-px rounded-2xl overflow-hidden border border-white/[0.06] bg-white/[0.02]">
-      {stats.map((s, i) => (
-        <div key={s.label} ref={counts[i].ref} className="text-center px-3 py-4 sm:py-5 bg-background/40 backdrop-blur-sm">
-          <span className="block font-mono font-semibold tabular-nums text-lg sm:text-2xl text-foreground tracking-tight">
-            {s.prefix && <span className="text-xs sm:text-sm text-muted-foreground/60 align-top mr-0.5">{s.prefix}</span>}
-            {counts[i].count}{s.suffix}
-          </span>
-          <span className="data-label text-[0.55rem] text-muted-foreground/45 mt-1.5 block">{s.label}</span>
-        </div>
-      ))}
-    </div>
-  );
-};
+const OfferStrip = () => (
+  <div className="grid grid-cols-3 gap-px rounded-2xl overflow-hidden border border-white/[0.06] bg-white/[0.02]">
+    {offers.map((o) => (
+      <div key={o.label} className="text-center px-2.5 py-4 sm:py-5 bg-background/40 backdrop-blur-sm flex flex-col justify-center">
+        <span className="block font-mono font-semibold text-[0.72rem] sm:text-[0.8rem] text-foreground tracking-tight leading-tight">
+          {o.value}
+        </span>
+        <span className="data-label text-[0.5rem] text-muted-foreground/45 mt-1.5 block leading-[1.5]">{o.label}</span>
+      </div>
+    ))}
+  </div>
+);
 
 const container: Variants = {
   hidden: {},
@@ -171,7 +133,7 @@ const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProp
                   className="flex-1 bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/50 px-3 py-3 text-base font-mono tracking-tight min-w-0"
                   maxLength={253}
                 />
-                <Button type="submit" variant="glow" size="lg" className="shrink-0 glow-precision">
+                <Button type="submit" variant="glow-gradient" size="lg" className="shrink-0 glow-precision">
                   <span className="relative z-10 flex items-center gap-2 font-medium">
                     Analysera nu
                     <ArrowRight className="w-4 h-4" />
@@ -203,7 +165,7 @@ const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProp
           transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="flex justify-center lg:justify-end"
         >
-          <ScoreGauge value={87} size={320} label="BETYG" caption="EXEMPELANALYS" delay={0.9} />
+          <ScoreGauge value={87} size={320} label="BETYG" caption="EXEMPELANALYS" delay={0.9} accent="brand" />
         </motion.div>
       </div>
 
@@ -212,9 +174,9 @@ const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProp
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 1.1 }}
-        className="w-full max-w-md mt-14"
+        className="w-full max-w-lg mt-14"
       >
-        <StatStrip />
+        <OfferStrip />
       </motion.div>
 
       {/* Scroll indicator */}
