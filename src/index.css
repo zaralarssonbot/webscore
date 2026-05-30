@@ -193,6 +193,19 @@
     font-weight: 500;
   }
 
+  /* One cohesive card surface + restrained lift/glow on hover */
+  .card-surface {
+    @apply rounded-2xl border;
+    border-color: rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.018);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease, box-shadow 0.5s ease;
+  }
+  .card-surface:hover {
+    transform: translateY(-4px);
+    border-color: hsl(var(--neon-cyan) / 0.18);
+    box-shadow: var(--glow-soft);
+  }
+
   .gradient-text {
     @apply bg-clip-text text-transparent;
     background-image: linear-gradient(135deg, hsl(var(--neon-purple)), hsl(var(--neon-cyan)), hsl(var(--neon-blue)));
