@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Play } from "lucide-react";
 import LazyVideo from "@/components/LazyVideo";
+import SectionHeading from "@/components/SectionHeading";
 
 // 4-col grid, 3 rows — all 12 cells filled perfectly
 const videos = [
@@ -17,25 +18,12 @@ const VideoShowcaseSection = () => {
   return (
     <section className="relative z-10 py-24 sm:py-32 px-6 overflow-hidden">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-14"
-        >
-          <span className="text-xs font-medium tracking-[0.2em] uppercase text-primary mb-3 block">
-            Kreativt innehåll
-          </span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold font-display tracking-[-0.02em] leading-[1.15] mb-4">
-            Vi skapar innehåll som{" "}
-            <span className="gradient-text">fångar blicken</span>
-          </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto text-[0.9375rem] leading-[1.75]">
-            Från filmiskt webbinnehåll till produktvideos — vi ger ditt varumärke visuell kraft.
-          </p>
-        </motion.div>
+        <SectionHeading
+          eyebrow="KREATIVT INNEHÅLL"
+          title={<>Vi skapar innehåll som{" "}<span className="gradient-text">fångar blicken</span></>}
+          subtitle="Från filmiskt webbinnehåll till produktvideos — vi ger ditt varumärke visuell kraft."
+          className="mb-14"
+        />
 
         {/* Bento Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 grid-rows-none sm:grid-rows-[200px_200px_200px] md:grid-rows-[200px_200px_200px] gap-3 sm:gap-4">
@@ -72,7 +60,7 @@ const VideoShowcaseSection = () => {
                   <div className="w-6 h-6 rounded-full bg-primary/20 backdrop-blur-sm border border-primary/30 flex items-center justify-center">
                     <Play className="w-3 h-3 text-primary fill-primary" />
                   </div>
-                  <span className="text-[0.8125rem] font-medium text-foreground/90">
+                  <span className="data-label text-[0.55rem] text-foreground/90">
                     {video.label}
                   </span>
                 </div>
