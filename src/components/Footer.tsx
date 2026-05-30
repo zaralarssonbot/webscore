@@ -1,26 +1,22 @@
+import { Link } from "react-router-dom";
+
+// Every link points to a real route — no dead "#" placeholders.
 const columns = [
   {
     heading: "TJÄNSTER",
     links: [
-      { label: "Hemsidor", href: "#services" },
-      { label: "SEO & synlighet", href: "#services" },
-      { label: "Branding", href: "#services" },
+      { label: "Hemsidor", href: "/tjanster/hemsidor" },
+      { label: "SEO & synlighet", href: "/tjanster/seo" },
+      { label: "Branding & design", href: "/tjanster/branding" },
+      { label: "Drift & support", href: "/tjanster/drift" },
     ],
   },
   {
     heading: "FÖRETAG",
     links: [
       { label: "Guider", href: "/guider" },
-      { label: "Om oss", href: "#" },
-      { label: "Kontakt", href: "#" },
-      { label: "Webbtest", href: "#webtest" },
-    ],
-  },
-  {
-    heading: "JURIDISKT",
-    links: [
-      { label: "Integritetspolicy", href: "#" },
-      { label: "Villkor", href: "#" },
+      { label: "Priser", href: "/pricing" },
+      { label: "Gör testet", href: "/" },
     ],
   },
 ];
@@ -52,9 +48,9 @@ const Footer = () => {
               <ul className="space-y-2.5">
                 {col.links.map((l) => (
                   <li key={l.label}>
-                    <a href={l.href} className="text-[0.8125rem] text-muted-foreground/80 hover:text-neon-cyan transition-colors duration-300">
+                    <Link to={l.href} className="text-[0.8125rem] text-muted-foreground/80 hover:text-neon-cyan transition-colors duration-300">
                       {l.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>

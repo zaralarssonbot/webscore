@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import webscoreLogo from "@/assets/webscore-logo.png";
 
@@ -7,9 +8,10 @@ interface NavbarProps {
   onAnalyze?: () => void;
 }
 
+// Hash links point to real homepage section ids; route links go to pages.
 const links = [
-  { href: "#features", label: "Funktioner" },
-  { href: "#how-it-works", label: "Så fungerar det" },
+  { href: "#services", label: "Tjänster" },
+  { href: "#process-steps", label: "Så fungerar det" },
   { href: "/guider", label: "Guider" },
   { href: "/pricing", label: "Priser" },
 ];
@@ -17,6 +19,8 @@ const links = [
 const Navbar = ({ onAnalyze }: NavbarProps) => {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -24,6 +28,24 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Route links navigate; hash links smooth-scroll to a homepage section
+  // (navigating home first when triggered from another page).
+  const handleNav = (e: React.MouseEvent, href: string) => {
+    e.preventDefault();
+    setOpen(false);
+    if (href.startsWith("#")) {
+      const id = href.slice(1);
+      if (location.pathname !== "/") {
+        navigate("/");
+        setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 140);
+      } else {
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      navigate(href);
+    }
+  };
 
   return (
     <motion.nav
@@ -47,7 +69,8 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
               <a
                 key={l.href}
                 href={l.href}
-                className="data-label text-[0.62rem] text-muted-foreground/70 hover:text-foreground transition-colors relative group"
+                onClick={(e) => handleNav(e, l.href)}
+                className="data-label text-[0.62rem] text-muted-foreground/70 hover:text-foreground transition-colors relative group cursor-pointer"
               >
                 {l.label}
                 <span className="absolute -bottom-1.5 left-0 right-0 h-px scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" style={{ background: "linear-gradient(90deg, hsl(var(--neon-cyan)), transparent)" }} />
@@ -75,7 +98,7 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
             className="md:hidden glass-card rounded-xl p-4 mb-4 space-y-1 border border-white/[0.08]"
           >
             {links.map((l) => (
-              <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="block data-label text-[0.62rem] text-muted-foreground hover:text-foreground py-2.5">
+              <a key={l.href} href={l.href} onClick={(e) => handleNav(e, l.href)} className="block data-label text-[0.62rem] text-muted-foreground hover:text-foreground py-2.5 cursor-pointer">
                 {l.label}
               </a>
             ))}

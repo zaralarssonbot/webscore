@@ -152,8 +152,7 @@ const PortfolioSection = () => {
 
   const scrollToContact = () => {
     setSelectedProject(null);
-    const el = document.getElementById("web-test") || document.getElementById("final-cta");
-    el?.scrollIntoView({ behavior: "smooth" });
+    document.getElementById("webtest")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (

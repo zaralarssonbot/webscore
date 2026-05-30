@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import BackgroundEffect from "@/components/BackgroundEffect";
 import Navbar from "@/components/Navbar";
 import PricingSection from "@/components/PricingSection";
@@ -5,6 +6,7 @@ import Footer from "@/components/Footer";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 
 const Pricing = () => {
+  const navigate = useNavigate();
   useDocumentMeta({
     title: "Priser – Webscore",
     description:
@@ -14,7 +16,7 @@ const Pricing = () => {
   return (
     <div className="relative min-h-screen bg-background text-foreground overflow-hidden">
       <BackgroundEffect />
-      <Navbar />
+      <Navbar onAnalyze={() => navigate("/")} />
       <div className="pt-20">
         <PricingSection />
       </div>
