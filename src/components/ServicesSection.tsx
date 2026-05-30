@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Monitor, Network, Code2, TrendingUp, Sparkles, LifeBuoy, Users, Shield, Search, BarChart3, Phone, Rocket, ArrowRight } from "lucide-react";
+import { Monitor, Network, Code2, TrendingUp, Sparkles, Palette, LifeBuoy, Users, Shield, Search, BarChart3, Phone, Rocket, ArrowRight } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 
 // The full offering, grouped by the arc: bygga → synas & övertyga → driva.
@@ -18,7 +18,7 @@ const serviceGroups = [
     label: "VI FÅR DET ATT SYNAS & ÖVERTYGA",
     items: [
       { icon: TrendingUp, slug: "seo", title: "SEO & synlighet", description: "Vi ser till att du syns där dina kunder söker – och konkurrerar ut andra." },
-      { icon: Sparkles, slug: "branding", title: "Branding & design", description: "Ett tydligt, sammanhängande varumärke som känns självklart att välja." },
+      { icon: Palette, slug: "branding", title: "Branding & design", description: "Ett tydligt, sammanhängande varumärke som känns självklart att välja." },
     ],
   },
   {

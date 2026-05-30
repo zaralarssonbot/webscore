@@ -14,7 +14,7 @@ export interface EmailReportData {
 /**
  * Generate a premium Swedish HTML email summary.
  * Currently returns HTML string for mock/preview.
- * Ready to plug into a real email service (e.g. Resend, SendGrid, Lovable Email).
+ * Ready to plug into a real email service (e.g. Resend or SendGrid).
  */
 export function generateEmailReport(data: EmailReportData): string {
   const scoreColor = data.score >= 70 ? "#10b981" : data.score >= 45 ? "#f59e0b" : "#ef4444";
@@ -105,7 +105,7 @@ ${impactItems ? `
 <!-- CTA -->
 <tr><td style="padding:24px 40px 40px;text-align:center;">
   <p style="margin:0 0 16px;font-size:15px;color:#e0e0e0;">Vill du veta exakt hur du fixar det här?</p>
-  <a href="https://webscore.lovable.app" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#00dcc8,#a032dc);color:#ffffff;font-weight:700;font-size:14px;text-decoration:none;border-radius:12px;">Boka en gratis 20-minuters genomgång</a>
+  <a href="https://webscore.se" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#00dcc8,#a032dc);color:#ffffff;font-weight:700;font-size:14px;text-decoration:none;border-radius:12px;">Boka en gratis 20-minuters genomgång</a>
   <p style="margin:16px 0 0;font-size:12px;color:#707080;">Kostnadsfritt · Inga förpliktelser · Personlig rådgivning</p>
 </td></tr>
 

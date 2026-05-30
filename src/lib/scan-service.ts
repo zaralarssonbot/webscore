@@ -119,7 +119,7 @@ export async function fetchGoogleBusiness(domain: string): Promise<GoogleBusines
 
 function isWebscoreDomain(domain: string): boolean {
   const normalized = domain.toLowerCase().replace(/^https?:\/\//, "").replace(/^www\./, "").split("/")[0].split(":")[0].trim();
-  return normalized === "webscore.se" || normalized === "webscore.lovable.app";
+  return normalized === "webscore.se";
 }
 
 function applyWebscoreOverride(result: ScanResult): ScanResult {

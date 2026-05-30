@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import {
   ArrowRight, Check, Clock, ShieldCheck, Monitor, TrendingUp, Sparkles,
   Search, MousePointerClick, Gauge, MapPin, Layout, Type, BadgeCheck, Users,
-  Network, Code2, LifeBuoy, Phone,
+  Network, Code2, LifeBuoy, Phone, Palette,
   type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -106,7 +106,7 @@ const SERVICES: Record<string, ServiceContent> = {
     metaDescription:
       "Folk köper av dem de litar på. Vi gör ditt varumärke tydligt, sammanhängande och självklart att välja.",
     eyebrow: "TJÄNST · BRANDING & DESIGN",
-    icon: Sparkles,
+    icon: Palette,
     title: <>Branding & <span className="gradient-text">design</span></>,
     intro:
       "Folk köper av dem de litar på. Vi gör ditt varumärke tydligt, sammanhängande och självklart att välja – så att rätt känsla finns där redan innan kunden hört av sig.",
