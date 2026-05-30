@@ -14,7 +14,7 @@ interface HeroSectionProps {
 // Honest offer stats — what we actually promise, no fabricated metrics.
 const offers = [
   { value: "GRATIS", label: "INGEN REGISTRERING" },
-  { value: "60 SEK", label: "TILL DITT BETYG" },
+  { value: "60 SEKUNDER", label: "TILL DITT BETYG" },
   { value: "FRÅN 995 KR/MÅN", label: "INGEN BINDNING" },
 ];
 
@@ -150,7 +150,7 @@ const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProp
 
           {/* Microcopy + booking */}
           <motion.div variants={item} className="flex flex-col sm:flex-row items-center lg:items-start gap-2 sm:gap-4 mt-4">
-            <span className="data-label text-[0.58rem] text-muted-foreground/40">60 SEK · KOSTNADSFRITT · INGA FÖRPLIKTELSER</span>
+            <span className="data-label text-[0.58rem] text-muted-foreground/40">60 SEKUNDER · KOSTNADSFRITT · INGA FÖRPLIKTELSER</span>
             <button type="button" onClick={onBookMeeting} className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors group">
               eller boka videomöte
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
