@@ -74,7 +74,6 @@ const StatCounters = () => {
 const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProps) => {
   const [domain, setDomain] = useState("");
   const [error, setError] = useState("");
-  const [showInput, setShowInput] = useState(false);
 
   const displayError = error || errorMessage || "";
 
@@ -98,7 +97,7 @@ const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProp
           loop
           muted
           playsInline
-          preload="auto"
+          preload="metadata"
           className="absolute inset-0 w-full h-full object-cover opacity-50 will-change-auto"
           src="/hero-bg.mp4"
         />
@@ -157,9 +156,9 @@ const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProp
             transition={{ duration: 0.7, delay: 0.2 }}
             className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold tracking-[-0.03em] mb-4 leading-[1.1] font-display"
           >
-            Hemsidor som får fler att{" "}
+            Din hemsida har ett{" "}
             <span className="relative">
-              <span className="gradient-text">välja dig</span>
+              <span className="gradient-text">betyg</span>
               <motion.span
                 className="absolute -bottom-1 left-0 right-0 h-px"
                 style={{ background: "linear-gradient(90deg, transparent, hsl(var(--neon-cyan)), hsl(var(--neon-blue)), transparent)" }}
@@ -180,82 +179,68 @@ const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProp
             Vi hjälper företag att öka sin synlighet, bygga förtroende och få fler kunder genom hemsida, SEO och branding.
           </motion.p>
 
-          {/* Dual CTAs */}
-          <motion.div
+          {/* Primary CTA — URL analyzer, always visible */}
+          <motion.form
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.4 }}
-            className="flex flex-col sm:flex-row gap-3 items-center justify-center mb-3"
+            onSubmit={handleSubmit}
+            className="w-full max-w-xl mx-auto mb-3"
           >
-            <Button onClick={onBookMeeting} variant="glow" size="lg" className="relative overflow-hidden text-sm sm:text-base px-4 sm:px-8">
-              <span className="relative z-10 flex items-center gap-2">
-                Boka videomöte · 20 min · Kostnadsfritt
-                <ArrowRight className="w-4 h-4" />
-              </span>
-            </Button>
-            <Button
-              onClick={() => setShowInput(true)}
-              variant="outline"
-              size="lg"
-              className="text-base px-8 border-border/30 hover:border-primary/40 hover:bg-primary/5"
-            >
-              <Search className="w-4 h-4 mr-2" />
-              Testa din hemsida
-            </Button>
-          </motion.div>
+            <div className="relative group">
+              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-neon-cyan/20 via-neon-blue/15 to-neon-purple/15 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 blur-lg transition-opacity duration-700" />
+              <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-neon-cyan/25 via-neon-blue/15 to-neon-purple/20 opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
+              <div className="relative flex items-center glass-card rounded-2xl p-2" style={{ borderColor: "transparent" }}>
+                <Search className="w-5 h-5 text-muted-foreground ml-4 shrink-0" />
+                <input
+                  type="text"
+                  value={domain}
+                  onChange={(e) => { setDomain(e.target.value); setError(""); }}
+                  placeholder="Ange din domän (t.ex. dinsida.se)"
+                  className="flex-1 bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground px-4 py-3 text-base"
+                  maxLength={253}
+                />
+                <Button type="submit" variant="glow" size="lg" className="shrink-0">
+                  <span className="relative z-10 flex items-center gap-2">
+                    <Search className="w-4 h-4" />
+                    Analysera nu
+                  </span>
+                </Button>
+              </div>
+            </div>
+            {displayError && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="mt-3 text-sm text-score-low"
+              >
+                {displayError}
+              </motion.p>
+            )}
+          </motion.form>
 
           {/* Microcopy */}
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6, duration: 0.5 }}
-            className="text-muted-foreground/50 text-xs tracking-wide mb-4"
+            className="text-muted-foreground/50 text-xs tracking-wide mb-3"
           >
             Tar 60 sekunder · Helt kostnadsfritt · Inga förpliktelser
           </motion.p>
 
-          {/* Expandable domain input */}
-          {showInput && (
-            <motion.form
-              initial={{ opacity: 0, y: 20, height: 0 }}
-              animate={{ opacity: 1, y: 0, height: "auto" }}
-              transition={{ duration: 0.4 }}
-              onSubmit={handleSubmit}
-              className="w-full max-w-xl mx-auto mb-4"
-            >
-              <div className="relative group">
-                <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-neon-cyan/20 via-neon-blue/15 to-neon-purple/15 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 blur-lg transition-opacity duration-700" />
-                <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-neon-cyan/25 via-neon-blue/15 to-neon-purple/20 opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
-                <div className="relative flex items-center glass-card rounded-2xl p-2" style={{ borderColor: "transparent" }}>
-                  <Search className="w-5 h-5 text-muted-foreground ml-4 shrink-0" />
-                  <input
-                    type="text"
-                    value={domain}
-                    onChange={(e) => { setDomain(e.target.value); setError(""); }}
-                    placeholder="Ange din domän (t.ex. dinsida.se)"
-                    className="flex-1 bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground px-4 py-3 text-base"
-                    maxLength={253}
-                    autoFocus
-                  />
-                  <Button type="submit" variant="glow" size="lg" className="shrink-0">
-                    <span className="relative z-10 flex items-center gap-2">
-                      <Search className="w-4 h-4" />
-                      Analysera
-                    </span>
-                  </Button>
-                </div>
-              </div>
-              {displayError && (
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="mt-3 text-sm text-score-low"
-                >
-                  {displayError}
-                </motion.p>
-              )}
-            </motion.form>
-          )}
+          {/* Soft secondary — booking link */}
+          <motion.button
+            type="button"
+            onClick={onBookMeeting}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.7, duration: 0.5 }}
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4"
+          >
+            Föredrar du att prata? Boka ett kostnadsfritt videomöte
+            <ArrowRight className="w-3.5 h-3.5" />
+          </motion.button>
         </div>
 
         {/* Stats divider */}
