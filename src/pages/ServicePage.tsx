@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import {
   ArrowRight, Check, Clock, ShieldCheck, Monitor, TrendingUp, Sparkles,
   Search, MousePointerClick, Gauge, MapPin, Layout, Type, BadgeCheck, Users,
+  Network, Code2, LifeBuoy, Phone,
   type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -45,6 +46,10 @@ interface ServiceContent {
  *   • Bekräfta om SEO/branding är engångsinsats eller löpande.
  *   • Priser anges inte här — de bor på /pricing (Starter/Pro/Premium). Håll dem
  *     synkade med RemediationFlow-paketen om de ändras.
+ *   • INTRANÄT: bekräfta om/vilka behörigheter, SSO och integrationer som ingår.
+ *   • WEBBAPPAR: bekräfta vilka integrationer/datakällor som faktiskt stöds.
+ *   • DRIFT: bekräfta exakt vad som ingår per nivå (SLA/svarstid, antal
+ *     innehållsuppdateringar, backup-frekvens) innan det utlovas som löpande avtal.
  * ─────────────────────────────────────────────────────────────────────────
  */
 const SERVICES: Record<string, ServiceContent> = {
@@ -97,12 +102,12 @@ const SERVICES: Record<string, ServiceContent> = {
     ],
   },
   branding: {
-    metaTitle: "Branding & förtroende – Webscore",
+    metaTitle: "Branding & design – Webscore",
     metaDescription:
       "Folk köper av dem de litar på. Vi gör ditt varumärke tydligt, sammanhängande och självklart att välja.",
-    eyebrow: "TJÄNST · BRANDING",
+    eyebrow: "TJÄNST · BRANDING & DESIGN",
     icon: Sparkles,
-    title: <>Branding & <span className="gradient-text">förtroende</span></>,
+    title: <>Branding & <span className="gradient-text">design</span></>,
     intro:
       "Folk köper av dem de litar på. Vi gör ditt varumärke tydligt, sammanhängande och självklart att välja – så att rätt känsla finns där redan innan kunden hört av sig.",
     scoreTie:
@@ -117,6 +122,82 @@ const SERVICES: Record<string, ServiceContent> = {
       { icon: BadgeCheck, title: "Du sticker ut", desc: "Ett tydligt varumärke gör skillnad bland konkurrenter som ser likadana ut." },
       { icon: ShieldCheck, title: "Lägre tröskel att höra av sig", desc: "Känns det tryggt och proffsigt vågar fler ta första kontakten." },
       { icon: TrendingUp, title: "Utrymme att ta bättre betalt", desc: "En premiumkänsla låter dig prissätta efter värde, inte bara pris." },
+    ],
+  },
+
+  // ── VI BYGGER ──────────────────────────────────────────────────────────
+  intranat: {
+    metaTitle: "Intranät & interna portaler – Webscore",
+    metaDescription:
+      "Vi bygger intranät och interna portaler som samlar information, rutiner och verktyg på ett ställe – så teamet hittar rätt och jobbar smidigare.",
+    eyebrow: "TJÄNST · INTRANÄT",
+    icon: Network,
+    title: <>Intranät & interna <span className="gradient-text">portaler</span></>,
+    intro:
+      "Ett intranät samlar information, rutiner och verktyg på ett ställe – så att teamet hittar rätt, jobbar likadant och slipper leta. Vi bygger interna portaler kring hur ni faktiskt arbetar.",
+    scoreTie:
+      "Samma hantverk som på er publika sajt – fast riktat inåt: tydligt, snabbt och enkelt att använda.",
+    includes: [
+      { icon: Layout, title: "Samlad ingång", desc: "En tydlig startpunkt för dokument, rutiner, länkar och verktyg." },
+      { icon: Search, title: "Sök & struktur", desc: "Logisk struktur och sök så att rätt information går att hitta snabbt." },
+      { icon: Users, title: "Roller & vyer", desc: "Innehåll anpassat efter team och roll (exakt behörighetsnivå bestäms ihop med er)." },
+      { icon: ShieldCheck, title: "Säker inloggning", desc: "Skyddad åtkomst så att intern information stannar internt." },
+      { icon: Gauge, title: "Byggt för vardagen", desc: "Snabbt och enkelt nog att faktiskt användas varje dag." },
+    ],
+    why: [
+      { icon: Clock, title: "Mindre letande", desc: "Allt på ett ställe sparar tid varje dag." },
+      { icon: Users, title: "Samma arbetssätt", desc: "Teamet jobbar likadant när rutiner och verktyg finns samlade." },
+      { icon: ShieldCheck, title: "Kontroll & trygghet", desc: "Intern information på en plats ni själva styr över." },
+    ],
+  },
+  webbappar: {
+    metaTitle: "Webbappar, system & skräddarsydd mjukvara – Webscore",
+    metaDescription:
+      "Webbappar, system och skräddarsydd mjukvara byggd kring hur ni faktiskt jobbar – för att automatisera, samla data och ta bort manuellt arbete.",
+    eyebrow: "TJÄNST · WEBBAPPAR & SYSTEM",
+    icon: Code2,
+    title: <>Webbappar, system & <span className="gradient-text">skräddarsydd mjukvara</span></>,
+    intro:
+      "När en standardlösning inte räcker bygger vi den själva. Webbappar och system formade efter era processer – för att automatisera, samla data och ta bort manuellt arbete.",
+    scoreTie:
+      "Vi börjar i problemet, inte i tekniken – och bygger bara det som faktiskt gör skillnad.",
+    includes: [
+      { icon: MousePointerClick, title: "Byggt kring era processer", desc: "Funktioner formade efter hur ni faktiskt arbetar – inte tvärtom." },
+      { icon: Layout, title: "Tydligt gränssnitt", desc: "Verktyg som är enkla nog att använda utan manual." },
+      { icon: Gauge, title: "Automatisering", desc: "Vi tar bort återkommande manuellt arbete där det går." },
+      { icon: ShieldCheck, title: "Säkert & robust", desc: "Byggt för att hålla, med skydd av känslig data." },
+      { icon: Network, title: "Integrationer", desc: "Kan kopplas till verktyg och datakällor ni redan använder (vilka avgörs av ert behov)." },
+    ],
+    why: [
+      { icon: Clock, title: "Sparad tid", desc: "Automatisering ersätter timmar av manuellt arbete." },
+      { icon: TrendingUp, title: "Skalar med er", desc: "Ett system som växer i takt med verksamheten." },
+      { icon: BadgeCheck, title: "Ert eget – inte en hyllvara", desc: "En lösning som passar exakt, inte ett verktyg ni tvingas anpassa er efter." },
+    ],
+  },
+
+  // ── VI HÅLLER DET IGÅNG ────────────────────────────────────────────────
+  drift: {
+    metaTitle: "Drift, underhåll & support – Webscore",
+    metaDescription:
+      "Vi håller din sajt och dina system uppdaterade, säkra och igång – med löpande underhåll, övervakning och support så du slipper tänka på det.",
+    eyebrow: "TJÄNST · DRIFT & SUPPORT",
+    icon: LifeBuoy,
+    title: <>Drift, underhåll & <span className="gradient-text">support</span></>,
+    intro:
+      "En lansering är starten, inte målet. Vi håller din sajt och dina system uppdaterade, säkra och igång – med löpande underhåll, övervakning och en kontakt att höra av sig till.",
+    scoreTie:
+      "Ett bra betyg är en startpunkt, inte ett mål. Vi ser till att det håller i sig över tid.",
+    includes: [
+      { icon: ShieldCheck, title: "Uppdateringar & säkerhet", desc: "Löpande uppdateringar och säkerhetsfixar så sårbarheter inte hinner uppstå." },
+      { icon: Gauge, title: "Övervakning & drifttid", desc: "Vi håller koll så att problem fångas innan de drabbar dina besökare." },
+      { icon: Layout, title: "Innehållsuppdateringar", desc: "Hjälp att hålla texter, bilder och sidor aktuella (omfattning enligt avtal)." },
+      { icon: Clock, title: "Säkerhetskopiering", desc: "Regelbundna backuper så inget går förlorat." },
+      { icon: Phone, title: "En kontakt att nå", desc: "Support när något krånglar – utan att leta efter rätt person." },
+    ],
+    why: [
+      { icon: ShieldCheck, title: "Tryggt över tid", desc: "Sajten förblir säker och uppdaterad utan att du behöver agera." },
+      { icon: Clock, title: "Du slipper tänka på det", desc: "Vi sköter det tekniska så du kan fokusera på verksamheten." },
+      { icon: Gauge, title: "Presterar fortsatt", desc: "Underhåll håller hastighet och kvalitet uppe på sikt." },
     ],
   },
 };

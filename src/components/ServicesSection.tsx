@@ -1,12 +1,32 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Monitor, TrendingUp, Sparkles, Users, Shield, Search, BarChart3, Phone, Rocket, ArrowRight } from "lucide-react";
+import { Monitor, Network, Code2, TrendingUp, Sparkles, LifeBuoy, Users, Shield, Search, BarChart3, Phone, Rocket, ArrowRight } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 
-const services = [
-  { icon: Monitor, slug: "hemsidor", title: "Hemsidor som säljer", description: "Vi bygger moderna, snabba och säljande hemsidor som gör att kunder stannar – och väljer dig." },
-  { icon: TrendingUp, slug: "seo", title: "SEO & synlighet", description: "Vi ser till att du syns där dina kunder söker – och konkurrerar ut andra." },
-  { icon: Sparkles, slug: "branding", title: "Branding & förtroende", description: "Vi bygger varumärken som känns premium, tydliga och självklara att välja." },
+// The full offering, grouped by the arc: bygga → synas & övertyga → driva.
+// Exactly the six real services — nothing invented.
+const serviceGroups = [
+  {
+    label: "VI BYGGER",
+    items: [
+      { icon: Monitor, slug: "hemsidor", title: "Hemsidor", description: "Moderna, snabba hemsidor byggda för att besökare ska stanna – och välja dig." },
+      { icon: Network, slug: "intranat", title: "Intranät & interna portaler", description: "Interna portaler som samlar information, rutiner och verktyg på ett ställe." },
+      { icon: Code2, slug: "webbappar", title: "Webbappar & system", description: "Webbappar, system och skräddarsydd mjukvara byggd kring hur ni faktiskt jobbar." },
+    ],
+  },
+  {
+    label: "VI FÅR DET ATT SYNAS & ÖVERTYGA",
+    items: [
+      { icon: TrendingUp, slug: "seo", title: "SEO & synlighet", description: "Vi ser till att du syns där dina kunder söker – och konkurrerar ut andra." },
+      { icon: Sparkles, slug: "branding", title: "Branding & design", description: "Ett tydligt, sammanhängande varumärke som känns självklart att välja." },
+    ],
+  },
+  {
+    label: "VI HÅLLER DET IGÅNG",
+    items: [
+      { icon: LifeBuoy, slug: "drift", title: "Drift, underhåll & support", description: "Vi håller lösningen uppdaterad, säker och igång – så du slipper tänka på det." },
+    ],
+  },
 ];
 
 const results = [
@@ -39,24 +59,40 @@ const ServicesSection = () => {
     <section id="services" className="relative z-10 py-24 sm:py-32 px-6">
       <div className="max-w-5xl mx-auto space-y-28">
 
-        {/* TJÄNSTER */}
+        {/* TJÄNSTER — din kompletta digitala partner */}
         <div>
-          <SectionHeading eyebrow="VÅRA TJÄNSTER" title={<>Det här <span className="gradient-text">gör vi</span></>} className="mb-12" />
-          <div className="grid md:grid-cols-3 gap-4">
-            {services.map((service, i) => (
-              <motion.div
-                key={service.title}
-                custom={i} variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }}
-              >
-                <Link to={`/tjanster/${service.slug}`} className="card-surface p-7 group flex flex-col h-full">
-                  <IconBadge><service.icon className="w-5 h-5" /></IconBadge>
-                  <h3 className="font-display font-semibold text-lg mt-5 mb-2.5 tracking-[-0.02em]">{service.title}</h3>
-                  <p className="text-[0.875rem] text-muted-foreground/80 leading-[1.7]">{service.description}</p>
-                  <span className="data-label text-[0.5rem] text-neon-cyan/70 mt-5 inline-flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
-                    Läs mer <ArrowRight className="w-3 h-3" />
-                  </span>
-                </Link>
-              </motion.div>
+          <SectionHeading
+            eyebrow="MER ÄN HEMSIDOR"
+            title={<>Din kompletta <span className="gradient-text">digitala partner</span></>}
+            subtitle="Vi bygger era digitala lösningar, får dem att synas och övertyga – och håller dem igång. Allt från ett och samma team."
+            className="mb-14"
+          />
+
+          <div className="space-y-12">
+            {serviceGroups.map((group) => (
+              <div key={group.label}>
+                <div className="flex items-center gap-4 mb-5">
+                  <span className="data-label text-[0.55rem] text-neon-cyan/70 whitespace-nowrap">{group.label}</span>
+                  <span className="h-px flex-1" style={{ background: "linear-gradient(90deg, hsl(var(--neon-cyan) / 0.25), transparent)" }} />
+                </div>
+                <div className="grid md:grid-cols-3 gap-4">
+                  {group.items.map((service, i) => (
+                    <motion.div
+                      key={service.slug}
+                      custom={i} variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }}
+                    >
+                      <Link to={`/tjanster/${service.slug}`} className="card-surface p-7 group flex flex-col h-full">
+                        <IconBadge><service.icon className="w-5 h-5" /></IconBadge>
+                        <h3 className="font-display font-semibold text-lg mt-5 mb-2.5 tracking-[-0.02em]">{service.title}</h3>
+                        <p className="text-[0.875rem] text-muted-foreground/80 leading-[1.7]">{service.description}</p>
+                        <span className="data-label text-[0.5rem] text-neon-cyan/70 mt-5 inline-flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
+                          Läs mer <ArrowRight className="w-3 h-3" />
+                        </span>
+                      </Link>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </div>

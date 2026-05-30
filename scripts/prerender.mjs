@@ -27,8 +27,11 @@ const ROUTES = [
   "/",
   "/pricing",
   "/tjanster/hemsidor",
+  "/tjanster/intranat",
+  "/tjanster/webbappar",
   "/tjanster/seo",
   "/tjanster/branding",
+  "/tjanster/drift",
 ];
 
 async function run() {
