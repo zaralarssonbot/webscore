@@ -166,7 +166,10 @@ export async function runAnalysis(scanId: string, domain: string): Promise<ScanR
     quickFix: data.quickFix,
     industry: data.industry,
     businessSummary: data.businessSummary,
-    nearbyCompetitors: data.nearbyCompetitors,
+    // Competitors are populated ONLY from real, scraped businesses below.
+    // The AI-generated `data.nearbyCompetitors` are fabricated and must never
+    // be shown as real — if no real data is found, the section stays hidden.
+    nearbyCompetitors: undefined,
     auditChecks: data.auditChecks,
     pageInfo: data.pageInfo,
     pageSpeed: data.pageSpeed || null,
@@ -176,14 +179,16 @@ export async function runAnalysis(scanId: string, domain: string): Promise<ScanR
     result = applyWebscoreOverride(result);
   }
 
-  // Try to fetch real competitors, fall back to AI-generated ones
+  // Populate competitors only from real, scraped businesses. If the lookup
+  // returns nothing (or fails), leave it empty — the UI hides the section
+  // rather than showing fabricated competitors. Truth over a filled view.
   try {
     const realCompetitors = await fetchRealCompetitors(domain, data.industry, data.score);
     if (realCompetitors && realCompetitors.length > 0) {
       result.nearbyCompetitors = realCompetitors;
     }
   } catch (e) {
-    console.log("Real competitor lookup failed, using AI-generated:", e);
+    console.log("Real competitor lookup failed; hiding competitor section:", e);
   }
 
   return result;
