@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Building2, Globe, TrendingDown, Mail, CalendarCheck, Flame, Snowflake, Search, RefreshCw } from "lucide-react";
+import { ArrowLeft, Building2, Globe, TrendingDown, Mail, CalendarCheck, Flame, Snowflake, Search, RefreshCw, Lock, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import type { Session } from "@supabase/supabase-js";
 import { LEAD_STATUS_LABELS, type LeadStatus } from "@/lib/lead-service";
 import BackgroundEffect from "@/components/BackgroundEffect";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
@@ -54,10 +55,28 @@ const Admin = () => {
     noindex: true,
   });
   const navigate = useNavigate();
+
+  // Auth gate — lead data (emails, domains) must not be open to anyone.
+  const [session, setSession] = useState<Session | null>(null);
+  const [authReady, setAuthReady] = useState(false);
+  const [authEmail, setAuthEmail] = useState("");
+  const [authPassword, setAuthPassword] = useState("");
+  const [authError, setAuthError] = useState("");
+  const [authLoading, setAuthLoading] = useState(false);
+
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session);
+      setAuthReady(true);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => setSession(s));
+    return () => sub.subscription.unsubscribe();
+  }, []);
 
   const fetchLeads = async () => {
     setLoading(true);
@@ -73,9 +92,80 @@ const Admin = () => {
     setLoading(false);
   };
 
+  // Only load lead data once authenticated.
   useEffect(() => {
-    fetchLeads();
-  }, []);
+    if (session) fetchLeads();
+  }, [session]);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError("");
+    setAuthLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email: authEmail.trim(),
+      password: authPassword,
+    });
+    if (error) setAuthError("Fel e-post eller lösenord.");
+    setAuthLoading(false);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setLeads([]);
+  };
+
+  // While the session is being resolved, avoid flashing the login form.
+  if (!authReady) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <RefreshCw className="w-5 h-5 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  // Not signed in → gate behind a simple email/password login.
+  if (!session) {
+    return (
+      <div className="min-h-screen bg-background text-foreground relative flex items-center justify-center px-4">
+        <BackgroundEffect />
+        <div className="relative z-10 w-full max-w-sm card-surface p-8">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-xl bg-neon-cyan/10 flex items-center justify-center border border-neon-cyan/15">
+              <Lock className="w-5 h-5 text-neon-cyan" />
+            </div>
+            <h1 className="text-xl font-bold font-display">Lead Dashboard</h1>
+          </div>
+          <p className="text-sm text-muted-foreground font-light mb-6">Inloggning krävs för att se lead-data.</p>
+          <form onSubmit={handleLogin} className="space-y-3">
+            <input
+              type="email"
+              placeholder="E-post"
+              value={authEmail}
+              onChange={(e) => setAuthEmail(e.target.value)}
+              autoComplete="username"
+              className="w-full bg-secondary/40 border border-border/30 rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground outline-none focus:border-neon-cyan/40 transition-colors text-sm"
+              autoFocus
+            />
+            <input
+              type="password"
+              placeholder="Lösenord"
+              value={authPassword}
+              onChange={(e) => setAuthPassword(e.target.value)}
+              autoComplete="current-password"
+              className="w-full bg-secondary/40 border border-border/30 rounded-xl px-4 py-3 text-foreground placeholder:text-muted-foreground outline-none focus:border-neon-cyan/40 transition-colors text-sm"
+            />
+            {authError && <p className="text-score-low text-xs">{authError}</p>}
+            <Button type="submit" variant="glow" size="lg" className="w-full" disabled={authLoading}>
+              {authLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : "Logga in"}
+            </Button>
+          </form>
+          <button onClick={() => navigate("/")} className="mt-4 text-xs text-muted-foreground hover:text-foreground transition-colors">
+            ← Till startsidan
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const filtered = leads.filter((l) => {
     const matchesSearch =
@@ -110,9 +200,14 @@ const Admin = () => {
               <p className="text-sm text-muted-foreground font-light">Intern adminvy · {leads.length} leads</p>
             </div>
           </div>
-          <Button variant="glow-outline" size="sm" onClick={fetchLeads} disabled={loading}>
-            <RefreshCw className={`w-4 h-4 mr-1.5 ${loading ? "animate-spin" : ""}`} /> Uppdatera
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="glow-outline" size="sm" onClick={fetchLeads} disabled={loading}>
+              <RefreshCw className={`w-4 h-4 mr-1.5 ${loading ? "animate-spin" : ""}`} /> Uppdatera
+            </Button>
+            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-muted-foreground hover:text-foreground gap-1.5">
+              <LogOut className="w-4 h-4" /> Logga ut
+            </Button>
+          </div>
         </div>
 
         {/* Stats row */}
