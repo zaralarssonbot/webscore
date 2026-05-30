@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Monitor, TrendingUp, Sparkles, Users, Shield, Search, BarChart3, Phone, Rocket, ArrowRight } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 
 const services = [
-  { icon: Monitor, title: "Hemsidor som säljer", description: "Vi bygger moderna, snabba och säljande hemsidor som gör att kunder stannar – och väljer dig." },
-  { icon: TrendingUp, title: "SEO & synlighet", description: "Vi ser till att du syns där dina kunder söker – och konkurrerar ut andra." },
-  { icon: Sparkles, title: "Branding & förtroende", description: "Vi bygger varumärken som känns premium, tydliga och självklara att välja." },
+  { icon: Monitor, slug: "hemsidor", title: "Hemsidor som säljer", description: "Vi bygger moderna, snabba och säljande hemsidor som gör att kunder stannar – och väljer dig." },
+  { icon: TrendingUp, slug: "seo", title: "SEO & synlighet", description: "Vi ser till att du syns där dina kunder söker – och konkurrerar ut andra." },
+  { icon: Sparkles, slug: "branding", title: "Branding & förtroende", description: "Vi bygger varumärken som känns premium, tydliga och självklara att välja." },
 ];
 
 const results = [
@@ -46,11 +47,15 @@ const ServicesSection = () => {
               <motion.div
                 key={service.title}
                 custom={i} variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }}
-                className="card-surface p-7 group"
               >
-                <IconBadge><service.icon className="w-5 h-5" /></IconBadge>
-                <h3 className="font-display font-semibold text-lg mt-5 mb-2.5 tracking-[-0.02em]">{service.title}</h3>
-                <p className="text-[0.875rem] text-muted-foreground/80 leading-[1.7]">{service.description}</p>
+                <Link to={`/tjanster/${service.slug}`} className="card-surface p-7 group flex flex-col h-full">
+                  <IconBadge><service.icon className="w-5 h-5" /></IconBadge>
+                  <h3 className="font-display font-semibold text-lg mt-5 mb-2.5 tracking-[-0.02em]">{service.title}</h3>
+                  <p className="text-[0.875rem] text-muted-foreground/80 leading-[1.7]">{service.description}</p>
+                  <span className="data-label text-[0.5rem] text-neon-cyan/70 mt-5 inline-flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
+                    Läs mer <ArrowRight className="w-3 h-3" />
+                  </span>
+                </Link>
               </motion.div>
             ))}
           </div>
