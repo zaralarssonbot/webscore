@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, Sparkles, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import SectionHeading from "@/components/SectionHeading";
 
 import invito from "@/assets/portfolio/invito.webp";
 import midnightgrill from "@/assets/portfolio/midnightgrill.webp";
@@ -130,13 +131,16 @@ const filters: { label: string; value: Badge | "Alla" }[] = [
   { label: "AI / Automation", value: "AI / Automation" },
 ];
 
+// Restraint: category chips share one neutral style; colour is reserved for the accent.
+const CHIP = { bg: "rgba(255,255,255,0.03)", text: "hsl(215 16% 68%)", border: "rgba(255,255,255,0.1)" };
 const badgeColors: Record<Badge, { bg: string; text: string; border: string }> = {
-  "Webbdesign": { bg: "hsla(175,90%,55%,0.1)", text: "hsl(175 90% 60%)", border: "hsla(175,90%,55%,0.2)" },
-  "SEO": { bg: "hsla(215,90%,55%,0.1)", text: "hsl(215 90% 60%)", border: "hsla(215,90%,55%,0.2)" },
-  "Branding": { bg: "hsla(260,90%,55%,0.1)", text: "hsl(260 90% 65%)", border: "hsla(260,90%,55%,0.2)" },
-  "Conversion": { bg: "hsla(25,90%,55%,0.1)", text: "hsl(25 90% 60%)", border: "hsla(25,90%,55%,0.2)" },
-  "AI / Automation": { bg: "hsla(330,90%,55%,0.1)", text: "hsl(330 90% 65%)", border: "hsla(330,90%,55%,0.2)" },
+  "Webbdesign": CHIP,
+  "SEO": CHIP,
+  "Branding": CHIP,
+  "Conversion": CHIP,
+  "AI / Automation": CHIP,
 };
+const ACCENT = { bg: "hsla(175,90%,55%,0.1)", text: "hsl(175 90% 60%)", border: "hsla(175,90%,55%,0.2)" };
 
 const PortfolioSection = () => {
   const [activeFilter, setActiveFilter] = useState<Badge | "Alla">("Alla");
@@ -163,26 +167,12 @@ const PortfolioSection = () => {
       <section id="portfolio" className="relative z-10 py-24 sm:py-32 px-6">
         <div className="max-w-6xl mx-auto">
 
-          {/* Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-14"
-          >
-            <span className="text-xs font-medium tracking-[0.2em] uppercase text-primary mb-3 block">
-              Portfolio
-            </span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold font-display tracking-[-0.02em] leading-[1.15] mb-4">
-              Projekt som visar vad rätt hemsida{" "}
-              <span className="gradient-text">faktiskt kan göra</span>
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-[0.9375rem] leading-[1.75]">
-              Vi bygger inte bara snygga sidor — vi skapar hemsidor som stärker varumärket,
-              ökar förtroendet och driver fler affärer.
-            </p>
-          </motion.div>
+          <SectionHeading
+            eyebrow="PORTFOLIO"
+            title={<>Projekt som visar vad rätt hemsida{" "}<span className="gradient-text">faktiskt kan göra</span></>}
+            subtitle="Vi bygger inte bara snygga sidor — vi skapar hemsidor som stärker varumärket, ökar förtroendet och driver fler affärer."
+            className="mb-14"
+          />
 
           {/* Filters */}
           <motion.div
@@ -196,10 +186,10 @@ const PortfolioSection = () => {
               <button
                 key={f.value}
                 onClick={() => { setActiveFilter(f.value); setPage(0); }}
-                className={`px-4 py-2 rounded-full text-[0.8125rem] font-medium transition-all duration-300 border ${
+                className={`data-label text-[0.58rem] px-4 py-2 rounded-full transition-all duration-300 border ${
                   activeFilter === f.value
-                    ? "bg-primary/15 border-primary/30 text-primary shadow-[0_0_20px_hsla(175,90%,55%,0.1)]"
-                    : "bg-secondary/40 border-border/30 text-muted-foreground hover:bg-secondary/70 hover:text-foreground"
+                    ? "bg-neon-cyan/10 border-neon-cyan/30 text-neon-cyan shadow-glow-soft"
+                    : "bg-white/[0.02] border-white/[0.06] text-muted-foreground/70 hover:text-foreground hover:border-white/12"
                 }`}
               >
                 {f.label}
@@ -211,7 +201,7 @@ const PortfolioSection = () => {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
             <AnimatePresence mode="popLayout">
               {visible.map((project, i) => {
-                const accentColor = project.badges[0] ? badgeColors[project.badges[0]] : badgeColors["Webbdesign"];
+                const accentColor = ACCENT;
                 return (
                 <motion.div
                   key={project.name}
@@ -289,7 +279,7 @@ const PortfolioSection = () => {
                         {project.badges.map((badge) => (
                           <span
                             key={badge}
-                            className="text-[0.6875rem] font-medium px-2.5 py-1 rounded-full border"
+                            className="data-label text-[0.55rem] px-2.5 py-1 rounded-full border"
                             style={{
                               background: badgeColors[badge].bg,
                               color: badgeColors[badge].text,
