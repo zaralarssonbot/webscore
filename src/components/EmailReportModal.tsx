@@ -4,7 +4,7 @@ import { X, ArrowRight, Loader2, Mail, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { submitLead } from "@/lib/scan-service";
 import { markAnalysisSent, autoScheduleFollowUp } from "@/lib/lead-service";
-import { generateEmailReport, type EmailReportData } from "@/lib/email-report";
+import { type EmailReportData } from "@/lib/email-report";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 
@@ -36,9 +36,6 @@ const EmailReportModal = ({ open, onClose, scanId, reportData }: EmailReportModa
 
     setLoading(true);
     try {
-      // Generate the email HTML (ready for real sending later)
-      const _emailHtml = generateEmailReport(reportData);
-
       // Save lead with analysis context
       const visibilityGap = reportData.competitors && reportData.competitors.length > 0
         ? Math.round(reportData.competitors.reduce((s, c) => s + c.score, 0) / reportData.competitors.length) - reportData.score
@@ -64,18 +61,18 @@ const EmailReportModal = ({ open, onClose, scanId, reportData }: EmailReportModa
         leadStatus: "analysis_sent",
       });
 
-      // Mark as analysis sent and schedule 24h follow-up
+      // Record the request and schedule a 24h follow-up for the team.
       await markAnalysisSent(leadId);
       if (scanId) {
         await autoScheduleFollowUp(scanId);
       }
 
-      // TODO: Replace with real email sending
+      // NOTE: No email is sent yet. We only capture the request here and the
+      // team follows up manually. Wire up real sending before promising a mail:
       // await supabase.functions.invoke('send-transactional-email', {
       //   body: { templateName: 'webscore-report', recipientEmail: result.data, templateData: reportData }
       // });
 
-      console.log("[EmailReport] Lead saved, status: analysis_sent, follow-up scheduled.");
       setSent(true);
     } catch {
       toast({ title: "Något gick fel", description: "Försök igen.", variant: "destructive" });
@@ -119,9 +116,9 @@ const EmailReportModal = ({ open, onClose, scanId, reportData }: EmailReportModa
             {sent ? (
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center py-4">
                 <CheckCircle className="w-12 h-12 text-neon-cyan mx-auto mb-4" />
-                <h2 className="text-xl font-bold mb-2 font-display">Analysen är på väg!</h2>
+                <h2 className="text-xl font-bold mb-2 font-display">Tack – vi hör av oss!</h2>
                 <p className="text-muted-foreground text-sm font-light mb-6">
-                  Vi har skickat en detaljerad sammanfattning till din e-post. Kolla din inkorg inom några minuter.
+                  Vi har tagit emot din förfrågan och kontaktar dig inom kort med en genomgång av din rapport och konkreta nästa steg.
                 </p>
                 <Button variant="glow-outline" size="lg" onClick={handleClose}>
                   Stäng
@@ -133,10 +130,10 @@ const EmailReportModal = ({ open, onClose, scanId, reportData }: EmailReportModa
                   <div className="w-10 h-10 rounded-xl bg-neon-cyan/10 flex items-center justify-center border border-neon-cyan/15">
                     <Mail className="w-5 h-5 text-neon-cyan" />
                   </div>
-                  <h2 className="text-xl font-bold font-display">Få analysen via e-post</h2>
+                  <h2 className="text-xl font-bold font-display">Få en personlig genomgång</h2>
                 </div>
                 <p className="text-muted-foreground text-sm mb-6 font-light">
-                  Vi skickar en komplett sammanfattning med dina betyg, konkurrenter och rekommendationer – perfekt att dela med kollegor.
+                  Lämna din e-post så går vi igenom din rapport och hör av oss med konkreta nästa steg – kostnadsfritt och utan förpliktelser.
                 </p>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -157,7 +154,7 @@ const EmailReportModal = ({ open, onClose, scanId, reportData }: EmailReportModa
                       <Loader2 className="w-4 h-4 animate-spin" />
                     ) : (
                       <>
-                        Skicka analysen
+                        Skicka förfrågan
                         <ArrowRight className="w-4 h-4" />
                       </>
                     )}

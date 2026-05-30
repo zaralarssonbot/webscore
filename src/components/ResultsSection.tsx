@@ -277,11 +277,11 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
             <Mail className="w-5 h-5 text-neon-cyan" />
           </div>
           <div className="flex-1 text-center sm:text-left">
-            <p className="text-sm font-semibold font-display">Vill du få analysen skickad till dig?</p>
-            <p className="text-xs text-muted-foreground font-light">Dela med kollegor eller spara som underlag inför beslut.</p>
+            <p className="text-sm font-semibold font-display">Vill du ha en personlig genomgång?</p>
+            <p className="text-xs text-muted-foreground font-light">Lämna din e-post så går vi igenom rapporten och hör av oss.</p>
           </div>
           <Button variant="glow-outline" size="lg" onClick={() => setEmailModalOpen(true)} className="shrink-0">
-            <Mail className="w-4 h-4 mr-1.5" /> Skicka via e-post
+            <Mail className="w-4 h-4 mr-1.5" /> Få en genomgång
           </Button>
         </motion.div>
 
@@ -298,7 +298,7 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
               Boka 20 min genomgång <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
             <Button variant="glow-outline" size="xl" onClick={() => setEmailModalOpen(true)}>
-              Få analysen via e-post
+              Få en personlig genomgång
             </Button>
           </div>
           <div className="flex items-center justify-center gap-4 sm:gap-6 mt-5 text-[11px] text-muted-foreground/50 font-light relative">
