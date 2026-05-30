@@ -63,10 +63,10 @@ const packages = [
     description: "För dig som vill synas, växa och konvertera besökare till kunder.",
     price: "1 495 kr",
     priceNote: "eller 17 940 kr engångspris · exkl. moms",
-    color: "hsl(var(--neon-blue))",
-    colorBg: "hsla(215,100%,60%,0.06)",
-    colorBorder: "hsla(215,100%,60%,0.15)",
-    colorGlow: "hsla(215,100%,60%,0.25)",
+    color: "hsl(var(--neon-cyan))",
+    colorBg: "hsla(175,95%,50%,0.06)",
+    colorBorder: "hsla(175,95%,50%,0.15)",
+    colorGlow: "hsla(175,95%,50%,0.25)",
     popular: true,
     includes: "ALLT I GRUNDPAKETET, PLUS:",
     features: [
@@ -87,10 +87,10 @@ const packages = [
     description: "Helhetslösningen för dig som vill ha maximal effekt och frihet att växa.",
     price: "1 995 kr",
     priceNote: "eller 23 940 kr engångspris · exkl. moms",
-    color: "hsl(var(--neon-orange))",
-    colorBg: "hsla(25,100%,58%,0.06)",
-    colorBorder: "hsla(25,100%,58%,0.15)",
-    colorGlow: "hsla(25,100%,58%,0.25)",
+    color: "hsl(var(--neon-cyan))",
+    colorBg: "hsla(175,95%,50%,0.06)",
+    colorBorder: "hsla(175,95%,50%,0.15)",
+    colorGlow: "hsla(175,95%,50%,0.25)",
     includes: "ALLT I TILLVÄXTPAKETET, PLUS:",
     features: [
       "Obegränsat antal sidor",
@@ -296,7 +296,7 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 + i * 0.12, duration: 0.5 }}
-                        className={`glass-card p-6 sm:p-7 rounded-2xl relative overflow-hidden flex flex-col transition-all duration-300 hover:scale-[1.02] group ${pkg.popular ? "ring-1" : ""}`}
+                        className={`glass-card p-6 sm:p-7 rounded-2xl relative overflow-hidden flex flex-col transition-all duration-500 hover:-translate-y-1 group ${pkg.popular ? "ring-1" : ""}`}
                         style={{
                           borderColor: pkg.colorBorder,
                           ...(pkg.popular ? { boxShadow: `0 0 40px ${pkg.colorGlow}, inset 0 0 40px ${pkg.colorBg}`, ringColor: pkg.color } : {}),
@@ -306,7 +306,7 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
                         <div className="accent-line-top" style={{ background: `linear-gradient(90deg, transparent, ${pkg.color}, transparent)` }} />
 
                         {/* Tier badge */}
-                        <div className="inline-flex self-start px-3 py-1 rounded-full text-xs font-bold tracking-wider mb-4" style={{ color: pkg.color, background: pkg.colorBg, border: `1px solid ${pkg.colorBorder}` }}>
+                        <div className="inline-flex self-start data-label text-[0.58rem] px-3 py-1 rounded-full mb-4" style={{ color: pkg.color, background: pkg.colorBg, border: `1px solid ${pkg.colorBorder}` }}>
                           {pkg.tier}
                         </div>
 
@@ -320,14 +320,14 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
                         <p className="text-muted-foreground text-sm font-light mb-4 leading-relaxed">{pkg.description}</p>
 
                         <div className="mb-1">
-                          <span className="text-2xl sm:text-3xl font-bold font-display" style={{ color: pkg.color }}>{pkg.price}</span>
+                          <span className="text-2xl sm:text-3xl font-bold font-mono tabular-nums tracking-tight" style={{ color: pkg.color }}>{pkg.price}</span>
                           <span className="text-muted-foreground text-sm font-light"> /mån</span>
                         </div>
                         <p className="text-xs text-muted-foreground/60 font-light mb-5">{pkg.priceNote}</p>
 
                         <div className="border-t border-border/10 pt-4 mb-6 flex-1">
                           {pkg.includes && (
-                            <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-3">{pkg.includes}</p>
+                            <p className="data-label text-[0.5rem] text-muted-foreground/50 mb-3">{pkg.includes}</p>
                           )}
                           <ul className="space-y-2.5">
                             {pkg.features.map((f, j) => (
@@ -374,7 +374,7 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
                   <form onSubmit={handleSubmit} className="space-y-4">
                     {/* Org number with lookup button */}
                     <div>
-                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">Organisationsnummer</label>
+                      <label className="data-label text-[0.55rem] text-muted-foreground/60 mb-1.5 block">Organisationsnummer</label>
                       <div className="flex gap-2">
                         <div className="relative flex-1">
                           <Hash className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
@@ -424,7 +424,7 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
 
                           {/* Company name */}
                           <div>
-                            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">Företagsnamn</label>
+                            <label className="data-label text-[0.55rem] text-muted-foreground/60 mb-1.5 block">Företagsnamn</label>
                             <div className="relative">
                               <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
                               <input
@@ -442,7 +442,7 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
                           {/* Address */}
                           {address && (
                             <div>
-                              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">Adress</label>
+                              <label className="data-label text-[0.55rem] text-muted-foreground/60 mb-1.5 block">Adress</label>
                               <div className="relative">
                                 <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
                                 <input
@@ -458,7 +458,7 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
 
                           {/* Signatory / Contact person */}
                           <div>
-                            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">Kontaktperson / Firmatecknare</label>
+                            <label className="data-label text-[0.55rem] text-muted-foreground/60 mb-1.5 block">Kontaktperson / Firmatecknare</label>
                             <div className="relative">
                               <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
                               <input
@@ -475,7 +475,7 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
 
                           {/* Phone */}
                           <div>
-                            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">Telefonnummer</label>
+                            <label className="data-label text-[0.55rem] text-muted-foreground/60 mb-1.5 block">Telefonnummer</label>
                             <div className="relative">
                               <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
                               <input

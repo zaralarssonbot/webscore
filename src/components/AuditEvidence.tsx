@@ -7,12 +7,14 @@ interface AuditEvidenceProps {
   checks: AuditCheck[];
 }
 
+// Restraint: one teal accent across categories; colour is reserved for pass/fail.
+const ACCENT_HUE = 175;
 const categoryMeta: Record<string, { label: string; icon: typeof Search; hue: number }> = {
-  seo: { label: "SEO & Synlighet", icon: Search, hue: 175 },
-  conversion: { label: "Konvertering", icon: MousePointerClick, hue: 25 },
-  trust: { label: "Förtroende", icon: Shield, hue: 260 },
-  performance: { label: "Prestanda", icon: Zap, hue: 215 },
-  security: { label: "Säkerhet", icon: Lock, hue: 320 },
+  seo: { label: "SEO & Synlighet", icon: Search, hue: ACCENT_HUE },
+  conversion: { label: "Konvertering", icon: MousePointerClick, hue: ACCENT_HUE },
+  trust: { label: "Förtroende", icon: Shield, hue: ACCENT_HUE },
+  performance: { label: "Prestanda", icon: Zap, hue: ACCENT_HUE },
+  security: { label: "Säkerhet", icon: Lock, hue: ACCENT_HUE },
 };
 
 const AuditEvidence = ({ checks }: AuditEvidenceProps) => {
@@ -36,7 +38,7 @@ const AuditEvidence = ({ checks }: AuditEvidenceProps) => {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: catIndex * 0.06, ease: [0.16, 1, 0.3, 1] }}
-            className="glass-card rounded-xl overflow-hidden relative group"
+            className="card-surface rounded-xl overflow-hidden relative group hover:!translate-y-0"
           >
             <div
               className="absolute left-0 top-0 bottom-0 w-[2px]"
@@ -70,7 +72,7 @@ const AuditEvidence = ({ checks }: AuditEvidenceProps) => {
                 />
               </div>
 
-              <span className="text-xs text-muted-foreground font-light tabular-nums">
+              <span className="font-mono text-xs text-muted-foreground/70 tabular-nums">
                 {passed}/{total}
               </span>
 
@@ -122,7 +124,7 @@ const AuditEvidence = ({ checks }: AuditEvidenceProps) => {
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="text-sm font-medium">{check.label}</span>
                           <span
-                            className="text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-full font-semibold border"
+                            className="data-label text-[0.5rem] px-2 py-0.5 rounded-full border"
                             style={{
                               background: check.impact === "high" ? "hsla(0,80%,58%,0.07)" : check.impact === "medium" ? "hsla(40,95%,55%,0.07)" : "hsla(220,20%,50%,0.07)",
                               color: check.impact === "high" ? "hsl(var(--score-low))" : check.impact === "medium" ? "hsl(var(--score-mid))" : "hsl(var(--muted-foreground))",
