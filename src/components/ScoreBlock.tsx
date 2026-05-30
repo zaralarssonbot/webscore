@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { categoryConfig } from "./CategoryScoreCard";
 import { BarChart3 } from "lucide-react";
+import ScoreGauge from "./ScoreGauge";
 
 interface ScoreBlockProps {
   score: number;
@@ -12,23 +12,6 @@ interface ScoreBlockProps {
 }
 
 const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary }: ScoreBlockProps) => {
-  const [displayScore, setDisplayScore] = useState(0);
-
-  useEffect(() => {
-    let current = 0;
-    const step = score / 50;
-    const interval = setInterval(() => {
-      current += step;
-      if (current >= score) {
-        setDisplayScore(score);
-        clearInterval(interval);
-      } else {
-        setDisplayScore(Math.round(current));
-      }
-    }, 20);
-    return () => clearInterval(interval);
-  }, [score]);
-
   const getScoreColor = () => {
     if (score >= 80) return { color: "hsl(var(--score-high))", glow: "hsla(160,85%,50%,0.3)", hue: 160 };
     if (score >= 65) return { color: "hsl(var(--score-mid))", glow: "hsla(40,95%,55%,0.3)", hue: 40 };
@@ -42,8 +25,6 @@ const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary }: S
   };
 
   const { color, glow, hue } = getScoreColor();
-  const circumference = 2 * Math.PI * 80;
-  const strokeDashoffset = circumference - (displayScore / 100) * circumference;
 
   return (
     <motion.div
@@ -60,41 +41,13 @@ const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary }: S
       <div className="accent-line-top accent-line-cyan" />
 
       <div className="relative flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-        {/* Score ring */}
+        {/* Score gauge */}
         <div className="flex flex-col items-center flex-shrink-0">
-          <p className="text-muted-foreground text-xs uppercase tracking-[0.25em] mb-6 font-medium">
+          <p className="data-label text-[0.6rem] text-muted-foreground/70 mb-5">
             Helhetsbedömning
           </p>
 
-          <div className="relative w-44 h-44 sm:w-52 sm:h-52">
-            <motion.div
-              className="absolute inset-[-8px] rounded-full"
-              animate={{ opacity: [0.3, 0.6, 0.3] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              style={{ boxShadow: `0 0 40px ${glow}, inset 0 0 40px ${glow.replace("0.3", "0.05")}` }}
-            />
-
-            <svg className="w-full h-full -rotate-90" viewBox="0 0 180 180">
-              <circle cx="90" cy="90" r="80" fill="none" stroke="hsl(var(--secondary))" strokeWidth="3" opacity="0.4" />
-              <circle
-                cx="90" cy="90" r="80" fill="none"
-                stroke={color} strokeWidth="5" strokeLinecap="round"
-                strokeDasharray={circumference}
-                strokeDashoffset={strokeDashoffset}
-                style={{ transition: "stroke-dashoffset 1.5s ease-out", filter: `drop-shadow(0 0 12px ${glow})` }}
-              />
-              <circle cx="90" cy="90" r="72" fill="none" stroke={color} strokeWidth="0.5" opacity="0.15" />
-            </svg>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <motion.span
-                className="text-6xl sm:text-7xl font-extrabold tracking-tight font-display"
-                style={{ color, textShadow: `0 0 50px ${glow}, 0 0 100px ${glow.replace("0.3", "0.15")}` }}
-              >
-                {displayScore}
-              </motion.span>
-              <span className="text-base text-muted-foreground/50 font-light">/ 100</span>
-            </div>
-          </div>
+          <ScoreGauge value={score} size={216} label="BETYG" delay={0.2} />
 
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -174,7 +127,7 @@ const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary }: S
               <BarChart3 className="w-4 h-4 text-neon-cyan" />
             </div>
             <div>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-neon-cyan/60 font-medium mb-1.5">Sammanfattning</p>
+              <p className="data-label text-[0.58rem] text-neon-cyan/60 mb-1.5">Sammanfattning</p>
               <p className="text-muted-foreground text-sm font-light leading-relaxed">{summary}</p>
             </div>
           </div>
@@ -225,7 +178,7 @@ const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary }: S
                         style={{ transition: "stroke-dashoffset 1s ease-out", filter: `drop-shadow(0 0 5px ${catColor.glow})` }}
                       />
                     </svg>
-                    <span className="absolute inset-0 flex items-center justify-center text-sm font-bold font-display" style={{ color: catColor.ring, textShadow: `0 0 10px ${catColor.glow}` }}>{s}</span>
+                    <span className="absolute inset-0 flex items-center justify-center text-sm font-bold font-mono tabular-nums" style={{ color: catColor.ring, textShadow: `0 0 10px ${catColor.glow}` }}>{s}</span>
                   </div>
                   <div className="text-center">
                     <div className="w-5 h-5 mx-auto mb-1 rounded-md flex items-center justify-center" style={{ background: catColor.bg }}>

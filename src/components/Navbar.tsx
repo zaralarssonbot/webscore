@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import webscoreLogo from "@/assets/webscore-logo.png";
@@ -7,31 +7,54 @@ interface NavbarProps {
   onAnalyze?: () => void;
 }
 
+const links = [
+  { href: "#features", label: "Funktioner" },
+  { href: "#how-it-works", label: "Så fungerar det" },
+  { href: "/pricing", label: "Priser" },
+];
+
 const Navbar = ({ onAnalyze }: NavbarProps) => {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 16);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <motion.nav
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="fixed top-0 left-0 right-0 z-50"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled ? "bg-background/70 backdrop-blur-xl border-b border-white/[0.06]" : "bg-transparent border-b border-transparent"
+      }`}
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo */}
           <a href="/" className="flex items-center group">
-            <img src={webscoreLogo} alt="Webscore" className="h-10 sm:h-12 w-auto" />
+            <img src={webscoreLogo} alt="Webscore" className="h-10 sm:h-12 w-auto transition-transform duration-300 group-hover:scale-105" />
           </a>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-light">Funktioner</a>
-            <a href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-light">Så fungerar det</a>
-            <a href="/pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-light">Priser</a>
+          <div className="hidden md:flex items-center gap-9">
+            {links.map((l) => (
+              <a
+                key={l.href}
+                href={l.href}
+                className="data-label text-[0.62rem] text-muted-foreground/70 hover:text-foreground transition-colors relative group"
+              >
+                {l.label}
+                <span className="absolute -bottom-1.5 left-0 right-0 h-px scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" style={{ background: "linear-gradient(90deg, hsl(var(--neon-cyan)), transparent)" }} />
+              </a>
+            ))}
             <button
               onClick={onAnalyze}
-              className="text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 px-5 py-2 rounded-lg transition-all hover:shadow-[0_0_20px_hsl(var(--neon-cyan)/0.3)]"
+              className="text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 px-5 py-2 rounded-lg transition-all duration-300 hover:shadow-glow-mid"
             >
               Analysera nu
             </button>
@@ -48,14 +71,16 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="md:hidden glass-card rounded-xl p-4 mb-4 space-y-3 border border-border/20"
+            className="md:hidden glass-card rounded-xl p-4 mb-4 space-y-1 border border-white/[0.08]"
           >
-            <a href="#features" onClick={() => setOpen(false)} className="block text-sm text-muted-foreground hover:text-foreground py-2">Funktioner</a>
-            <a href="#how-it-works" onClick={() => setOpen(false)} className="block text-sm text-muted-foreground hover:text-foreground py-2">Så fungerar det</a>
-            <a href="/pricing" onClick={() => setOpen(false)} className="block text-sm text-muted-foreground hover:text-foreground py-2">Priser</a>
+            {links.map((l) => (
+              <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="block data-label text-[0.62rem] text-muted-foreground hover:text-foreground py-2.5">
+                {l.label}
+              </a>
+            ))}
             <button
               onClick={() => { setOpen(false); onAnalyze?.(); }}
-              className="w-full text-sm font-medium text-primary-foreground bg-primary px-5 py-2.5 rounded-lg"
+              className="w-full text-sm font-medium text-primary-foreground bg-primary px-5 py-2.5 rounded-lg mt-2 hover:shadow-glow-mid transition-all"
             >
               Analysera nu
             </button>
