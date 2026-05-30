@@ -246,6 +246,8 @@ const PortfolioSection = () => {
                         <img
                           src={project.image}
                           alt={project.name}
+                          width={96}
+                          height={96}
                           className="w-full h-full object-cover object-top transition-transform duration-[2s] ease-out group-hover:scale-[1.15]"
                           loading="lazy"
                         />
@@ -258,6 +260,8 @@ const PortfolioSection = () => {
                         <img
                           src={project.image}
                           alt={project.name}
+                          width={384}
+                          height={240}
                           className="w-full h-full object-cover object-top transition-transform duration-[2.5s] ease-out group-hover:scale-[1.06] group-hover:translate-y-[-8%]"
                           loading="lazy"
                         />
@@ -387,6 +391,7 @@ const PortfolioSection = () => {
                   <img
                     src={selectedProject.image}
                     alt={selectedProject.name}
+                    loading="lazy"
                     className="w-full h-auto object-cover object-top"
                   />
                   {selectedProject.gallery && selectedProject.gallery.length > 0 && (
