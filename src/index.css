@@ -193,6 +193,38 @@
     font-weight: 500;
   }
 
+  /* Article reading surface — clean typography for /guider/:slug */
+  .guide-prose {
+    @apply text-[0.975rem] leading-[1.85] text-muted-foreground/85;
+  }
+  .guide-prose h2 {
+    @apply font-display font-semibold text-foreground text-xl sm:text-2xl tracking-[-0.02em] leading-snug mt-12 mb-4;
+  }
+  .guide-prose h3 {
+    @apply font-display font-semibold text-foreground text-lg mt-8 mb-3;
+  }
+  .guide-prose p {
+    @apply mb-5;
+  }
+  .guide-prose ul {
+    @apply list-disc pl-5 mb-5 space-y-2.5;
+  }
+  .guide-prose li {
+    @apply pl-1;
+  }
+  .guide-prose li::marker {
+    color: hsl(var(--neon-cyan) / 0.7);
+  }
+  .guide-prose strong {
+    @apply text-foreground font-semibold;
+  }
+  .guide-prose em {
+    @apply text-foreground/90 not-italic font-medium;
+  }
+  .guide-prose a {
+    @apply text-neon-cyan underline-offset-2 hover:underline;
+  }
+
   /* One cohesive card surface + restrained lift/glow on hover */
   .card-surface {
     @apply rounded-2xl border;

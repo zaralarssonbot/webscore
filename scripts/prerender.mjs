@@ -32,6 +32,10 @@ const ROUTES = [
   "/tjanster/seo",
   "/tjanster/branding",
   "/tjanster/drift",
+  "/guider",
+  "/guider/vad-kostar-en-hemsida",
+  "/guider/behover-foretaget-ett-intranat",
+  "/guider/darfor-syns-du-inte-pa-google",
 ];
 
 async function run() {

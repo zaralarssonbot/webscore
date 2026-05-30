@@ -10,6 +10,7 @@ interface NavbarProps {
 const links = [
   { href: "#features", label: "Funktioner" },
   { href: "#how-it-works", label: "Så fungerar det" },
+  { href: "/guider", label: "Guider" },
   { href: "/pricing", label: "Priser" },
 ];
 

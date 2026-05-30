@@ -10,6 +10,7 @@ const columns = [
   {
     heading: "FÖRETAG",
     links: [
+      { label: "Guider", href: "/guider" },
       { label: "Om oss", href: "#" },
       { label: "Kontakt", href: "#" },
       { label: "Webbtest", href: "#webtest" },
