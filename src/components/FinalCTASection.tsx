@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Search, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { validateDomain } from "@/lib/domain";
+import LazyVideo from "@/components/LazyVideo";
 
 interface FinalCTASectionProps {
   onAnalyze: (domain: string) => void;
@@ -34,13 +35,10 @@ const FinalCTASection = ({ onAnalyze, onBookMeeting }: FinalCTASectionProps) => 
     <section id="webtest" className="relative z-10 py-28 sm:py-36 px-6 overflow-hidden">
       {/* Background video */}
       <div className="absolute inset-0 -z-10">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
+        <LazyVideo
           src="/cta-bg.mp4"
+          poster="/cta-bg-poster.webp"
+          className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-background/70" />
         <div

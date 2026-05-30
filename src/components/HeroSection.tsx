@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Search, Shield, Zap, TrendingUp, ArrowRight } from "lucide-react";
 import { validateDomain } from "@/lib/domain";
+import LazyVideo from "@/components/LazyVideo";
 import webscoreLogo from "@/assets/webscore-logo.png";
 
 const useCountUp = (end: number, duration = 2000) => {
@@ -92,14 +93,11 @@ const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProp
     <section className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 text-center overflow-hidden">
       {/* Background video */}
       <div className="absolute inset-0 -z-10">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          className="absolute inset-0 w-full h-full object-cover opacity-50 will-change-auto"
+        <LazyVideo
           src="/hero-bg.mp4"
+          poster="/hero-bg-poster.webp"
+          rootMargin="0px"
+          className="absolute inset-0 w-full h-full object-cover opacity-50 will-change-auto"
         />
         {/* Dark overlay for readability */}
         <div className="absolute inset-0 bg-background/50" />

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Play } from "lucide-react";
+import LazyVideo from "@/components/LazyVideo";
 
 // 4-col grid, 3 rows — all 12 cells filled perfectly
 const videos = [
@@ -48,13 +49,10 @@ const VideoShowcaseSection = () => {
               className={`${video.span} relative rounded-2xl overflow-hidden group cursor-pointer min-h-[180px] sm:min-h-0`}
             >
               {/* Video */}
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              <LazyVideo
                 src={video.src}
+                poster={video.src.replace(/\.mp4$/, "-poster.webp")}
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
 
               {/* Overlay */}

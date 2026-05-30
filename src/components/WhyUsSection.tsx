@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
+import LazyVideo from "@/components/LazyVideo";
 
 const reasons = [
   "Vi visar problemen innan vi säljer lösningen",
@@ -14,13 +15,10 @@ const WhyUsSection = () => {
     <section className="relative z-10 py-24 sm:py-32 px-6 overflow-hidden">
       {/* Background video */}
       <div className="absolute inset-0 -z-10">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
+        <LazyVideo
           src="/videos/whyus-bg.mp4"
+          poster="/videos/whyus-bg-poster.webp"
+          className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-background/70" />
         <div
