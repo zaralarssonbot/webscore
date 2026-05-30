@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
-import { Users, Shield, TrendingUp, Sparkles } from "lucide-react";
+import { Users, Shield, TrendingUp, Award } from "lucide-react";
 
 const results = [
   { icon: Users, text: "Fler leads", hue: 175 },
   { icon: Shield, text: "Högre förtroende", hue: 260 },
   { icon: TrendingUp, text: "Bättre konvertering", hue: 215 },
-  { icon: Sparkles, text: "Starkare varumärke", hue: 25 },
+  { icon: Award, text: "Starkare varumärke", hue: 25 },
 ];
 
 const InsightSection = () => {

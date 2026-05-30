@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  ArrowRight, Check, Clock, ShieldCheck, Monitor, TrendingUp, Sparkles,
+  ArrowRight, Check, Clock, ShieldCheck, Monitor, TrendingUp, Brush,
   Search, MousePointerClick, Gauge, MapPin, Layout, Type, BadgeCheck, Users,
   Network, Code2, LifeBuoy, Phone, Palette,
   type LucideIcon,
@@ -113,7 +113,7 @@ const SERVICES: Record<string, ServiceContent> = {
     scoreTie:
       "Förtroende-betyget speglar om sidan känns trygg att välja. Branding är hur den känslan byggs.",
     includes: [
-      { icon: Sparkles, title: "Tydlig visuell identitet", desc: "Färg, typografi och känsla som hänger ihop och känns genomtänkt." },
+      { icon: Brush, title: "Tydlig visuell identitet", desc: "Färg, typografi och känsla som hänger ihop och känns genomtänkt." },
       { icon: Type, title: "Budskap och ton", desc: "Ett tydligt \"varför just du\" som går igen i texten över hela sidan." },
       { icon: BadgeCheck, title: "Förtroendesignaler", desc: "Omdömen, trygghetsmärken och tydlig kontaktinfo där de gör mest nytta." },
       { icon: Layout, title: "Konsekvent uttryck", desc: "Samma röda tråd genom hela upplevelsen – inget som känns hopplockat." },

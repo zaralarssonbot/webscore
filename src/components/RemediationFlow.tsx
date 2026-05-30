@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { AlertTriangle, ArrowRight, Check, Loader2, Phone, User, Building2, Sparkles, X, Rocket, Search, MapPin, Shield, Hash } from "lucide-react";
+import { AlertTriangle, ArrowRight, Check, Loader2, Phone, User, Building2, BadgeCheck, X, Rocket, Search, MapPin, Shield, Hash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { submitLead } from "@/lib/scan-service";
 import { supabase } from "@/integrations/supabase/client";
@@ -364,7 +364,7 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
                 <motion.div key="contact" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.35 }} className="rounded-3xl border border-neon-cyan/15 bg-card/70 backdrop-blur-xl shadow-2xl p-8 sm:p-12 max-w-lg mx-auto">
                   <div className="text-center mb-8">
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/15 text-primary text-sm font-medium mb-4">
-                      <Sparkles className="w-4 h-4" />
+                      <BadgeCheck className="w-4 h-4" />
                       {selectedPackage}
                     </div>
                     <h2 className="text-2xl font-bold font-display mb-2">Ange ditt organisationsnummer</h2>

@@ -11,7 +11,7 @@ import EmailReportModal from "./EmailReportModal";
 import RemediationFlow from "./RemediationFlow";
 import {
   ArrowRight, ArrowLeft, Globe, MapPin, Palette, MousePointerClick, Star, Mail,
-  Clock, ShieldCheck, BarChart3, Users, Sparkles, Crown, Target, Search, MonitorSmartphone, ContactRound,
+  Clock, ShieldCheck, BarChart3, Users, Crown, Target, Search, MonitorSmartphone, ContactRound,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { ScanResult, GoogleBusinessData } from "@/lib/scan-service";

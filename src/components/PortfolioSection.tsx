@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowRight, Sparkles, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, ArrowRight, Check, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 
 import invito from "@/assets/portfolio/invito.webp";
@@ -430,7 +430,7 @@ const PortfolioSection = () => {
                   <ul className="space-y-2">
                     {selectedProject.improvements.map((item) => (
                       <li key={item} className="flex items-start gap-2.5 text-[0.875rem] text-foreground/90">
-                        <Sparkles className="w-3.5 h-3.5 text-primary mt-1 shrink-0" />
+                        <Check className="w-3.5 h-3.5 text-primary mt-1 shrink-0" />
                         {item}
                       </li>
                     ))}

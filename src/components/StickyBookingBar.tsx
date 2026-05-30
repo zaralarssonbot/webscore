@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Clock, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight, Clock, ShieldCheck, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface StickyBookingBarProps {
@@ -44,7 +44,7 @@ const StickyBookingBar = ({ onBook, score }: StickyBookingBarProps) => {
                   Ingen förpliktelse
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <Sparkles className="w-3 h-3 text-neon-cyan" />
+                  <BarChart3 className="w-3 h-3 text-neon-cyan" />
                   Baserat på verklig data
                 </span>
               </div>

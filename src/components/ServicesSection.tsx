@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Monitor, Network, Code2, TrendingUp, Sparkles, Palette, LifeBuoy, Users, Shield, Search, BarChart3, Phone, Rocket, ArrowRight } from "lucide-react";
+import { Monitor, Network, Code2, TrendingUp, Palette, Award, LifeBuoy, Users, Shield, Search, BarChart3, Phone, Rocket, ArrowRight } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 
 // The full offering, grouped by the arc: bygga → synas & övertyga → driva.
@@ -33,7 +33,7 @@ const results = [
   { icon: Users, text: "Fler leads" },
   { icon: Shield, text: "Högre förtroende" },
   { icon: TrendingUp, text: "Bättre konvertering" },
-  { icon: Sparkles, text: "Starkare varumärke" },
+  { icon: Award, text: "Starkare varumärke" },
 ];
 
 const steps = [
