@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,23 +6,24 @@
 
 @layer base {
   :root {
-    --background: 220 25% 11%;
-    --foreground: 210 40% 96%;
+    /* Near-black with blue depth — #06070A */
+    --background: 225 28% 3%;
+    --foreground: 210 40% 97%;
 
-    --card: 220 22% 14%;
-    --card-foreground: 210 40% 96%;
+    --card: 224 26% 6%;
+    --card-foreground: 210 40% 97%;
 
-    --popover: 220 22% 14%;
-    --popover-foreground: 210 40% 96%;
+    --popover: 224 28% 5%;
+    --popover-foreground: 210 40% 97%;
 
     --primary: 200 85% 50%;
     --primary-foreground: 220 25% 6%;
 
-    --secondary: 220 20% 20%;
+    --secondary: 222 20% 12%;
     --secondary-foreground: 210 40% 96%;
 
-    --muted: 220 18% 18%;
-    --muted-foreground: 210 20% 88%;
+    --muted: 222 18% 11%;
+    --muted-foreground: 215 18% 65%;
 
     --accent: 258 65% 58%;
     --accent-foreground: 220 25% 6%;
@@ -30,9 +31,9 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 220 18% 22%;
-    --input: 220 18% 22%;
-    --ring: 200 85% 50%;
+    --border: 220 20% 14%;
+    --input: 220 20% 14%;
+    --ring: 190 90% 55%;
 
     --radius: 0.75rem;
 
@@ -50,20 +51,25 @@
     --score-mid: 40 95% 55%;
     --score-high: 160 85% 50%;
 
-    --glass-bg: rgba(18, 24, 38, 0.7);
-    --glass-border: rgba(255, 255, 255, 0.08);
-    --glass-highlight: rgba(255, 255, 255, 0.05);
+    --glass-bg: rgba(9, 12, 22, 0.62);
+    --glass-border: rgba(255, 255, 255, 0.07);
+    --glass-highlight: rgba(255, 255, 255, 0.045);
 
     --glow-cyan: 0 0 30px hsla(175, 85%, 48%, 0.25);
     --glow-blue: 0 0 30px hsla(215, 90%, 62%, 0.2);
     --glow-magenta: 0 0 30px hsla(320, 80%, 62%, 0.2);
     --glow-purple: 0 0 30px hsla(260, 70%, 62%, 0.2);
 
-    --shadow-depth-1: 0 2px 8px rgba(0,0,0,0.2);
-    --shadow-depth-2: 0 8px 32px rgba(0,0,0,0.28);
-    --shadow-depth-3: 0 16px 64px rgba(0,0,0,0.35);
+    /* Precision glow system — used ONLY on score + CTAs */
+    --glow-soft: 0 0 24px hsl(var(--neon-cyan) / 0.18);
+    --glow-mid: 0 0 40px hsl(var(--neon-cyan) / 0.28), 0 0 8px hsl(var(--neon-blue) / 0.25);
+    --glow-intense: 0 0 60px hsl(var(--neon-cyan) / 0.4), 0 0 24px hsl(var(--neon-blue) / 0.3), inset 0 0 24px hsl(var(--neon-cyan) / 0.08);
 
-    --sidebar-background: 220 25% 11%;
+    --shadow-depth-1: 0 2px 8px rgba(0,0,0,0.3);
+    --shadow-depth-2: 0 8px 32px rgba(0,0,0,0.45);
+    --shadow-depth-3: 0 24px 80px rgba(0,0,0,0.6);
+
+    --sidebar-background: 225 28% 4%;
     --sidebar-foreground: 210 40% 96%;
     --sidebar-primary: 200 85% 50%;
     --sidebar-primary-foreground: 220 25% 6%;
@@ -81,19 +87,25 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'DM Sans', system-ui, sans-serif;
-    letter-spacing: -0.01em;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    letter-spacing: -0.011em;
     line-height: 1.6;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    letter-spacing: -0.025em;
-    line-height: 1.15;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    letter-spacing: -0.035em;
+    line-height: 1.08;
+    font-weight: 600;
   }
 
   p {
     line-height: 1.7;
+  }
+
+  /* Mono everywhere for data: scores, numbers, technical labels */
+  .font-mono, .tabular-nums {
+    font-feature-settings: "tnum" 1, "ss01" 1;
   }
 }
 
@@ -154,10 +166,31 @@
   }
 
   .bg-grid {
-    background-image: 
+    background-image:
       linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
     background-size: 60px 60px;
+  }
+
+  /* Slowly drifting perspective grid — GPU-cheap (background-position only) */
+  .bg-grid-live {
+    background-image:
+      linear-gradient(hsl(var(--neon-cyan) / 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--neon-blue) / 0.035) 1px, transparent 1px);
+    background-size: 54px 54px;
+    animation: grid-pan 18s linear infinite;
+  }
+
+  /* Precision glow — reserved for score + CTAs only */
+  .glow-precision { box-shadow: var(--glow-mid); }
+  .glow-precision-intense { box-shadow: var(--glow-intense); }
+
+  /* Mono technical label */
+  .data-label {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+    font-weight: 500;
   }
 
   .gradient-text {
@@ -226,4 +259,40 @@
 @keyframes border-glow-pulse {
   0%, 100% { border-color: hsl(var(--neon-cyan) / 0.15); box-shadow: 0 0 10px hsl(var(--neon-cyan) / 0.05); }
   50% { border-color: hsl(var(--neon-cyan) / 0.35); box-shadow: 0 0 25px hsl(var(--neon-cyan) / 0.12); }
+}
+
+/* Drifting perspective grid */
+@keyframes grid-pan {
+  0% { background-position: 0 0; }
+  100% { background-position: 54px 54px; }
+}
+
+/* Aurora mesh blobs — animate transform/opacity only (GPU, 60fps) */
+@keyframes aurora-1 {
+  0%, 100% { transform: translate3d(-8%, -6%, 0) scale(1); opacity: 0.9; }
+  50% { transform: translate3d(10%, 8%, 0) scale(1.18); opacity: 0.6; }
+}
+@keyframes aurora-2 {
+  0%, 100% { transform: translate3d(6%, 10%, 0) scale(1.1); opacity: 0.7; }
+  50% { transform: translate3d(-9%, -7%, 0) scale(1); opacity: 0.95; }
+}
+@keyframes aurora-3 {
+  0%, 100% { transform: translate3d(4%, -8%, 0) scale(1); opacity: 0.6; }
+  50% { transform: translate3d(-6%, 9%, 0) scale(1.22); opacity: 0.85; }
+}
+
+/* Continuous slow rotation for gauge accent ring */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Gauge breathing glow */
+@keyframes gauge-pulse {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.04); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-grid-live { animation: none; }
 }

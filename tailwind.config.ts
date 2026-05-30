@@ -14,9 +14,14 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['"DM Sans"', "system-ui", "sans-serif"],
-        display: ['"DM Sans"', "system-ui", "sans-serif"],
-        mono: ["ui-monospace", "monospace"],
+        sans: ['"Space Grotesk"', "system-ui", "sans-serif"],
+        display: ['"Space Grotesk"', "system-ui", "sans-serif"],
+        mono: ['"JetBrains Mono"', "ui-monospace", "monospace"],
+      },
+      boxShadow: {
+        "glow-soft": "var(--glow-soft)",
+        "glow-mid": "var(--glow-mid)",
+        "glow-intense": "var(--glow-intense)",
       },
       colors: {
         border: "hsl(var(--border))",
@@ -110,6 +115,14 @@ export default {
           "0%, 100%": { borderColor: "hsl(var(--neon-cyan) / 0.15)", boxShadow: "0 0 10px hsl(var(--neon-cyan) / 0.05)" },
           "50%": { borderColor: "hsl(var(--neon-cyan) / 0.35)", boxShadow: "0 0 25px hsl(var(--neon-cyan) / 0.12)" },
         },
+        "gauge-pulse": {
+          "0%, 100%": { opacity: "0.45", transform: "scale(1)" },
+          "50%": { opacity: "0.85", transform: "scale(1.04)" },
+        },
+        "spin-slow": {
+          from: { transform: "rotate(0deg)" },
+          to: { transform: "rotate(360deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -119,6 +132,8 @@ export default {
         "bar-fill": "bar-fill 1.2s ease-out forwards",
         float: "float 6s ease-in-out infinite",
         "border-glow": "border-glow 3s ease-in-out infinite",
+        "gauge-pulse": "gauge-pulse 3s ease-in-out infinite",
+        "spin-slow": "spin-slow 24s linear infinite",
       },
     },
   },

@@ -62,31 +62,40 @@ const BackgroundEffect = () => {
     <div className="fixed inset-0 overflow-hidden pointer-events-none">
       {/* Base background */}
       <div className="absolute inset-0 bg-background" />
-      
-      {/* Static glow orbs — NO blur filter, using pre-blurred radial gradients instead */}
+
+      {/* Aurora mesh — drifting teal → blue → purple (pre-blurred gradients, transform-animated) */}
       <div
-        className="absolute top-[-15%] left-[20%] w-[900px] h-[900px] rounded-full opacity-80"
-        style={{ background: "radial-gradient(circle, hsla(175,95%,50%,0.06) 0%, hsla(175,95%,50%,0.02) 30%, transparent 55%)" }}
+        className="absolute top-[-20%] left-[8%] w-[1000px] h-[1000px] rounded-full will-change-transform"
+        style={{
+          background: "radial-gradient(circle, hsla(175,95%,50%,0.10) 0%, hsla(175,95%,50%,0.03) 32%, transparent 60%)",
+          animation: "aurora-1 26s ease-in-out infinite",
+        }}
       />
       <div
-        className="absolute bottom-[-10%] left-[-5%] w-[800px] h-[800px] rounded-full opacity-80"
-        style={{ background: "radial-gradient(circle, hsla(260,80%,55%,0.05) 0%, hsla(260,80%,55%,0.015) 30%, transparent 55%)" }}
+        className="absolute bottom-[-18%] left-[-8%] w-[900px] h-[900px] rounded-full will-change-transform"
+        style={{
+          background: "radial-gradient(circle, hsla(258,80%,58%,0.10) 0%, hsla(258,80%,58%,0.03) 32%, transparent 60%)",
+          animation: "aurora-2 32s ease-in-out infinite",
+        }}
       />
       <div
-        className="absolute top-[35%] right-[-5%] w-[600px] h-[600px] rounded-full opacity-80"
-        style={{ background: "radial-gradient(circle, hsla(215,90%,55%,0.05) 0%, hsla(215,90%,55%,0.015) 30%, transparent 55%)" }}
+        className="absolute top-[28%] right-[-10%] w-[760px] h-[760px] rounded-full will-change-transform"
+        style={{
+          background: "radial-gradient(circle, hsla(215,92%,56%,0.09) 0%, hsla(215,92%,56%,0.03) 32%, transparent 60%)",
+          animation: "aurora-3 29s ease-in-out infinite",
+        }}
       />
 
-      {/* Grid texture */}
-      <div className="absolute inset-0 bg-grid opacity-15" />
-      
+      {/* Living grid */}
+      <div className="absolute inset-0 bg-grid-live opacity-60" />
+
       {/* Particle canvas */}
-      <canvas ref={canvasRef} className="absolute inset-0 opacity-40" />
+      <canvas ref={canvasRef} className="absolute inset-0 opacity-30" />
 
-      {/* Vignette */}
+      {/* Vignette to pull focus to center */}
       <div
         className="absolute inset-0"
-        style={{ background: "radial-gradient(ellipse at center, transparent 30%, hsl(var(--background) / 0.8) 100%)" }}
+        style={{ background: "radial-gradient(ellipse at center, transparent 25%, hsl(var(--background) / 0.85) 100%)" }}
       />
     </div>
   );
