@@ -248,7 +248,7 @@ const PortfolioSection = () => {
                           alt={project.name}
                           width={96}
                           height={96}
-                          className="w-full h-full object-cover object-top transition-transform duration-[2s] ease-out group-hover:scale-[1.15]"
+                          className="w-full h-full object-cover object-top transition-transform duration-[2000ms] ease-out group-hover:scale-[1.15]"
                           loading="lazy"
                         />
                       </div>
@@ -262,7 +262,7 @@ const PortfolioSection = () => {
                           alt={project.name}
                           width={384}
                           height={240}
-                          className="w-full h-full object-cover object-top transition-transform duration-[2.5s] ease-out group-hover:scale-[1.06] group-hover:translate-y-[-8%]"
+                          className="w-full h-full object-cover object-top transition-transform duration-[2500ms] ease-out group-hover:scale-[1.06] group-hover:translate-y-[-8%]"
                           loading="lazy"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent opacity-60 group-hover:opacity-30 transition-opacity duration-500" />

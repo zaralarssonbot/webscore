@@ -3,7 +3,6 @@ import { motion, type Variants } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Search, ArrowRight } from "lucide-react";
 import { validateDomain } from "@/lib/domain";
-import LazyVideo from "@/components/LazyVideo";
 import ScoreGauge from "@/components/ScoreGauge";
 
 const useCountUp = (end: number, duration = 2000) => {
@@ -98,22 +97,28 @@ const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProp
 
   return (
     <section className="relative z-10 flex flex-col items-center justify-center min-h-screen px-5 sm:px-6 py-24 overflow-hidden">
-      {/* Background video — colour-graded into the neon palette */}
+      {/* Abstract backdrop — aurora mesh + living grid + glow (no video) */}
       <div className="absolute inset-0 -z-10">
-        <LazyVideo
-          src="/hero-bg.mp4"
-          poster="/hero-bg-poster.webp"
-          rootMargin="0px"
-          className="absolute inset-0 w-full h-full object-cover opacity-40"
-          style={{ filter: "saturate(1.25) contrast(1.25) brightness(0.42)" }}
+        {/* Local aurora accents (on top of the global mesh) */}
+        <div
+          className="absolute top-[8%] left-1/2 -translate-x-1/2 w-[760px] h-[760px] rounded-full will-change-transform"
+          style={{ background: "radial-gradient(circle, hsl(var(--neon-cyan) / 0.13) 0%, transparent 60%)", animation: "aurora-1 24s ease-in-out infinite" }}
         />
-        {/* Neon tint grade */}
-        <div className="absolute inset-0 mix-blend-color" style={{ background: "linear-gradient(135deg, hsla(190,90%,45%,0.5), hsla(258,80%,55%,0.4))" }} />
-        <div className="absolute inset-0 bg-background/60" />
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 35%, hsl(var(--neon-cyan) / 0.12) 0%, transparent 55%)" }} />
+        <div
+          className="absolute bottom-[2%] right-[10%] w-[560px] h-[560px] rounded-full will-change-transform"
+          style={{ background: "radial-gradient(circle, hsl(var(--neon-purple) / 0.12) 0%, transparent 60%)", animation: "aurora-3 28s ease-in-out infinite" }}
+        />
+        <div
+          className="absolute top-[40%] left-[6%] w-[460px] h-[460px] rounded-full will-change-transform"
+          style={{ background: "radial-gradient(circle, hsl(var(--neon-blue) / 0.10) 0%, transparent 60%)", animation: "aurora-2 31s ease-in-out infinite" }}
+        />
+        {/* Living grid */}
+        <div className="absolute inset-0 bg-grid-live opacity-50" />
+        {/* Center focus glow */}
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 42%, hsl(var(--neon-cyan) / 0.10) 0%, transparent 55%)" }} />
         {/* Bottom fade into page */}
         <div className="absolute bottom-0 left-0 right-0 h-48" style={{ background: "linear-gradient(to top, hsl(var(--background)), transparent)" }} />
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, transparent 35%, hsl(var(--background) / 0.65) 100%)" }} />
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, transparent 42%, hsl(var(--background) / 0.55) 100%)" }} />
       </div>
 
       <div className="w-full max-w-6xl grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-12 items-center">
