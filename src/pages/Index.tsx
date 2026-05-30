@@ -7,6 +7,7 @@ import HeroSection from "@/components/HeroSection";
 import ServicesSection from "@/components/ServicesSection";
 import ProcessSection from "@/components/ProcessSection";
 import WhyUsSection from "@/components/WhyUsSection";
+import HomePricingSection from "@/components/HomePricingSection";
 import PortfolioSection from "@/components/PortfolioSection";
 import VideoShowcaseSection from "@/components/VideoShowcaseSection";
 
@@ -106,7 +107,8 @@ const Index = () => {
             <PortfolioSection />
             <VideoShowcaseSection />
             <WhyUsSection />
-            
+            <HomePricingSection />
+
             <div ref={webTestRef}>
               <FinalCTASection
                 onAnalyze={handleAnalyze}
