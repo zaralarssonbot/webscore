@@ -1,0 +1,92 @@
+/**
+ * Build-time prerendering (Väg A) — real headless Chromium snapshot.
+ *
+ * Runs AFTER `vite build`. Serves the built `dist/` with Vite's preview server
+ * (SPA fallback), loads each static marketing route in headless Chromium, waits
+ * for the real app to render (networkidle + real text in #root, so lazy routes
+ * are never captured as their Suspense spinner), then serializes the resulting
+ * DOM — including the per-route <head> that useDocumentMeta sets client-side —
+ * to dist/<route>/index.html.
+ *
+ * Why a real browser and not renderToString: no SSR guards needed, so the
+ * analysis flow, WebGL background, localStorage (supabase) and lazy routes all
+ * run exactly as in production. Playwright/Chromium is a devDependency and is
+ * used at build time only — nothing here ships in the client bundle.
+ */
+import { preview } from "vite";
+import { chromium } from "@playwright/test";
+import { mkdir, writeFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+const DIST = join(ROOT, "dist");
+
+// Indexable, statically-known routes. /admin is intentionally excluded (noindex).
+const ROUTES = [
+  "/",
+  "/pricing",
+  "/tjanster/hemsidor",
+  "/tjanster/seo",
+  "/tjanster/branding",
+];
+
+async function run() {
+  const server = await preview({
+    root: ROOT,
+    preview: { port: 4188, strictPort: true },
+  });
+  const base = server.resolvedUrls.local[0].replace(/\/$/, "");
+
+  const browser = await chromium.launch();
+  const snapshots = {};
+
+  try {
+    for (const route of ROUTES) {
+      const page = await browser.newPage();
+      const url = base + route;
+      await page.goto(url, { waitUntil: "networkidle", timeout: 45000 });
+
+      // Wait for the real route content — not the empty Suspense fallback.
+      // The lazy fallback (<div class="min-h-screen bg-background"/>) has no
+      // text, so requiring substantial text in #root guarantees the route's
+      // chunk has loaded and rendered.
+      await page.waitForFunction(
+        () => {
+          const r = document.getElementById("root");
+          return !!r && (r.textContent || "").trim().length > 200;
+        },
+        { timeout: 20000 },
+      );
+      // Let useDocumentMeta's effect flush the <head> for this route.
+      await page.waitForFunction(() => /Webscore/.test(document.title), { timeout: 10000 });
+
+      const html = await page.evaluate(() => "<!DOCTYPE html>\n" + document.documentElement.outerHTML);
+      snapshots[route] = html;
+      console.log(`  ✓ rendered ${route} (${(html.length / 1024).toFixed(1)} KB)`);
+      await page.close();
+    }
+  } finally {
+    await browser.close();
+    await new Promise((resolve) => server.httpServer.close(resolve));
+  }
+
+  // Write only after all routes are captured, so every snapshot is taken from
+  // the pristine built dist (no half-written index.html polluting SPA fallback).
+  for (const [route, html] of Object.entries(snapshots)) {
+    const outPath = route === "/" ? join(DIST, "index.html") : join(DIST, route, "index.html");
+    await mkdir(dirname(outPath), { recursive: true });
+    await writeFile(outPath, html, "utf8");
+    console.log(`  → wrote ${outPath.replace(ROOT + "/", "")}`);
+  }
+
+  console.log(`\nPrerendered ${ROUTES.length} routes.`);
+}
+
+run().then(
+  () => process.exit(0),
+  (err) => {
+    console.error("Prerender failed:", err);
+    process.exit(1);
+  },
+);
