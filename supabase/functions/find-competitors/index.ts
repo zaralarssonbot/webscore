@@ -155,7 +155,7 @@ function calculateQuickScore(s: QuickSignals): number {
 }
 
 // ── Determine strength description ────────────────────────────────
-function describeStrength(s: QuickSignals, score: number): string {
+function describeStrength(s: QuickSignals): string {
   const strengths: string[] = [];
   if (s.hasTestimonials) strengths.push("synliga omdömen");
   if (s.ctaCount >= 3) strengths.push("tydliga uppmaningar");
@@ -165,9 +165,9 @@ function describeStrength(s: QuickSignals, score: number): string {
   if (s.wordCount >= 500) strengths.push("omfattande innehåll");
   if (s.hasViewport && s.hasMetaDesc) strengths.push("mobilanpassad med bra SEO");
 
-  if (strengths.length === 0) {
-    return score >= 75 ? "Väloptimerad hemsida" : "Bättre grundläggande SEO";
-  }
+  // Each phrase maps to a real, scraped signal. If none were detected we say
+  // nothing — no score-derived fallback (that quick score is never shown and
+  // wouldn't match a full analysis anyway).
   return strengths.slice(0, 2).join(" och ").replace(/^./, (c) => c.toUpperCase());
 }
 
@@ -325,7 +325,7 @@ serve(async (req) => {
           domain: compDomain,
           url: c.url,
           score,
-          strength: describeStrength(signals, score),
+          strength: describeStrength(signals),
           distance_km: null,
           cta_count: signals.ctaCount,
           design_rating: estimateDesignRating(signals),

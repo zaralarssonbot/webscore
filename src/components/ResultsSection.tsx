@@ -10,8 +10,8 @@ import LeadCaptureModal from "./LeadCaptureModal";
 import EmailReportModal from "./EmailReportModal";
 import RemediationFlow from "./RemediationFlow";
 import {
-  ArrowRight, ArrowLeft, Globe, MapPin, Palette, MousePointerClick, Star, Mail,
-  Clock, ShieldCheck, BarChart3, Users, Crown, Target, Search, MonitorSmartphone, ContactRound,
+  ArrowRight, ArrowLeft, Globe, MapPin, Star, Mail,
+  Clock, ShieldCheck, BarChart3, Users, Target, Search, MonitorSmartphone, ContactRound,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { ScanResult, GoogleBusinessData } from "@/lib/scan-service";
@@ -118,31 +118,18 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
                   <MapPin className="w-4 h-4 text-neon-cyan" />
                 </div>
                 <div>
-                  <h2 className="text-base font-semibold font-display">Så ligger konkurrenterna före dig</h2>
-                  <p className="data-label text-[0.5rem] text-muted-foreground/50 mt-0.5">Företag i ditt område som presterar bättre</p>
+                  <h2 className="text-base font-semibold font-display">Företag du konkurrerar med online</h2>
+                  <p className="data-label text-[0.5rem] text-muted-foreground/50 mt-0.5">Företag i ditt område som presterar bra</p>
                 </div>
               </div>
 
               <div className="space-y-2.5 relative">
-               {data.nearbyCompetitors.map((comp, i) => {
-                  const isTop = i === 0;
-                  const sc = comp.score >= 80
-                    ? { bg: "hsla(160,85%,50%,0.07)", text: "hsl(var(--score-high))", glow: "hsla(160,85%,50%,0.12)", border: isTop ? "hsla(160,85%,50%,0.25)" : "hsla(160,85%,50%,0.12)" }
-                    : { bg: "hsla(40,95%,55%,0.07)", text: "hsl(var(--score-mid))", glow: "hsla(40,95%,55%,0.12)", border: isTop ? "hsla(40,95%,55%,0.25)" : "hsla(40,95%,55%,0.12)" };
-                  return (
-                    <motion.div key={i} initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.1, ease: [0.16, 1, 0.3, 1] as const }} className={`flex items-center gap-3 p-3.5 rounded-xl border transition-all duration-300 group/card relative ${isTop ? "bg-secondary/15 ring-1 ring-inset" : "bg-secondary/8 hover:bg-secondary/15"}`} style={{ borderColor: sc.border, ...(isTop ? { ringColor: sc.border } : {}) }}>
-                      {isTop && (
-                        <div className="absolute -top-2.5 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-semibold border" style={{ background: sc.bg, borderColor: sc.border, color: sc.text }}>
-                          <Crown className="w-2.5 h-2.5" /> Bäst positionerad
-                        </div>
-                      )}
-                      <div className="w-11 h-11 rounded-lg flex items-center justify-center shrink-0 font-bold text-base font-mono tabular-nums" style={{ background: sc.bg, color: sc.text, boxShadow: `0 0 14px ${sc.glow}` }}>
-                        {comp.score}
-                      </div>
+               {data.nearbyCompetitors.map((comp, i) => (
+                    <motion.div key={i} initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.1, ease: [0.16, 1, 0.3, 1] as const }} className="flex items-center gap-3 p-3.5 rounded-xl border border-neon-cyan/12 bg-secondary/8 hover:bg-secondary/15 transition-all duration-300 relative">
                       <img
                         src={`https://www.google.com/s2/favicons?domain=${comp.domain}&sz=32`}
                         alt=""
-                        className="w-5 h-5 rounded shrink-0"
+                        className="w-6 h-6 rounded shrink-0"
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                       />
                       <div className="flex-1 min-w-0">
@@ -157,43 +144,21 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
                             {comp.domain} ↗
                           </a>
                         </div>
-                        <span className="text-xs text-foreground/70 font-light">{comp.strength}</span>
-                        <div className="flex items-center gap-1.5 mt-1 flex-wrap">
-                          {comp.cta_count != null && (
-                            <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-neon-cyan/8 text-neon-cyan border border-neon-cyan/12 flex items-center gap-0.5">
-                              <MousePointerClick className="w-2.5 h-2.5" />{comp.cta_count} CTA
-                            </span>
-                          )}
-                          {comp.design_rating != null && (
-                            <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-neon-cyan/8 text-neon-cyan border border-neon-cyan/12 flex items-center gap-0.5 font-mono tabular-nums">
-                              <Palette className="w-2.5 h-2.5" />{comp.design_rating}/5
-                            </span>
-                          )}
-                          {comp.has_reviews && (
+                        {comp.strength && <span className="text-xs text-foreground/70 font-light">{comp.strength}</span>}
+                        {comp.has_reviews && (
+                          <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                             <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-score-mid/8 text-score-mid border border-score-mid/12 flex items-center gap-0.5">
-                              <Star className="w-2.5 h-2.5" />Omdömen
+                              <Star className="w-2.5 h-2.5" />Visar omdömen
                             </span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-end gap-1 shrink-0">
-                        <div className="text-xs font-bold px-2.5 py-1 rounded-full font-mono tabular-nums" style={{ color: sc.text, background: sc.bg }}>
-                          +{comp.score - data.score}
-                        </div>
-                        {comp.distance_km && (
-                          <span className="text-[10px] text-foreground/50 font-light flex items-center gap-1">
-                            <MapPin className="w-2.5 h-2.5" />
-                            {comp.distance_km.toFixed(1)} km
-                          </span>
+                          </div>
                         )}
                       </div>
                     </motion.div>
-                  );
-                })}
+                  ))}
               </div>
 
               <p className="text-sm text-muted-foreground font-light mt-5 leading-relaxed relative">
-                De är tydligare, enklare att välja och syns bättre online – sånt som ofta avgör vem kunden väljer.
+                Tydlighet, enkla val och bra synlighet online – sånt avgör ofta vem kunden väljer.
               </p>
             </div>
           </motion.div>
