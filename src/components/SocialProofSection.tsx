@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
 
+// Substantiated facts only — no fabricated traction/satisfaction numbers.
 const stats = [
-  { value: "2 500+", label: "Hemsidor analyserade" },
-  { value: "60s", label: "Genomsnittlig analystid" },
-  { value: "94%", label: "Nöjda företagare" },
+  { value: "41", label: "Kontroller per analys" },
   { value: "5", label: "Kategorier som granskas" },
+  { value: "60s", label: "Genomsnittlig analystid" },
+  { value: "0 kr", label: "Kostnadsfri analys" },
 ];
 
 const SocialProofSection = () => {

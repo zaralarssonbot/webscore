@@ -103,7 +103,7 @@ const projects: Project[] = [
     label: "SEO-fokuserad redesign för restaurang",
     image: midnightgrill,
     badges: ["Webbdesign", "SEO", "Conversion"],
-    caseDescription: "Stockholms mest eftertraktade burgare förtjänade en hemsida som matchade smakupplevelsen. Vi byggde en mörk, stämningsfull sajt med fokus på lokal SEO och beställningar.",
+    caseDescription: "En populär burgarrestaurang i Stockholm förtjänade en hemsida som matchade smakupplevelsen. Vi byggde en mörk, stämningsfull sajt med fokus på lokal SEO och beställningar.",
     improvements: ["Lokal SEO-strategi för Stockholm", "Online-beställning integrerat", "Mobiloptimerad menyupplevelse"],
     gallery: [midnightgrill1, midnightgrill2],
   },

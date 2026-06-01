@@ -17,7 +17,7 @@ const InlineBookingCTA = ({ onBook }: InlineBookingCTAProps) => {
       <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, hsla(175,95%,50%,0.05) 0%, transparent 60%)" }} />
 
       <p className="text-base sm:text-lg font-semibold font-display mb-1.5 relative tracking-[-0.01em]">
-        Vill du veta exakt vad som bör ändras?
+        Vill du veta vad som bör ändras?
       </p>
       <p className="text-sm text-muted-foreground/80 mb-5 max-w-md mx-auto relative leading-[1.6]">
         Vi visar var du ligger efter och vad som ger störst effekt – helt kostnadsfritt.

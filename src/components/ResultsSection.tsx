@@ -75,7 +75,7 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
         {/* Expert positioning */}
         <motion.div variants={fadeUp} className="text-center max-w-2xl mx-auto">
           <p className="text-sm text-muted-foreground/70 font-light leading-relaxed">
-            Den här analysen är baserad på erfarenhet av vad som faktiskt fungerar för företag online – inte bara tekniska mätvärden.
+            Den här analysen bygger på 41 automatiska kontroller av din sida – faktorer som påverkar hur företag presterar online.
           </p>
         </motion.div>
 
@@ -118,7 +118,7 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
                   <MapPin className="w-4 h-4 text-neon-cyan" />
                 </div>
                 <div>
-                  <h2 className="text-base font-semibold font-display">Här är varför de får kunderna före dig</h2>
+                  <h2 className="text-base font-semibold font-display">Så ligger konkurrenterna före dig</h2>
                   <p className="data-label text-[0.5rem] text-muted-foreground/50 mt-0.5">Företag i ditt område som presterar bättre</p>
                 </div>
               </div>
@@ -193,7 +193,7 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
               </div>
 
               <p className="text-sm text-muted-foreground font-light mt-5 leading-relaxed relative">
-                De är tydligare, enklare att välja och syns bättre online. Det gör att de vinner kunderna före dig.
+                De är tydligare, enklare att välja och syns bättre online – sånt som ofta avgör vem kunden väljer.
               </p>
             </div>
           </motion.div>
@@ -289,7 +289,7 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
         <motion.div variants={fadeUp} className="card-surface p-8 sm:p-10 text-center relative overflow-hidden">
           <div className="accent-line-top accent-line-cyan" />
           <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, hsla(175,95%,50%,0.05) 0%, transparent 60%)" }} />
-          <h2 className="text-xl sm:text-2xl font-bold mb-2 relative font-display">Vill du se exakt hur detta kan förbättras för er?</h2>
+          <h2 className="text-xl sm:text-2xl font-bold mb-2 relative font-display">Vill du se hur detta kan förbättras för er?</h2>
           <p className="text-muted-foreground mb-6 font-light relative max-w-lg mx-auto text-sm">
             Vi går igenom din sida och visar vad som bör byggas om för att få bättre resultat.
           </p>

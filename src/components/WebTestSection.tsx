@@ -60,7 +60,7 @@ const WebTestSection = ({ onAnalyze }: WebTestSectionProps) => {
             </div>
 
             <h2 className="text-2xl sm:text-3xl md:text-[2.25rem] font-semibold font-display mb-4 tracking-[-0.02em] leading-[1.2]">
-              Se exakt varför din hemsida{" "}
+              Se varför din hemsida{" "}
               <span className="gradient-text">tappar kunder</span>
             </h2>
             <p className="text-muted-foreground font-normal max-w-md mx-auto mb-6 leading-[1.7] text-[0.9375rem]">

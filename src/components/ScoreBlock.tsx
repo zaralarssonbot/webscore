@@ -21,7 +21,7 @@ const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary }: S
   const getLabel = () => {
     if (score >= 80) return "Din hemsida presterar bra – men det finns fortfarande utrymme att växa";
     if (score >= 65) return "Din hemsida presterar under konkurrenterna";
-    return "Din hemsida tappar besökare innan de tar kontakt";
+    return "Din hemsida riskerar att tappa besökare innan de hör av sig";
   };
 
   const { color, glow, hue } = getScoreColor();

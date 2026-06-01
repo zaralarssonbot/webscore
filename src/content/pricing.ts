@@ -37,7 +37,7 @@ export const recurringTiers: PricingTier[] = [
   {
     tier: "STARTER",
     name: "Grundpaket",
-    description: "Perfekt för dig som behöver komma igång med en professionell närvaro på nätet.",
+    description: "Idealisk för dig som behöver komma igång med en professionell närvaro på nätet.",
     price: "995",
     priceNote: "eller 11 940 kr engångspris · exkl. moms",
     features: [

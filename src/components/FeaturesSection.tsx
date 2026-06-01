@@ -35,7 +35,7 @@ const features = [
   {
     icon: Users,
     title: "Affärspåverkan",
-    description: "Förstå exakt hur din hemsida påverkar din förmåga att få nya kunder och växa.",
+    description: "Förstå hur din hemsida påverkar din förmåga att få nya kunder och växa.",
     hue: 160,
   },
 ];

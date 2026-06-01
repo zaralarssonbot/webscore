@@ -115,7 +115,7 @@ const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProp
 
           {/* Subhead */}
           <motion.p variants={item} className="text-muted-foreground text-base sm:text-lg max-w-md mx-auto lg:mx-0 mb-8 leading-[1.7]">
-            Skriv in din domän. På 60 sekunder ser du exakt vad som håller sidan tillbaka — och var den kan vinna fler kunder.
+            Skriv in din domän. På 60 sekunder ser du vad som håller sidan tillbaka — och var den kan vinna fler kunder.
           </motion.p>
 
           {/* Analyzer — glowing animated input */}

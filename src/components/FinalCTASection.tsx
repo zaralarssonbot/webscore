@@ -60,7 +60,7 @@ const FinalCTASection = ({ onAnalyze, onBookMeeting }: FinalCTASectionProps) => 
               <span className="gradient-text">nästa nivå?</span>
             </h2>
             <p className="text-muted-foreground/80 max-w-md mx-auto mb-6 leading-[1.7] text-[0.95rem]">
-              Se exakt varför din hemsida tappar kunder — analysen visar:
+              Se vad analysen hittar på din sida — den visar:
             </p>
 
             {/* Benefits */}

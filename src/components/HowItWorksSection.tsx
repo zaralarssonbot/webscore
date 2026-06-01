@@ -12,8 +12,8 @@ const steps = [
   {
     number: "02",
     icon: BarChart3,
-    title: "Expertanalys genomförs",
-    description: "Vi granskar SEO, förtroende, konvertering, prestanda och säkerhet – baserat på vad som faktiskt fungerar.",
+    title: "Automatisk analys genomförs",
+    description: "41 automatiska kontroller av SEO, förtroende, konvertering, prestanda och säkerhet.",
     hue: 215,
   },
   {
