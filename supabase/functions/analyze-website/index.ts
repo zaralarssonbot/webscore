@@ -193,18 +193,85 @@ async function fallbackCrawl(domain: string): Promise<{ html: string; fetchTimeM
   return { html: "", fetchTimeMs: 0 };
 }
 
+// ── Real SSL/HTTPS probe ───────────────────────────────────────────
+// Returns true only if a TLS handshake to https://<domain> actually
+// succeeds. A network/cert failure (no HTTPS) throws → false.
+async function probeSSL(domain: string): Promise<boolean> {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    const resp = await fetch(`https://${domain}`, {
+      method: "GET",
+      signal: controller.signal,
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; WebsiteAuditBot/1.0)" },
+      redirect: "manual",
+    });
+    clearTimeout(timeout);
+    // Any HTTP response means the TLS handshake succeeded.
+    return resp.status > 0;
+  } catch {
+    return false;
+  }
+}
+
 // ── Extract signals from HTML ──────────────────────────────────────
-function extractSignals(html: string, domain: string, screenshotUrl?: string, fetchTimeMs = 0): SiteSignals {
+// `metadata` is Firecrawl's parsed <head> data (title, description, og*,
+// viewport, robots…). It is the PRIMARY source for head signals because the
+// raw `html` we receive is a *rendered* DOM where the real <head> is often
+// stripped or its <title> shadowed by inline SVG sprite <title> elements.
+// We fall back to a <head>-scoped, SVG-stripped regex only when metadata is
+// missing (e.g. the plain-fetch fallback crawl, which has no metadata).
+function extractSignals(
+  html: string,
+  domain: string,
+  screenshotUrl?: string,
+  fetchTimeMs = 0,
+  metadata?: Record<string, unknown>,
+  hasSSL = true,
+): SiteSignals {
   const test = (re: RegExp) => re.test(html);
   const count = (re: RegExp) => (html.match(re) || []).length;
 
-  const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
-  const title = titleMatch ? titleMatch[1].replace(/<[^>]*>/g, "").trim() : "";
+  // ── Head-scoped search space (ignores inline SVG <title> sprites) ──
+  const headMatch = html.match(/<head[\s\S]*?<\/head>/i);
+  const headHtml = headMatch ? headMatch[0] : html;
+  const headSearch = headHtml.replace(/<svg[\s\S]*?<\/svg>/gi, " ");
+  const headTest = (re: RegExp) => re.test(headSearch);
 
-  const metaDescMatch =
-    html.match(/<meta[^>]*name=["']description["'][^>]*content=["']([^"']*)["']/i) ||
-    html.match(/<meta[^>]*content=["']([^"']*)["'][^>]*name=["']description["']/i);
-  const metaDesc = metaDescMatch ? metaDescMatch[1].trim() : "";
+  // ── Metadata reader (tries several key spellings Firecrawl may use) ──
+  const meta = metadata || {};
+  const metaStr = (keys: string[]): string => {
+    for (const k of keys) {
+      const v = meta[k];
+      if (typeof v === "string" && v.trim()) return v.trim();
+      if (Array.isArray(v) && v.length && typeof v[0] === "string" && v[0].trim()) return v[0].trim();
+    }
+    return "";
+  };
+  const metaHas = (keys: string[]): boolean => keys.some((k) => {
+    const v = meta[k];
+    return (typeof v === "string" && v.trim().length > 0) || (Array.isArray(v) && v.length > 0);
+  });
+
+  // Title — metadata first, then head-scoped <title>, then og:title
+  const headTitleMatch = headSearch.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+  const headTitle = headTitleMatch ? headTitleMatch[1].replace(/<[^>]*>/g, "").trim() : "";
+  const title = metaStr(["title", "ogTitle", "og:title"]) || headTitle;
+
+  // Meta description — metadata first, then head-scoped regex
+  const headMetaDescMatch =
+    headSearch.match(/<meta[^>]*name=["']description["'][^>]*content=["']([^"']*)["']/i) ||
+    headSearch.match(/<meta[^>]*content=["']([^"']*)["'][^>]*name=["']description["']/i);
+  const metaDesc = metaStr(["description", "ogDescription", "og:description"]) ||
+    (headMetaDescMatch ? headMetaDescMatch[1].trim() : "");
+
+  // Head boolean signals — metadata first, then head-scoped regex
+  const hasOgTags = metaHas(["ogTitle", "ogDescription", "ogImage", "ogSiteName", "ogUrl", "og:title", "og:description", "og:image"]) ||
+    headTest(/<meta[^>]*property=["']og:/i);
+  const hasCanonical = metaHas(["canonical"]) || headTest(/<link[^>]*rel=["']canonical["']/i);
+  const hasViewport = metaHas(["viewport"]) || headTest(/<meta[^>]*name=["']viewport["']/i);
+  const hasRobotsMeta = metaHas(["robots"]) || headTest(/<meta[^>]*name=["']robots["']/i);
+  const hasFavicon = metaHas(["favicon"]) || headTest(/<link[^>]*rel=["'](?:icon|shortcut icon|apple-touch-icon)["']/i);
 
   const h1Match = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
   const h1 = h1Match ? h1Match[1].replace(/<[^>]*>/g, "").trim() : "";
@@ -247,11 +314,11 @@ function extractSignals(html: string, domain: string, screenshotUrl?: string, fe
     metaDesc,
     h1,
     h2s,
-    hasSSL: true,
-    hasViewport: test(/<meta[^>]*name=["']viewport["']/i),
-    hasOgTags: test(/<meta[^>]*property=["']og:/i),
-    hasCanonical: test(/<link[^>]*rel=["']canonical["']/i),
-    hasFavicon: test(/<link[^>]*rel=["'](?:icon|shortcut icon|apple-touch-icon)["']/i),
+    hasSSL,
+    hasViewport,
+    hasOgTags,
+    hasCanonical,
+    hasFavicon,
     hasStructuredData: test(/application\/ld\+json/i),
     hasAnalytics: test(/google-analytics|gtag|gtm|ga\(|_ga|analytics/i),
     hasCTA: ctaCount > 0,
@@ -267,7 +334,7 @@ function extractSignals(html: string, domain: string, screenshotUrl?: string, fe
     cssCount: count(/<link[^>]*stylesheet/gi),
     hasHreflang: test(/<link[^>]*hreflang/i),
     hasSitemap: test(/sitemap/i),
-    hasRobotsMeta: test(/<meta[^>]*name=["']robots["']/i),
+    hasRobotsMeta,
     hasPhoneLink: test(/tel:/i),
     hasEmailLink: test(/mailto:/i),
     hasAddress: test(/<address/i) || test(/(?:adress|gatan|vägen|torget|street|avenue)/i),
@@ -545,10 +612,12 @@ serve(async (req) => {
     let html = "";
     let screenshotUrl: string | undefined;
     let fetchTimeMs = 0;
+    let metadata: Record<string, unknown> | undefined;
 
-    const [firecrawlResult, psiData] = await Promise.all([
+    const [firecrawlResult, psiData, sslOk] = await Promise.all([
       crawlWithFirecrawl(domain),
       fetchPageSpeedInsights(domain),
+      probeSSL(domain),
     ]);
 
     if (psiData.performanceScore != null) {
@@ -561,6 +630,7 @@ serve(async (req) => {
       html = firecrawlResult.html;
       screenshotUrl = firecrawlResult.screenshotUrl;
       fetchTimeMs = firecrawlResult.fetchTimeMs;
+      metadata = firecrawlResult.metadata;
       console.log("Used Firecrawl successfully");
     } else {
       const fallbackResult = await fallbackCrawl(domain);
@@ -577,7 +647,7 @@ serve(async (req) => {
 
     // Phase 2 — Extract signals & run deterministic checks
     await supabase.from("scans").update({ status: "auditing" }).eq("id", scanId);
-    const signals = extractSignals(html, domain, screenshotUrl, fetchTimeMs);
+    const signals = extractSignals(html, domain, screenshotUrl, fetchTimeMs, metadata, sslOk);
     const checks = runAuditChecks(signals);
 
     // Inject real PSI audit checks (replace heuristic ones when available)

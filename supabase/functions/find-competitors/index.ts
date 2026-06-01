@@ -13,7 +13,7 @@ interface CompetitorResult {
   url: string;
   score: number;
   strength: string;
-  distance_km: number;
+  distance_km: number | null;
   cta_count: number;
   design_rating: number;
   has_reviews: boolean;
@@ -318,16 +318,15 @@ serve(async (req) => {
 
         const score = calculateQuickScore(signals);
 
-        // Generate realistic distance within 5km
-        const distance = Math.round((0.3 + Math.random() * 4.7) * 10) / 10;
-
+        // We have no real geolocation for these search-derived businesses, so
+        // we do NOT invent a distance. null = "unknown"; the UI hides it.
         competitors.push({
           name: signals.businessName || c.title?.split(/[|\-–—]/)[0]?.trim() || compDomain,
           domain: compDomain,
           url: c.url,
           score,
           strength: describeStrength(signals, score),
-          distance_km: distance,
+          distance_km: null,
           cta_count: signals.ctaCount,
           design_rating: estimateDesignRating(signals),
           has_reviews: signals.hasTestimonials,

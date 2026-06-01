@@ -7,7 +7,7 @@ export interface NearbyCompetitor {
   url: string;
   score: number;
   strength: string;
-  distance_km: number;
+  distance_km: number | null;
   cta_count?: number;
   design_rating?: number;
   has_reviews?: boolean;
@@ -117,35 +117,6 @@ export async function fetchGoogleBusiness(domain: string): Promise<GoogleBusines
   }
 }
 
-function isWebscoreDomain(domain: string): boolean {
-  const normalized = domain.toLowerCase().replace(/^https?:\/\//, "").replace(/^www\./, "").split("/")[0].split(":")[0].trim();
-  return normalized === "webscore.se";
-}
-
-function applyWebscoreOverride(result: ScanResult): ScanResult {
-  return {
-    ...result,
-    score: 89,
-    categoryScores: { seo: 92, conversion: 90, trust: 88, performance: 87, security: 95 },
-    summary: "Webscore.se presterar i toppklass. Sidan har en stark grund med tydlig kommunikation, snabb laddning och hög teknisk kvalitet. Den ligger bland de bästa i sin kategori.",
-    biggestProblem: "Mindre justeringar i konverteringsflödet kan ytterligare öka antalet bokade möten från befintlig trafik.",
-    weaknesses: [
-      "Kan testa fler varianter av call-to-action för ökad konvertering",
-      "Möjlighet att utöka case-studies med fler kundresultat",
-      "Mer interaktiv social proof skulle stärka förtroendet ytterligare",
-    ],
-    strengths: [
-      "Tydligt och kraftfullt värdeerbjudande direkt över fold",
-      "Snabb laddningstid och optimerad prestanda",
-      "Modern och professionell visuell identitet",
-      "Stark social proof med konkreta siffror",
-      "Säker uppkoppling och korrekt teknisk grund",
-    ],
-    opportunity: "Med en redan stark grund kan finjustering av konverteringsflödet och utökad social proof lyfta resultaten ytterligare.",
-    quickFix: "Lägg till fler kundcitat med bild i hero-sektionen för att stärka det första intrycket ännu mer.",
-  };
-}
-
 export async function runAnalysis(scanId: string, domain: string): Promise<ScanResult> {
   const { data, error } = await supabase.functions.invoke("analyze-website", {
     body: { scanId, domain },
@@ -153,7 +124,7 @@ export async function runAnalysis(scanId: string, domain: string): Promise<ScanR
   if (error) throw new Error(error.message || "Analysis failed");
   if (data?.error) throw new Error(data.error);
 
-  let result: ScanResult = {
+  const result: ScanResult = {
     scanId: data.scanId,
     score: data.score,
     summary: data.summary,
@@ -174,10 +145,6 @@ export async function runAnalysis(scanId: string, domain: string): Promise<ScanR
     pageInfo: data.pageInfo,
     pageSpeed: data.pageSpeed || null,
   };
-
-  if (isWebscoreDomain(domain)) {
-    result = applyWebscoreOverride(result);
-  }
 
   // Populate competitors only from real, scraped businesses. If the lookup
   // returns nothing (or fails), leave it empty — the UI hides the section
