@@ -6,7 +6,15 @@ interface CustomerLossCardProps {
 }
 
 const CustomerLossCard = ({ score }: CustomerLossCardProps) => {
-  const lossPercent = score >= 80 ? "10–20%" : score >= 65 ? "20–35%" : "30–45%";
+  // Qualitative risk tied to the score band — the magnitude scales with the
+  // score, but we deliberately avoid a fabricated percentage (it's a derived
+  // estimate, not a measurement).
+  const risk =
+    score >= 80
+      ? { level: "Liten", phrase: "en liten del" }
+      : score >= 65
+        ? { level: "Betydande", phrase: "en betydande del" }
+        : { level: "Stor", phrase: "en stor del" };
 
   return (
     <div className="card-surface p-6 sm:p-7 relative overflow-hidden group">
@@ -28,22 +36,22 @@ const CustomerLossCard = ({ score }: CustomerLossCardProps) => {
       </div>
 
       <div className="relative flex items-center gap-4 p-4 rounded-xl border border-score-low/10" style={{ background: "hsla(0,80%,58%,0.04)" }}>
-        <div className="flex flex-col items-center shrink-0">
+        <div className="flex flex-col items-center shrink-0 text-center">
           <motion.span
-            className="font-mono font-bold tabular-nums text-3xl sm:text-4xl text-score-low tracking-tight"
+            className="font-display font-bold text-2xl sm:text-3xl text-score-low tracking-tight"
             style={{ textShadow: "0 0 24px hsla(0,80%,58%,0.35)" }}
             initial={{ scale: 0.8, opacity: 0 }}
             whileInView={{ scale: 1, opacity: 1 }}
             viewport={{ once: true }}
             transition={{ type: "spring", damping: 18 }}
           >
-            {lossPercent}
+            {risk.level}
           </motion.span>
-          <span className="data-label text-[0.5rem] text-muted-foreground/50 mt-1.5">POTENTIELLA KUNDER</span>
+          <span className="data-label text-[0.5rem] text-muted-foreground/50 mt-1.5">RISKNIVÅ</span>
         </div>
         <div className="flex-1">
           <p className="text-sm text-muted-foreground/80 leading-[1.6]">
-            Ni riskerar att förlora <span className="text-foreground font-medium">{lossPercent}</span> av potentiella kunder online, främst till konkurrenter som är bättre optimerade digitalt.
+            Ni riskerar att tappa <span className="text-foreground font-medium">{risk.phrase}</span> av potentiella kunder online, främst till konkurrenter som är bättre optimerade digitalt.
           </p>
         </div>
       </div>
