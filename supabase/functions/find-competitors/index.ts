@@ -7,15 +7,15 @@ const corsHeaders = {
 };
 
 // ── Types ──────────────────────────────────────────────────────────
+// Only real, scraped, qualitative signals are returned. The numeric quick
+// score is used internally to RANK candidates but never exposed — it's a
+// lighter method than the full analysis and wouldn't match a direct analysis
+// of the same site (that mismatch was the honesty bug we're fixing).
 interface CompetitorResult {
   name: string;
   domain: string;
   url: string;
-  score: number;
   strength: string;
-  distance_km: number | null;
-  cta_count: number;
-  design_rating: number;
   has_reviews: boolean;
 }
 
@@ -171,17 +171,6 @@ function describeStrength(s: QuickSignals): string {
   return strengths.slice(0, 2).join(" och ").replace(/^./, (c) => c.toUpperCase());
 }
 
-// ── Design rating heuristic ───────────────────────────────────────
-function estimateDesignRating(s: QuickSignals): number {
-  let r = 2;
-  if (s.hasViewport) r += 0.5;
-  if (s.hasOgTags) r += 0.5;
-  if (s.imgCount >= 5) r += 0.5;
-  if (s.hasCTA) r += 0.5;
-  if (s.hasForm) r += 0.5;
-  return Math.min(5, Math.round(r));
-}
-
 // ── Search for competitors using Firecrawl ─────────────────────────
 async function searchCompetitors(
   industry: string,
@@ -302,8 +291,8 @@ serve(async (req) => {
     });
     const scrapedCandidates = await Promise.all(scrapePromises);
 
-    // Step 3: Score, validate, and build competitor objects
-    const competitors: CompetitorResult[] = [];
+    // Step 3: validate, score (for ranking only), and build competitor objects
+    const ranked: { score: number; comp: CompetitorResult }[] = [];
     for (const c of scrapedCandidates) {
       const compDomain = extractDomain(c.url);
 
@@ -316,28 +305,23 @@ serve(async (req) => {
           continue;
         }
 
-        const score = calculateQuickScore(signals);
-
-        // We have no real geolocation for these search-derived businesses, so
-        // we do NOT invent a distance. null = "unknown"; the UI hides it.
-        competitors.push({
-          name: signals.businessName || c.title?.split(/[|\-–—]/)[0]?.trim() || compDomain,
-          domain: compDomain,
-          url: c.url,
-          score,
-          strength: describeStrength(signals),
-          distance_km: null,
-          cta_count: signals.ctaCount,
-          design_rating: estimateDesignRating(signals),
-          has_reviews: signals.hasTestimonials,
+        ranked.push({
+          score: calculateQuickScore(signals), // used only to rank, never returned
+          comp: {
+            name: signals.businessName || c.title?.split(/[|\-–—]/)[0]?.trim() || compDomain,
+            domain: compDomain,
+            url: c.url,
+            strength: describeStrength(signals),
+            has_reviews: signals.hasTestimonials,
+          },
         });
       }
       // Don't include sites we couldn't scrape — no guessing
     }
 
-    // Sort by score descending, take top 3
-    competitors.sort((a, b) => b.score - a.score);
-    const topCompetitors = competitors.slice(0, 3);
+    // Rank by the internal quick score, then return only real signals.
+    ranked.sort((a, b) => b.score - a.score);
+    const topCompetitors = ranked.slice(0, 3).map((r) => r.comp);
 
     console.log(`Returning ${topCompetitors.length} verified competitors:`, topCompetitors.map(c => c.domain));
     return new Response(

@@ -5,11 +5,7 @@ export interface NearbyCompetitor {
   name: string;
   domain: string;
   url: string;
-  score: number;
   strength: string;
-  distance_km: number | null;
-  cta_count?: number;
-  design_rating?: number;
   has_reviews?: boolean;
 }
 

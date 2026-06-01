@@ -22,7 +22,6 @@ interface AnalysisContext {
   summary?: string;
   biggestProblem?: string;
   industry?: string;
-  competitorAvgScore?: number;
 }
 
 interface LeadCaptureModalProps {
@@ -113,10 +112,6 @@ const LeadCaptureModal = ({ open, onClose, scanId, title = "Boka gratis analys",
       return;
     }
 
-    const visibilityGap = analysisContext?.competitorAvgScore && analysisContext?.totalScore
-      ? analysisContext.competitorAvgScore - analysisContext.totalScore
-      : undefined;
-
     const estimatedLoss = analysisContext?.totalScore
       ? analysisContext.totalScore < 50 ? "15-25 kunder/mån" : analysisContext.totalScore < 70 ? "5-15 kunder/mån" : "1-5 kunder/mån"
       : undefined;
@@ -130,7 +125,6 @@ const LeadCaptureModal = ({ open, onClose, scanId, title = "Boka gratis analys",
         scanId,
         domain: analysisContext?.domain,
         totalScore: analysisContext?.totalScore,
-        visibilityGap,
         estimatedLoss,
         analysisSummary: analysisContext?.summary,
         biggestProblem: analysisContext?.biggestProblem,

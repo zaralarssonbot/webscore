@@ -293,9 +293,6 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
           summary: data.summary,
           biggestProblem: data.biggestProblem,
           industry: data.industry,
-          competitorAvgScore: data.nearbyCompetitors && data.nearbyCompetitors.length > 0
-            ? Math.round(data.nearbyCompetitors.reduce((s, c) => s + c.score, 0) / data.nearbyCompetitors.length)
-            : undefined,
         }}
       />
       <EmailReportModal
@@ -309,7 +306,7 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
           biggestProblem: data.biggestProblem,
           industry: data.industry,
           categoryScores: data.categoryScores,
-          competitors: data.nearbyCompetitors?.map((c) => ({ name: c.name, score: c.score })),
+          competitors: data.nearbyCompetitors?.map((c) => ({ name: c.name })),
           businessImpact: data.businessImpact,
         }}
       />

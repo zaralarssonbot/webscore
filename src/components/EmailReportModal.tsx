@@ -37,10 +37,6 @@ const EmailReportModal = ({ open, onClose, scanId, reportData }: EmailReportModa
     setLoading(true);
     try {
       // Save lead with analysis context
-      const visibilityGap = reportData.competitors && reportData.competitors.length > 0
-        ? Math.round(reportData.competitors.reduce((s, c) => s + c.score, 0) / reportData.competitors.length) - reportData.score
-        : undefined;
-
       const estimatedLoss = reportData.score < 50
         ? "15-25 kunder/mån"
         : reportData.score < 70
@@ -53,7 +49,6 @@ const EmailReportModal = ({ open, onClose, scanId, reportData }: EmailReportModa
         scanId,
         domain: reportData.domain,
         totalScore: reportData.score,
-        visibilityGap,
         estimatedLoss,
         analysisSummary: reportData.summary,
         biggestProblem: reportData.biggestProblem,

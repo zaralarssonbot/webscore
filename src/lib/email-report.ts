@@ -7,7 +7,7 @@ export interface EmailReportData {
   biggestProblem?: string;
   industry?: string;
   categoryScores: ScanResult["categoryScores"];
-  competitors?: { name: string; score: number }[];
+  competitors?: { name: string }[];
   businessImpact?: string[];
 }
 
@@ -22,7 +22,7 @@ export function generateEmailReport(data: EmailReportData): string {
   const competitorRows = (data.competitors ?? [])
     .map(
       (c) =>
-        `<tr><td style="padding:8px 12px;border-bottom:1px solid #1e1e2e;">${c.name}</td><td style="padding:8px 12px;border-bottom:1px solid #1e1e2e;text-align:right;font-weight:bold;">${c.score}/100</td></tr>`
+        `<tr><td style="padding:8px 12px;border-bottom:1px solid #1e1e2e;">${c.name}</td></tr>`
     )
     .join("");
 
