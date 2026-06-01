@@ -27,3 +27,6 @@ dist-ssr
 .env
 .env.local
 .env.*.local
+
+# Supabase CLI machine-local state (linked project ref, versions, pooler url)
+supabase/.temp
