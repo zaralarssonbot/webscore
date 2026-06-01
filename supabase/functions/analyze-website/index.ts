@@ -1,5 +1,12 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { buildFallbackAudit } from "./fallback.ts";
+
+// AI model used for the text commentary. Change here to swap models later.
+const GEMINI_MODEL = "gemini-2.5-flash";
+// Google's OpenAI-compatible endpoint — lets us keep the existing
+// chat/completions + function-calling (website_audit) request shape.
+const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -96,7 +103,11 @@ async function fetchPageSpeedInsights(domain: string): Promise<PageSpeedData> {
   };
   try {
     const url = encodeURIComponent(`https://${domain}`);
-    const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${url}&strategy=mobile&category=performance&category=accessibility`;
+    // A PAGESPEED_API_KEY lifts the anonymous per-day quota (keyless calls get
+    // 429). When it's absent we still call keyless and fall back to heuristics.
+    const psiKey = Deno.env.get("PAGESPEED_API_KEY");
+    const keyParam = psiKey ? `&key=${psiKey}` : "";
+    const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${url}&strategy=mobile&category=performance&category=accessibility${keyParam}`;
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 30000);
 
@@ -133,7 +144,7 @@ async function fetchPageSpeedInsights(domain: string): Promise<PageSpeedData> {
 }
 
 // ── Crawl with Firecrawl ───────────────────────────────────────────
-async function crawlWithFirecrawl(domain: string): Promise<{ html: string; markdown: string; metadata: any; screenshotUrl?: string; fetchTimeMs: number } | null> {
+async function crawlWithFirecrawl(domain: string): Promise<{ html: string; markdown: string; metadata: Record<string, unknown>; screenshotUrl?: string; fetchTimeMs: number } | null> {
   const apiKey = Deno.env.get("FIRECRAWL_API_KEY");
   if (!apiKey) return null;
 
@@ -590,6 +601,43 @@ const auditTool = {
   },
 };
 
+// ── AI commentary via Google Gemini (OpenAI-compatible endpoint) ───
+// Throws on any failure (missing key, non-2xx, timeout, no tool call) so the
+// caller can fall back to a templated summary without failing the analysis.
+async function generateGeminiAudit(system: string, user: string): Promise<Record<string, unknown>> {
+  const apiKey = Deno.env.get("GEMINI_API_KEY");
+  if (!apiKey) throw new Error("GEMINI_API_KEY is not configured");
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 30000);
+  let response: Response;
+  try {
+    response = await fetch(`${GEMINI_BASE_URL}/chat/completions`, {
+      method: "POST",
+      signal: controller.signal,
+      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: GEMINI_MODEL,
+        messages: [{ role: "system", content: system }, { role: "user", content: user }],
+        tools: [auditTool],
+        tool_choice: { type: "function", function: { name: "website_audit" } },
+      }),
+    });
+  } finally {
+    clearTimeout(timeout);
+  }
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Gemini error: ${response.status} ${errorText.slice(0, 300)}`);
+  }
+
+  const aiResponse = await response.json();
+  const toolCall = aiResponse.choices?.[0]?.message?.tool_calls?.[0];
+  if (!toolCall?.function?.arguments) throw new Error("No structured response from Gemini");
+  return JSON.parse(toolCall.function.arguments);
+}
+
 // ── Handler ────────────────────────────────────────────────────────
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -600,9 +648,6 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: "scanId and domain are required" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
-
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
@@ -690,41 +735,26 @@ serve(async (req) => {
       );
     }
 
-    // Phase 3 — AI commentary
+    // Phase 3 — AI commentary (best-effort; NEVER fatal).
+    // The deterministic scores + checks above are the real product. If the AI
+    // text step fails for any reason, we synthesise a templated summary and
+    // still return the scores rather than failing the whole analysis.
     await supabase.from("scans").update({ status: "ai_analysis" }).eq("id", scanId);
     const { system, user } = buildPrompt(domain, signals, scores, checks);
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        messages: [{ role: "system", content: system }, { role: "user", content: user }],
-        tools: [auditTool],
-        tool_choice: { type: "function", function: { name: "website_audit" } },
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("AI gateway error:", response.status, errorText);
-      if (response.status === 429 || response.status === 402) {
-        await supabase.from("scans").update({ status: "failed" }).eq("id", scanId);
-        const msg = response.status === 429 ? "Begränsning uppnådd. Försök igen om en stund." : "AI-krediter slut.";
-        return new Response(JSON.stringify({ error: msg }),
-          { status: response.status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-      }
-      throw new Error(`AI gateway error: ${response.status}`);
+    let audit: Record<string, unknown>;
+    let aiGenerated = true;
+    try {
+      audit = await generateGeminiAudit(system, user);
+    } catch (aiErr) {
+      console.error("AI commentary failed — returning deterministic scores with templated summary:", aiErr);
+      audit = buildFallbackAudit(domain, scores, checks) as unknown as Record<string, unknown>;
+      aiGenerated = false;
     }
-
-    const aiResponse = await response.json();
-    const toolCall = aiResponse.choices?.[0]?.message?.tool_calls?.[0];
-    if (!toolCall?.function?.arguments) throw new Error("No structured response from AI");
-    const audit = JSON.parse(toolCall.function.arguments);
 
     // Store
     await supabase.from("ai_reports").insert({
-      scan_id: scanId, industry: audit.industry, industry_confidence: 0.95,
+      scan_id: scanId, industry: audit.industry, industry_confidence: aiGenerated ? 0.95 : 0,
       business_summary: audit.business_summary, overall_summary: audit.overall_summary,
       final_score: scores.total, weaknesses_json: audit.weaknesses, strengths_json: audit.strengths,
       biggest_opportunity: audit.biggest_opportunity,
@@ -733,6 +763,7 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({
       scanId,
+      aiGenerated,
       score: scores.total,
       summary: audit.overall_summary,
       categoryScores: { seo: scores.seo, conversion: scores.conversion, trust: scores.trust, performance: scores.performance, security: scores.security },

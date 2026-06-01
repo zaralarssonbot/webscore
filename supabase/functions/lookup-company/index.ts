@@ -3,6 +3,11 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
+// AI model for company-data extraction. Change here to swap models later.
+const GEMINI_MODEL = 'gemini-2.5-flash';
+// Google's OpenAI-compatible endpoint (keeps response_format json_object).
+const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/openai';
+
 const digitsOnly = (value: unknown) => String(value ?? '').replace(/\D/g, '');
 const cleanString = (value: unknown) => {
   if (typeof value !== 'string') return null;
@@ -44,8 +49,8 @@ Deno.serve(async (req) => {
       );
     }
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
+    const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
+    if (!GEMINI_API_KEY) {
       return new Response(
         JSON.stringify({ success: false, error: 'AI-tjänsten är inte konfigurerad' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -136,14 +141,14 @@ Deno.serve(async (req) => {
       );
     }
 
-    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const aiResponse = await fetch(`${GEMINI_BASE_URL}/chat/completions`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        Authorization: `Bearer ${GEMINI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: GEMINI_MODEL,
         response_format: { type: 'json_object' },
         temperature: 0,
         messages: [
