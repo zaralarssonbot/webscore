@@ -36,6 +36,7 @@ const ROUTES = [
   "/guider/vad-kostar-en-hemsida",
   "/guider/behover-foretaget-ett-intranat",
   "/guider/darfor-syns-du-inte-pa-google",
+  "/integritetspolicy",
 ];
 
 async function run() {

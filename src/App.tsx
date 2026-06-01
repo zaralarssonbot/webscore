@@ -12,6 +12,7 @@ const Pricing = lazy(() => import("./pages/Pricing.tsx"));
 const ServicePage = lazy(() => import("./pages/ServicePage.tsx"));
 const GuidesIndex = lazy(() => import("./pages/GuidesIndex.tsx"));
 const GuideArticle = lazy(() => import("./pages/GuideArticle.tsx"));
+const Integritetspolicy = lazy(() => import("./pages/Integritetspolicy.tsx"));
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => (
             <Route path="/tjanster/:slug" element={<ServicePage />} />
             <Route path="/guider" element={<GuidesIndex />} />
             <Route path="/guider/:slug" element={<GuideArticle />} />
+            <Route path="/integritetspolicy" element={<Integritetspolicy />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -17,6 +17,7 @@ const columns = [
       { label: "Guider", href: "/guider" },
       { label: "Priser", href: "/pricing" },
       { label: "Gör testet", href: "/" },
+      { label: "Integritetspolicy", href: "/integritetspolicy" },
     ],
   },
 ];
