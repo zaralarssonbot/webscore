@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import BrandMark from "./BrandMark";
 
 // Every link points to a real route — no dead "#" placeholders.
 const columns = [
@@ -30,9 +31,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-7 h-7 rounded-lg bg-neon-cyan/10 border border-neon-cyan/25 flex items-center justify-center">
-                <span className="text-neon-cyan font-bold text-xs font-mono">W</span>
-              </div>
+              <BrandMark className="w-7 h-7" />
               <span className="font-display font-semibold text-base tracking-[-0.02em]">
                 Web<span className="gradient-text">score</span>
               </span>
