@@ -61,23 +61,23 @@ const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProp
     <section className="relative z-10 flex flex-col items-center justify-center min-h-screen px-5 sm:px-6 py-24 overflow-hidden">
       {/* Abstract backdrop — aurora mesh + living grid + glow (no video) */}
       <div className="absolute inset-0 -z-10">
-        {/* Local aurora accents (on top of the global mesh) */}
+        {/* Local aurora accents (on top of the global mesh) — contained, low */}
         <div
-          className="absolute top-[8%] left-1/2 -translate-x-1/2 w-[760px] h-[760px] rounded-full will-change-transform"
-          style={{ background: "radial-gradient(circle, hsl(var(--neon-cyan) / 0.13) 0%, transparent 60%)", animation: "aurora-1 24s ease-in-out infinite" }}
+          className="absolute top-[8%] left-1/2 -translate-x-1/2 w-[680px] h-[680px] rounded-full will-change-transform"
+          style={{ background: "radial-gradient(circle, hsl(var(--neon-cyan) / 0.09) 0%, transparent 52%)", animation: "aurora-1 24s ease-in-out infinite" }}
         />
         <div
-          className="absolute bottom-[2%] right-[10%] w-[560px] h-[560px] rounded-full will-change-transform"
-          style={{ background: "radial-gradient(circle, hsl(var(--neon-purple) / 0.12) 0%, transparent 60%)", animation: "aurora-3 28s ease-in-out infinite" }}
+          className="absolute bottom-[2%] right-[10%] w-[500px] h-[500px] rounded-full will-change-transform"
+          style={{ background: "radial-gradient(circle, hsl(var(--neon-purple) / 0.08) 0%, transparent 52%)", animation: "aurora-3 28s ease-in-out infinite" }}
         />
         <div
-          className="absolute top-[40%] left-[6%] w-[460px] h-[460px] rounded-full will-change-transform"
-          style={{ background: "radial-gradient(circle, hsl(var(--neon-blue) / 0.10) 0%, transparent 60%)", animation: "aurora-2 31s ease-in-out infinite" }}
+          className="absolute top-[40%] left-[6%] w-[420px] h-[420px] rounded-full will-change-transform"
+          style={{ background: "radial-gradient(circle, hsl(var(--neon-blue) / 0.07) 0%, transparent 52%)", animation: "aurora-2 31s ease-in-out infinite" }}
         />
         {/* Living grid */}
-        <div className="absolute inset-0 bg-grid-live opacity-50" />
+        <div className="absolute inset-0 bg-grid-live opacity-40" />
         {/* Center focus glow */}
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 42%, hsl(var(--neon-cyan) / 0.10) 0%, transparent 55%)" }} />
+        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 42%, hsl(var(--neon-cyan) / 0.08) 0%, transparent 52%)" }} />
         {/* Bottom fade into page */}
         <div className="absolute bottom-0 left-0 right-0 h-48" style={{ background: "linear-gradient(to top, hsl(var(--background)), transparent)" }} />
         <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, transparent 42%, hsl(var(--background) / 0.55) 100%)" }} />
@@ -92,7 +92,7 @@ const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProp
               <span className="absolute inline-flex h-full w-full rounded-full bg-neon-cyan opacity-60 animate-ping" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-neon-cyan" style={{ boxShadow: "0 0 10px hsl(var(--neon-cyan))" }} />
             </span>
-            <span className="data-label text-[0.6rem] text-muted-foreground/80">AI-DRIVEN WEBBANALYS</span>
+            <span className="data-label text-[0.6rem] text-muted-foreground/80">GRATIS · 60 SEKUNDER</span>
           </motion.div>
 
           {/* Headline */}
@@ -121,19 +121,19 @@ const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProp
           {/* Analyzer — glowing animated input */}
           <motion.form variants={item} onSubmit={handleSubmit} className="max-w-xl mx-auto lg:mx-0">
             <div className="relative group">
-              {/* Continuous + focus glow */}
-              <div className="absolute -inset-[2px] rounded-2xl bg-gradient-to-r from-neon-cyan/40 via-neon-blue/30 to-neon-purple/40 opacity-50 group-focus-within:opacity-100 blur-md transition-opacity duration-500 animate-pulse-glow" />
-              <div className="relative flex items-center rounded-2xl border border-white/10 bg-background/80 backdrop-blur-md p-2">
-                <Search className="w-5 h-5 text-neon-cyan ml-3 shrink-0" style={{ filter: "drop-shadow(0 0 6px hsl(var(--neon-cyan)))" }} />
+              {/* Subtle ring — calm by default, brightens on focus (no pulse soup) */}
+              <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-neon-cyan/30 via-neon-blue/25 to-neon-purple/30 opacity-40 group-focus-within:opacity-90 blur-[6px] transition-opacity duration-500" />
+              <div className="relative flex items-center gap-1.5 rounded-2xl border border-white/12 bg-background/70 backdrop-blur-md p-1.5 pl-4 group-focus-within:border-neon-cyan/40 transition-colors duration-300">
+                <Search className="w-5 h-5 text-neon-cyan shrink-0" style={{ filter: "drop-shadow(0 0 6px hsl(var(--neon-cyan)))" }} />
                 <input
                   type="text"
                   value={domain}
                   onChange={(e) => { setDomain(e.target.value); setError(""); }}
                   placeholder="dinsida.se"
-                  className="flex-1 bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/50 px-3 py-3 text-base font-mono tracking-tight min-w-0"
+                  className="flex-1 bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/45 px-2.5 py-3.5 text-[1.05rem] font-mono tracking-tight min-w-0"
                   maxLength={253}
                 />
-                <Button type="submit" variant="glow-gradient" size="lg" className="shrink-0 glow-precision">
+                <Button type="submit" variant="glow-gradient" size="lg" className="shrink-0 h-12 px-5 glow-precision">
                   <span className="relative z-10 flex items-center gap-2 font-medium">
                     Analysera nu
                     <ArrowRight className="w-4 h-4" />
@@ -165,7 +165,7 @@ const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProp
           transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="flex justify-center lg:justify-end"
         >
-          <ScoreGauge value={87} size={320} label="BETYG" caption="EXEMPELANALYS" delay={0.9} accent="brand" />
+          <ScoreGauge value={87} size={360} label="BETYG" caption="EXEMPELANALYS" delay={0.9} accent="brand" />
         </motion.div>
       </div>
 

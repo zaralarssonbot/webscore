@@ -103,7 +103,7 @@ uniform float uScroll;     // smoothed scroll progress, ~0..1+
 ${NOISE_GLSL}
 
 // Palette
-const vec3 BASE   = vec3(0.024, 0.027, 0.039); // #06070A
+const vec3 BASE   = vec3(0.038, 0.044, 0.062); // ~#0B0D12 — matches CSS --background
 const vec3 TEAL   = vec3(0.176, 0.886, 0.784); // #2DE2C8
 const vec3 BLUE   = vec3(0.212, 0.627, 0.941); // #36A0F0
 const vec3 PURPLE = vec3(0.545, 0.361, 0.965); // #8B5CF6
@@ -138,12 +138,13 @@ void main(){
   vec3 col = mix(TEAL, BLUE, smoothstep(0.0, 0.6, hue));
   col = mix(col, PURPLE, smoothstep(0.45, 1.0, hue));
 
-  // Compose over the deep base. Peak neon contribution stays restrained.
-  float intensity = band * 0.42;
+  // Compose over the deep base. Peak neon contribution stays restrained so
+  // the aurora reads as contained glow, not a flood.
+  float intensity = band * 0.34;
 
   // Faux-bloom: soft halo around the brightest cores (cheap, single draw).
   float core = smoothstep(0.62, 1.0, band);
-  intensity += core * 0.22;
+  intensity += core * 0.16;
 
   vec3 color = BASE + col * intensity;
 

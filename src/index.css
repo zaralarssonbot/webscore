@@ -6,24 +6,27 @@
 
 @layer base {
   :root {
-    /* Near-black with blue depth — #06070A */
-    --background: 225 28% 3%;
-    --foreground: 210 40% 97%;
+    /* Premium dark base — lifted a notch from near-black for an airier,
+       less "boxed-in" feel while staying clearly dark. ~#0B0D12 */
+    --background: 224 24% 5%;
+    --foreground: 210 40% 98%;
 
-    --card: 224 26% 6%;
-    --card-foreground: 210 40% 97%;
+    /* Cards sit clearly ABOVE the base (lighter + visible border) so each
+       section reads as a distinct surface, not a soup. */
+    --card: 223 22% 9%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 224 28% 5%;
-    --popover-foreground: 210 40% 97%;
+    --popover: 223 24% 8%;
+    --popover-foreground: 210 40% 98%;
 
     --primary: 200 85% 50%;
     --primary-foreground: 220 25% 6%;
 
-    --secondary: 222 20% 12%;
+    --secondary: 222 18% 14%;
     --secondary-foreground: 210 40% 96%;
 
-    --muted: 222 18% 11%;
-    --muted-foreground: 215 18% 65%;
+    --muted: 222 16% 13%;
+    --muted-foreground: 215 20% 72%;
 
     --accent: 258 65% 58%;
     --accent-foreground: 220 25% 6%;
@@ -31,8 +34,8 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 220 20% 14%;
-    --input: 220 20% 14%;
+    --border: 220 18% 17%;
+    --input: 220 18% 17%;
     --ring: 190 90% 55%;
 
     --radius: 0.75rem;
@@ -51,9 +54,9 @@
     --score-mid: 40 95% 55%;
     --score-high: 160 85% 50%;
 
-    --glass-bg: rgba(9, 12, 22, 0.62);
-    --glass-border: rgba(255, 255, 255, 0.07);
-    --glass-highlight: rgba(255, 255, 255, 0.045);
+    --glass-bg: rgba(14, 18, 30, 0.66);
+    --glass-border: rgba(255, 255, 255, 0.09);
+    --glass-highlight: rgba(255, 255, 255, 0.06);
 
     --glow-cyan: 0 0 30px hsla(175, 85%, 48%, 0.25);
     --glow-blue: 0 0 30px hsla(215, 90%, 62%, 0.2);
@@ -85,11 +88,18 @@
     @apply border-border;
   }
 
+  /* Nudge the base type up ~3% for a more readable, airier feel (scales the
+     rem-based scale uniformly). Smooth in-page scrolling for anchor jumps. */
+  html {
+    font-size: 16.5px;
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Space Grotesk', system-ui, sans-serif;
     letter-spacing: -0.011em;
-    line-height: 1.6;
+    line-height: 1.65;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -100,7 +110,11 @@
   }
 
   p {
-    line-height: 1.7;
+    line-height: 1.75;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
   }
 
   /* Mono everywhere for data: scores, numbers, technical labels */
@@ -195,7 +209,7 @@
 
   /* Article reading surface — clean typography for /guider/:slug */
   .guide-prose {
-    @apply text-[0.975rem] leading-[1.85] text-muted-foreground/85;
+    @apply text-[1.05rem] leading-[1.85] text-muted-foreground/90;
   }
   .guide-prose h2 {
     @apply font-display font-semibold text-foreground text-xl sm:text-2xl tracking-[-0.02em] leading-snug mt-12 mb-4;
@@ -228,14 +242,16 @@
   /* One cohesive card surface + restrained lift/glow on hover */
   .card-surface {
     @apply rounded-2xl border;
-    border-color: rgba(255, 255, 255, 0.06);
-    background: rgba(255, 255, 255, 0.018);
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease, box-shadow 0.5s ease;
+    border-color: rgba(255, 255, 255, 0.09);
+    /* Lighter fill so cards read as a distinct surface above the base. */
+    background: hsl(223 22% 9% / 0.55);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.03) inset, 0 8px 30px rgba(0,0,0,0.28);
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .card-surface:hover {
-    transform: translateY(-4px);
-    border-color: hsl(var(--neon-cyan) / 0.18);
-    box-shadow: var(--glow-soft);
+    transform: translateY(-3px);
+    border-color: hsl(var(--neon-cyan) / 0.22);
+    box-shadow: var(--glow-soft), 0 12px 36px rgba(0,0,0,0.34);
   }
 
   .gradient-text {

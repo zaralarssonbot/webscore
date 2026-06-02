@@ -78,10 +78,10 @@ const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, 
 
   return (
     <div className={`relative flex flex-col items-center ${className ?? ""}`} style={{ width: size }}>
-      {/* Breathing glow */}
+      {/* Breathing glow — a touch larger/brighter so the score really pops */}
       <div
         className="absolute rounded-full animate-gauge-pulse will-change-transform"
-        style={{ width: size * 0.92, height: size * 0.92, top: "4%", background: `radial-gradient(circle, ${glow} 0%, transparent 62%)` }}
+        style={{ width: size * 1.02, height: size * 1.02, top: "2%", background: `radial-gradient(circle, ${glow} 0%, transparent 60%)` }}
       />
 
       {/* Rotating scan-ring */}
@@ -160,7 +160,12 @@ const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, 
           <>
             <span
               className={`font-mono font-bold tabular-nums leading-none ${isBrand ? "gradient-text" : ""}`}
-              style={{ fontSize: size * 0.28, color: isBrand ? undefined : c, textShadow: isBrand ? undefined : `0 0 40px ${glow}, 0 0 80px ${glow.replace("0.45", "0.2")}` }}
+              style={{
+                fontSize: size * 0.3,
+                color: isBrand ? undefined : c,
+                textShadow: isBrand ? undefined : `0 0 40px ${glow}, 0 0 80px ${glow.replace("0.45", "0.2")}`,
+                filter: isBrand ? `drop-shadow(0 0 26px ${glow}) drop-shadow(0 0 60px ${glow.replace("0.45", "0.22")})` : undefined,
+              }}
             >
               {display}
             </span>

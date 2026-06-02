@@ -34,24 +34,24 @@ const VideoShowcaseSection = () => {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.5, delay: i * 0.08 }}
-              className={`${video.span} relative rounded-2xl overflow-hidden group cursor-pointer min-h-[180px] sm:min-h-0`}
+              className={`${video.span} relative group cursor-pointer min-h-[180px] sm:min-h-0`}
             >
-              {/* Video */}
+              {/* Video — edges feathered with a soft mask so each clip melts
+                  into the dark page instead of sitting in a hard box. */}
               <LazyVideo
                 src={video.src}
                 poster={video.src.replace(/\.mp4$/, "-poster.webp")}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                className="absolute inset-0 w-full h-full object-cover rounded-2xl transition-transform duration-700 group-hover:scale-[1.04]"
+                style={{
+                  maskImage: "radial-gradient(125% 125% at 50% 50%, #000 70%, transparent 100%)",
+                  WebkitMaskImage: "radial-gradient(125% 125% at 50% 50%, #000 70%, transparent 100%)",
+                }}
               />
 
-              {/* Overlay */}
-              <div className="absolute inset-0 bg-background/30 group-hover:bg-background/10 transition-all duration-500" />
-
-              {/* Glow border on hover */}
+              {/* Soft hover lift — outer glow only, no hard outline */}
               <div
                 className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                style={{
-                  boxShadow: "inset 0 0 0 1px hsla(175,90%,55%,0.3), 0 0 30px hsla(175,90%,55%,0.1)",
-                }}
+                style={{ boxShadow: "0 0 40px hsla(175,90%,55%,0.12)" }}
               />
 
               {/* Label */}
