@@ -59,7 +59,7 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo */}
-          <a href="/" className="flex items-center group">
+          <a href="/" className="inline-flex items-center min-h-[44px] -my-1 group">
             <img src={webscoreLogo} alt="Webscore" className="h-10 sm:h-12 w-auto transition-transform duration-300 group-hover:scale-105" />
           </a>
 
@@ -85,8 +85,13 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
           </div>
 
           {/* Mobile toggle */}
-          <button onClick={() => setOpen(!open)} className="md:hidden text-muted-foreground hover:text-foreground">
-            {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          <button
+            onClick={() => setOpen(!open)}
+            aria-label={open ? "Stäng meny" : "Öppna meny"}
+            aria-expanded={open}
+            className="md:hidden inline-flex items-center justify-center w-11 h-11 -mr-2 text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
@@ -98,7 +103,7 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
             className="md:hidden rounded-xl p-4 mb-4 space-y-1 border border-white/[0.08] bg-background/95 backdrop-blur-xl shadow-xl"
           >
             {links.map((l) => (
-              <a key={l.href} href={l.href} onClick={(e) => handleNav(e, l.href)} className="block data-label text-[0.62rem] text-muted-foreground hover:text-foreground py-2.5 cursor-pointer">
+              <a key={l.href} href={l.href} onClick={(e) => handleNav(e, l.href)} className="flex items-center min-h-[44px] px-2 -mx-2 rounded-lg data-label text-[0.62rem] text-muted-foreground hover:text-foreground hover:bg-white/[0.03] transition-colors cursor-pointer">
                 {l.label}
               </a>
             ))}

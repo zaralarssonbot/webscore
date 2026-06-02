@@ -179,7 +179,7 @@ const PortfolioSection = () => {
               <button
                 key={f.value}
                 onClick={() => { setActiveFilter(f.value); setPage(0); }}
-                className={`data-label text-[0.58rem] px-4 py-2 rounded-full transition-all duration-300 border ${
+                className={`data-label text-[0.58rem] px-4 min-h-[44px] inline-flex items-center rounded-full transition-all duration-300 border ${
                   activeFilter === f.value
                     ? "bg-neon-cyan/10 border-neon-cyan/30 text-neon-cyan shadow-glow-soft"
                     : "bg-white/[0.02] border-white/[0.06] text-muted-foreground/70 hover:text-foreground hover:border-white/12"
@@ -302,7 +302,7 @@ const PortfolioSection = () => {
               <button
                 onClick={() => setPage(Math.max(0, page - 1))}
                 disabled={page === 0}
-                className="w-10 h-10 rounded-full border border-border/30 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
+                className="w-11 h-11 rounded-full border border-border/30 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
@@ -311,18 +311,23 @@ const PortfolioSection = () => {
                   <button
                     key={idx}
                     onClick={() => setPage(idx)}
-                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                      idx === page
-                        ? "bg-primary w-6"
-                        : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
-                    }`}
-                  />
+                    aria-label={`Visa sida ${idx + 1}`}
+                    className="inline-flex items-center justify-center h-11 w-6 group/dot"
+                  >
+                    <span
+                      className={`h-2 rounded-full transition-all duration-300 ${
+                        idx === page
+                          ? "bg-primary w-6"
+                          : "bg-muted-foreground/30 group-hover/dot:bg-muted-foreground/50 w-2"
+                      }`}
+                    />
+                  </button>
                 ))}
               </div>
               <button
                 onClick={() => setPage(Math.min(totalPages - 1, page + 1))}
                 disabled={page === totalPages - 1}
-                className="w-10 h-10 rounded-full border border-border/30 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
+                className="w-11 h-11 rounded-full border border-border/30 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>

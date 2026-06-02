@@ -143,10 +143,10 @@ const PricingSection = () => {
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-3">
-                    <Button variant="glow" size="lg" className="group glow-precision flex-1" onClick={() => openBooking(`Begär offert – ${offer.title}`)}>
+                    <Button variant="glow" size="lg" className="group glow-precision w-full sm:flex-1" onClick={() => openBooking(`Begär offert – ${offer.title}`)}>
                       <FileText className="w-4 h-4 mr-1.5" /> Begär offert
                     </Button>
-                    <Button variant="glow-outline" size="lg" asChild className="flex-1">
+                    <Button variant="glow-outline" size="lg" asChild className="w-full sm:flex-1">
                       <Link to={offer.href}>Läs mer</Link>
                     </Button>
                   </div>

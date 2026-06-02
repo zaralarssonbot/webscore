@@ -48,7 +48,7 @@ const Footer = () => {
               <ul className="space-y-2.5">
                 {col.links.map((l) => (
                   <li key={l.label}>
-                    <Link to={l.href} className="text-[0.8125rem] text-muted-foreground/80 hover:text-neon-cyan transition-colors duration-300">
+                    <Link to={l.href} className="inline-block py-2 text-[0.8125rem] text-muted-foreground/80 hover:text-neon-cyan transition-colors duration-300">
                       {l.label}
                     </Link>
                   </li>

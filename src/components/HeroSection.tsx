@@ -83,7 +83,7 @@ const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProp
         <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, transparent 42%, hsl(var(--background) / 0.55) 100%)" }} />
       </div>
 
-      <div className="w-full max-w-6xl grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-12 items-center">
+      <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-12 items-center">
         {/* LEFT — copy + analyzer */}
         <motion.div variants={container} initial="hidden" animate="show" className="text-center lg:text-left">
           {/* Eyebrow */}
@@ -151,7 +151,7 @@ const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProp
           {/* Microcopy + booking */}
           <motion.div variants={item} className="flex flex-col sm:flex-row items-center lg:items-start gap-2 sm:gap-4 mt-4">
             <span className="data-label text-[0.58rem] text-muted-foreground/40">60 SEKUNDER · KOSTNADSFRITT · INGA FÖRPLIKTELSER</span>
-            <button type="button" onClick={onBookMeeting} className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors group">
+            <button type="button" onClick={onBookMeeting} className="inline-flex items-center gap-1.5 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors group">
               eller boka videomöte
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
             </button>
