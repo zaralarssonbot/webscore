@@ -6,36 +6,37 @@
 
 @layer base {
   :root {
-    /* Premium dark base — lifted a notch from near-black for an airier,
-       less "boxed-in" feel while staying clearly dark. ~#0B0D12 */
-    --background: 224 24% 5%;
-    --foreground: 210 40% 98%;
+    /* Premium dark base — lifted clearly from near-black to an airier, lighter
+       dark slate (~#161A24) so the whole page reads brighter at first glance
+       while staying premium-dark, not washed out. */
+    --background: 223 22% 11%;
+    --foreground: 210 40% 99%;
 
     /* Cards sit clearly ABOVE the base (lighter + visible border) so each
        section reads as a distinct surface, not a soup. */
-    --card: 223 22% 9%;
-    --card-foreground: 210 40% 98%;
+    --card: 222 20% 16%;
+    --card-foreground: 210 40% 99%;
 
-    --popover: 223 24% 8%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 222 21% 14%;
+    --popover-foreground: 210 40% 99%;
 
-    --primary: 200 85% 50%;
+    --primary: 200 85% 52%;
     --primary-foreground: 220 25% 6%;
 
-    --secondary: 222 18% 14%;
-    --secondary-foreground: 210 40% 96%;
+    --secondary: 221 17% 21%;
+    --secondary-foreground: 210 40% 97%;
 
-    --muted: 222 16% 13%;
-    --muted-foreground: 215 20% 72%;
+    --muted: 221 16% 20%;
+    --muted-foreground: 214 19% 80%;
 
-    --accent: 258 65% 58%;
+    --accent: 258 65% 60%;
     --accent-foreground: 220 25% 6%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 220 18% 17%;
-    --input: 220 18% 17%;
+    --border: 219 16% 27%;
+    --input: 219 16% 27%;
     --ring: 190 90% 55%;
 
     --radius: 0.75rem;
@@ -54,9 +55,9 @@
     --score-mid: 40 95% 55%;
     --score-high: 160 85% 50%;
 
-    --glass-bg: rgba(14, 18, 30, 0.66);
-    --glass-border: rgba(255, 255, 255, 0.09);
-    --glass-highlight: rgba(255, 255, 255, 0.06);
+    --glass-bg: rgba(30, 37, 52, 0.62);
+    --glass-border: rgba(255, 255, 255, 0.13);
+    --glass-highlight: rgba(255, 255, 255, 0.08);
 
     --glow-cyan: 0 0 30px hsla(175, 85%, 48%, 0.25);
     --glow-blue: 0 0 30px hsla(215, 90%, 62%, 0.2);
@@ -72,13 +73,13 @@
     --shadow-depth-2: 0 8px 32px rgba(0,0,0,0.45);
     --shadow-depth-3: 0 24px 80px rgba(0,0,0,0.6);
 
-    --sidebar-background: 225 28% 4%;
+    --sidebar-background: 224 24% 9%;
     --sidebar-foreground: 210 40% 96%;
-    --sidebar-primary: 200 85% 50%;
+    --sidebar-primary: 200 85% 52%;
     --sidebar-primary-foreground: 220 25% 6%;
-    --sidebar-accent: 220 20% 20%;
+    --sidebar-accent: 220 18% 24%;
     --sidebar-accent-foreground: 210 40% 96%;
-    --sidebar-border: 220 18% 22%;
+    --sidebar-border: 219 16% 28%;
     --sidebar-ring: 200 85% 50%;
   }
 }
@@ -140,7 +141,7 @@
 
   .glass-card-hero {
     @apply rounded-3xl border;
-    background: linear-gradient(135deg, rgba(18,24,38,0.85) 0%, rgba(24,32,52,0.75) 100%);
+    background: linear-gradient(135deg, rgba(34,42,60,0.82) 0%, rgba(42,52,76,0.72) 100%);
     border-color: var(--glass-border);
     box-shadow: var(--shadow-depth-3), inset 0 1px 0 var(--glass-highlight);
   }
@@ -242,10 +243,10 @@
   /* One cohesive card surface + restrained lift/glow on hover */
   .card-surface {
     @apply rounded-2xl border;
-    border-color: rgba(255, 255, 255, 0.09);
+    border-color: rgba(255, 255, 255, 0.12);
     /* Lighter fill so cards read as a distinct surface above the base. */
-    background: hsl(223 22% 9% / 0.55);
-    box-shadow: 0 1px 0 rgba(255,255,255,0.03) inset, 0 8px 30px rgba(0,0,0,0.28);
+    background: hsl(222 20% 16% / 0.6);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 8px 30px rgba(0,0,0,0.28);
     transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .card-surface:hover {

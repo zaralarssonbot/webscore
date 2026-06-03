@@ -103,7 +103,7 @@ uniform float uScroll;     // smoothed scroll progress, ~0..1+
 ${NOISE_GLSL}
 
 // Palette
-const vec3 BASE   = vec3(0.038, 0.044, 0.062); // ~#0B0D12 — matches CSS --background
+const vec3 BASE   = vec3(0.086, 0.100, 0.134); // ~#161A24 — matches CSS --background (lifted, airier dark slate)
 const vec3 TEAL   = vec3(0.176, 0.886, 0.784); // #2DE2C8
 const vec3 BLUE   = vec3(0.212, 0.627, 0.941); // #36A0F0
 const vec3 PURPLE = vec3(0.545, 0.361, 0.965); // #8B5CF6
@@ -151,9 +151,10 @@ void main(){
   // A faint cool wash in the deep areas so the base never reads flat-black.
   color += BLUE * 0.012 * (1.0 - band);
 
-  // Radial vignette to pull focus toward the centre / content.
+  // Radial vignette to pull focus toward the centre / content. Floor lifted so
+  // the edges stay clearly lit (airier) rather than sinking toward black.
   float vig = smoothstep(1.15, 0.25, length(uv - 0.5) * 1.35);
-  color *= mix(0.55, 1.0, vig);
+  color *= mix(0.74, 1.0, vig);
 
   gl_FragColor = vec4(color, 1.0);
 }

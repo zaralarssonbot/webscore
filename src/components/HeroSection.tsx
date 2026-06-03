@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Search, ArrowRight } from "lucide-react";
 import { validateDomain } from "@/lib/domain";
 import ScoreGauge from "@/components/ScoreGauge";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface HeroSectionProps {
   onAnalyze: (domain: string) => void;
@@ -43,6 +44,10 @@ const item: Variants = {
 const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProps) => {
   const [domain, setDomain] = useState("");
   const [error, setError] = useState("");
+  const isMobile = useIsMobile();
+  // Bigger on desktop so the score commands the hero; capped on phones so it
+  // never overflows the viewport.
+  const gaugeSize = isMobile ? 288 : 408;
 
   const displayError = error || errorMessage || "";
 
@@ -158,14 +163,16 @@ const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProp
           </motion.div>
         </motion.div>
 
-        {/* RIGHT — iconic score gauge */}
+        {/* RIGHT — iconic score gauge. The pop entrance is owned by ScoreGauge
+            (spring scale + glow burst), so this wrapper only fades in to avoid
+            fighting the spring. */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.85 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4 }}
           className="flex justify-center lg:justify-end"
         >
-          <ScoreGauge value={87} size={360} label="BETYG" caption="EXEMPELANALYS" delay={0.9} accent="brand" />
+          <ScoreGauge value={87} size={gaugeSize} label="BETYG" caption="EXEMPELANALYS" delay={0.18} accent="brand" pop />
         </motion.div>
       </div>
 

@@ -23,6 +23,13 @@ interface ScoreGaugeProps {
    * no number is fabricated until the real result arrives.
    */
   scanning?: boolean;
+  /**
+   * Punchy entrance — the gauge springs in with an overshoot scale/pop, the
+   * count-up lands with weight, and a one-shot glow burst settles into the
+   * normal breathing glow. Used for the hero example so the score grabs the
+   * eye the instant the page opens. Off elsewhere (real result/scanning).
+   */
+  pop?: boolean;
   className?: string;
 }
 
@@ -40,7 +47,7 @@ const BRAND = { c: "hsl(190 90% 55%)", glow: "hsla(190,90%,52%,0.45)" };
  * count-up, a slow rotating scan-ring and a breathing glow. Reusable for the
  * real result score (value-coloured) and the hero example (brand-coloured).
  */
-const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, accent = "score", scanning = false, className }: ScoreGaugeProps) => {
+const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, accent = "score", scanning = false, pop = false, className }: ScoreGaugeProps) => {
   const [display, setDisplay] = useState(0);
   const [armed, setArmed] = useState(false);
   const raf = useRef<number>();
@@ -63,26 +70,47 @@ const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, 
 
   useEffect(() => {
     if (!armed || scanning) return;
-    const duration = 1600;
+    // Pop lands snappier (shorter, sharper decel) so the number arrives with weight.
+    const duration = pop ? 1300 : 1600;
     let startTs: number | null = null;
     const tick = (ts: number) => {
       if (startTs === null) startTs = ts;
       const p = Math.min((ts - startTs) / duration, 1);
-      const eased = 1 - Math.pow(1 - p, 3);
+      const eased = pop ? 1 - Math.pow(1 - p, 4) : 1 - Math.pow(1 - p, 3);
       setDisplay(Math.round(eased * value));
       if (p < 1) raf.current = requestAnimationFrame(tick);
     };
     raf.current = requestAnimationFrame(tick);
     return () => { if (raf.current) cancelAnimationFrame(raf.current); };
-  }, [armed, value, scanning]);
+  }, [armed, value, scanning, pop]);
 
   return (
-    <div className={`relative flex flex-col items-center ${className ?? ""}`} style={{ width: size }}>
-      {/* Breathing glow — a touch larger/brighter so the score really pops */}
+    <motion.div
+      className={`relative flex flex-col items-center ${className ?? ""}`}
+      style={{ width: size }}
+      initial={pop ? { scale: 0.55, opacity: 0 } : false}
+      animate={pop ? { scale: 1, opacity: 1 } : undefined}
+      transition={pop ? {
+        scale: { type: "spring", stiffness: 230, damping: 12, delay },
+        opacity: { duration: 0.35, delay },
+      } : undefined}
+    >
+      {/* Breathing glow — larger/brighter when popping so the score really pops */}
       <div
         className="absolute rounded-full animate-gauge-pulse will-change-transform"
-        style={{ width: size * 1.02, height: size * 1.02, top: "2%", background: `radial-gradient(circle, ${glow} 0%, transparent 60%)` }}
+        style={{ width: size * (pop ? 1.18 : 1.02), height: size * (pop ? 1.18 : 1.02), top: pop ? "-6%" : "2%", background: `radial-gradient(circle, ${glow} 0%, transparent ${pop ? 64 : 60}%)` }}
       />
+
+      {/* One-shot entrance glow burst — flashes out then settles into the breathing glow above */}
+      {pop && (
+        <motion.div
+          className="absolute rounded-full will-change-transform"
+          style={{ width: size * 1.35, height: size * 1.35, top: "-12%", background: `radial-gradient(circle, ${glow.replace("0.45", "0.6")} 0%, transparent 62%)` }}
+          initial={{ opacity: 0, scale: 0.6 }}
+          animate={{ opacity: [0, 1, 0], scale: [0.6, 1.18, 1.55] }}
+          transition={{ duration: 1.5, delay, ease: "easeOut", times: [0, 0.32, 1] }}
+        />
+      )}
 
       {/* Rotating scan-ring */}
       <div
@@ -164,7 +192,11 @@ const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, 
                 fontSize: size * 0.3,
                 color: isBrand ? undefined : c,
                 textShadow: isBrand ? undefined : `0 0 40px ${glow}, 0 0 80px ${glow.replace("0.45", "0.2")}`,
-                filter: isBrand ? `drop-shadow(0 0 26px ${glow}) drop-shadow(0 0 60px ${glow.replace("0.45", "0.22")})` : undefined,
+                filter: isBrand
+                  ? (pop
+                      ? `drop-shadow(0 0 38px ${glow.replace("0.45", "0.6")}) drop-shadow(0 0 90px ${glow.replace("0.45", "0.3")})`
+                      : `drop-shadow(0 0 26px ${glow}) drop-shadow(0 0 60px ${glow.replace("0.45", "0.22")})`)
+                  : undefined,
               }}
             >
               {display}
@@ -184,7 +216,7 @@ const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, 
           {caption}
         </motion.p>
       )}
-    </div>
+    </motion.div>
   );
 };
 
