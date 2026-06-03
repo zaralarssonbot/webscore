@@ -755,12 +755,16 @@ serve(async (req) => {
 
     // Firecrawl + PageSpeed + SSL probe run in parallel (the long pole is PSI).
     const tParallel = Date.now();
-    const [firecrawlResult, psiData, sslOk] = await Promise.all([
-      crawlWithFirecrawl(domain),
-      fetchPageSpeedInsights(domain),
-      probeSSL(domain),
+    const timed = async <T>(fn: () => Promise<T>): Promise<[T, number]> => {
+      const t = Date.now(); const r = await fn(); return [r, Date.now() - t];
+    };
+    const [[firecrawlResult, firecrawlMs], [psiData, psiMs], [sslOk, sslMs]] = await Promise.all([
+      timed(() => crawlWithFirecrawl(domain)),
+      timed(() => fetchPageSpeedInsights(domain)),
+      timed(() => probeSSL(domain)),
     ]);
     const parallelMs = Date.now() - tParallel;
+    const tChecks = Date.now();
 
     if (psiData.performanceScore != null) {
       console.log("PSI data received:", JSON.stringify({ score: psiData.performanceScore, fcp: psiData.fcp, lcp: psiData.lcp }));
@@ -874,10 +878,14 @@ serve(async (req) => {
       // Handed straight back to the summary phase (no re-crawl).
       promptContext,
       scores: { seo: scores.seo, conversion: scores.conversion, trust: scores.trust, performance: scores.performance, security: scores.security, total: scores.total },
-      // Step timings (ms) for measurement once deployed.
+      // Step timings (ms) — per-step measurement.
       _timings: {
-        parallelMs,          // max(Firecrawl, PageSpeed, SSL)
-        scorePhaseMs: Date.now() - t0,
+        firecrawlMs,                       // Firecrawl scrape (ran in parallel)
+        psiMs,                             // PageSpeed Insights (ran in parallel)
+        sslMs,                             // SSL probe (ran in parallel)
+        parallelMs,                        // wall-clock of the parallel block = max of the three
+        checksMs: Date.now() - tChecks,    // extract signals + deterministic checks + scoring
+        scorePhaseMs: Date.now() - t0,     // whole score phase (== time to BETYG visible)
       },
     }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
