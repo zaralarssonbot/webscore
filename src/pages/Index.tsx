@@ -16,7 +16,7 @@ import Footer from "@/components/Footer";
 import LoadingState from "@/components/LoadingState";
 import ResultsSection from "@/components/ResultsSection";
 import LeadCaptureModal from "@/components/LeadCaptureModal";
-import { createScan, fetchScreenshot, fetchGoogleBusiness, runAnalysis, type ScanResult, type GoogleBusinessData } from "@/lib/scan-service";
+import { createScan, fetchScreenshot, fetchGoogleBusiness, runAnalysis, generateSummary, fetchRealCompetitors, type ScanResult, type GoogleBusinessData } from "@/lib/scan-service";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 
 type AppState = "hero" | "loading" | "results";
@@ -35,6 +35,10 @@ const Index = () => {
   const [screenshotUrl, setScreenshotUrl] = useState<string | null>(null);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
   const [googleBusiness, setGoogleBusiness] = useState<GoogleBusinessData | null>(null);
+  // Deferred-enrichment flags: the score shows immediately; the AI summary and
+  // competitors stream in afterwards (skeletons shown while these are true).
+  const [aiLoading, setAiLoading] = useState(false);
+  const [competitorsLoading, setCompetitorsLoading] = useState(false);
   const [bookingOpen, setBookingOpen] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
   const webTestRef = useRef<HTMLDivElement>(null);
@@ -57,9 +61,31 @@ const Index = () => {
       if (screenshot) setScreenshotUrl(screenshot);
       if (gbp?.found) setGoogleBusiness(gbp);
 
+      // Score phase — fast. Show the BETYG + checks as soon as it returns.
       const result = await runAnalysis(id, inputDomain);
       setAnalysisData(result);
       setState("results");
+
+      // Deferred enrichment — never blocks the score. Summary first (it yields
+      // the industry), then real competitors. Each fills in when ready.
+      setAiLoading(true);
+      setCompetitorsLoading(true);
+      generateSummary(result, inputDomain)
+        .then((text) => {
+          setAnalysisData((prev) => (prev ? { ...prev, ...text } : prev));
+          setAiLoading(false);
+          return fetchRealCompetitors(inputDomain, text.industry, result.score);
+        })
+        .then((comps) => {
+          if (comps && comps.length > 0) {
+            setAnalysisData((prev) => (prev ? { ...prev, nearbyCompetitors: comps } : prev));
+          }
+        })
+        .catch((e) => console.log("Deferred enrichment failed (score unaffected):", e))
+        .finally(() => {
+          setAiLoading(false);
+          setCompetitorsLoading(false);
+        });
     } catch (err) {
       const message = err instanceof Error ? err.message : "Något gick fel.";
       setAnalysisError(message);
@@ -75,6 +101,8 @@ const Index = () => {
     setScreenshotUrl(null);
     setAnalysisError(null);
     setGoogleBusiness(null);
+    setAiLoading(false);
+    setCompetitorsLoading(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -133,7 +161,7 @@ const Index = () => {
             transition={{ duration: 0.5 }}
             className="pt-24"
           >
-            <ResultsSection domain={domain} data={analysisData} scanId={scanId} onNewScan={handleReset} googleBusiness={googleBusiness} />
+            <ResultsSection domain={domain} data={analysisData} scanId={scanId} onNewScan={handleReset} googleBusiness={googleBusiness} aiLoading={aiLoading} competitorsLoading={competitorsLoading} />
             <Footer />
           </motion.div>
         )}

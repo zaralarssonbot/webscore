@@ -107,7 +107,10 @@ async function fetchPageSpeedInsights(domain: string): Promise<PageSpeedData> {
     // 429). When it's absent we still call keyless and fall back to heuristics.
     const psiKey = Deno.env.get("PAGESPEED_API_KEY");
     const keyParam = psiKey ? `&key=${psiKey}` : "";
-    const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${url}&strategy=mobile&category=performance&category=accessibility${keyParam}`;
+    // Mobile + performance ONLY. We never read the accessibility category, and
+    // requesting it makes Lighthouse run extra audits server-side (slower). The
+    // performance category still returns the real LCP/FCP/TBT/CLS/SpeedIndex.
+    const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${url}&strategy=mobile&category=performance${keyParam}`;
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 30000);
 
@@ -155,10 +158,14 @@ async function crawlWithFirecrawl(domain: string): Promise<{ html: string; markd
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
+        // Only the formats the checks actually use: rendered HTML (+ parsed
+        // <head> metadata, always returned) and the screenshot. Dropping the
+        // unused markdown/links formats cuts Firecrawl's per-request work.
         url,
-        formats: ["html", "markdown", "links", "screenshot"],
+        formats: ["html", "screenshot"],
         onlyMainContent: false,
-        waitFor: 3000,
+        // Enough for JS-rendered content to settle without over-waiting.
+        waitFor: 2000,
       }),
     });
     const fetchTimeMs = Date.now() - startTime;
@@ -466,7 +473,14 @@ function calculateScores(checks: AuditCheck[]): { seo: number; conversion: numbe
 }
 
 // ── AI prompt (text only) ──────────────────────────────────────────
-function buildPrompt(domain: string, signals: SiteSignals, scores: CategoryScores & { total: number }, checks: AuditCheck[]) {
+// Only the signal fields the prompt actually reads. This compact shape is what
+// the score phase returns to the client and the client hands back to the
+// summary phase — so the (deferred) AI step never has to re-crawl the site.
+type PromptSignals = Pick<SiteSignals,
+  "title" | "metaDesc" | "h1" | "h2s" | "wordCount" | "imgCount" | "imgAltCount" |
+  "ctaCount" | "sectionCount" | "trustSignalCount" | "estimatedLoadTimeMs" | "textContentPreview">;
+
+function buildPrompt(domain: string, signals: PromptSignals, scores: CategoryScores & { total: number }, checks: AuditCheck[]) {
   const passedChecks = checks.filter((c) => c.passed).map((c) => `✅ ${c.label}: ${c.detail}`);
   const failedChecks = checks.filter((c) => !c.passed).map((c) => `❌ ${c.label}: ${c.detail}`);
 
@@ -608,34 +622,54 @@ async function generateGeminiAudit(system: string, user: string): Promise<Record
   const apiKey = Deno.env.get("GEMINI_API_KEY");
   if (!apiKey) throw new Error("GEMINI_API_KEY is not configured");
 
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 30000);
-  let response: Response;
-  try {
-    response = await fetch(`${GEMINI_BASE_URL}/chat/completions`, {
-      method: "POST",
-      signal: controller.signal,
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: GEMINI_MODEL,
-        messages: [{ role: "system", content: system }, { role: "user", content: user }],
-        tools: [auditTool],
-        tool_choice: { type: "function", function: { name: "website_audit" } },
-      }),
-    });
-  } finally {
+  // Free-tier Gemini returns 429 (rate/quota) intermittently. Retry with a
+  // short backoff so a transient 429 doesn't stall the summary — the caller
+  // still falls back to a templated summary if all attempts fail.
+  const MAX_ATTEMPTS = 3;
+  let lastErr: unknown;
+  for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 25000);
+    let response: Response;
+    try {
+      response = await fetch(`${GEMINI_BASE_URL}/chat/completions`, {
+        method: "POST",
+        signal: controller.signal,
+        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: GEMINI_MODEL,
+          messages: [{ role: "system", content: system }, { role: "user", content: user }],
+          tools: [auditTool],
+          tool_choice: { type: "function", function: { name: "website_audit" } },
+        }),
+      });
+    } catch (e) {
+      lastErr = e;
+      clearTimeout(timeout);
+      continue; // network/timeout — retry
+    }
     clearTimeout(timeout);
-  }
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Gemini error: ${response.status} ${errorText.slice(0, 300)}`);
-  }
+    if (response.status === 429 || response.status === 503) {
+      // Honour Retry-After when present, else exponential-ish backoff.
+      const ra = parseInt(response.headers.get("retry-after") || "", 10);
+      const waitMs = Number.isFinite(ra) ? Math.min(ra * 1000, 8000) : 1000 * (attempt + 1);
+      lastErr = new Error(`Gemini ${response.status}`);
+      if (attempt < MAX_ATTEMPTS - 1) { await new Promise((r) => setTimeout(r, waitMs)); continue; }
+      throw lastErr;
+    }
 
-  const aiResponse = await response.json();
-  const toolCall = aiResponse.choices?.[0]?.message?.tool_calls?.[0];
-  if (!toolCall?.function?.arguments) throw new Error("No structured response from Gemini");
-  return JSON.parse(toolCall.function.arguments);
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Gemini error: ${response.status} ${errorText.slice(0, 300)}`);
+    }
+
+    const aiResponse = await response.json();
+    const toolCall = aiResponse.choices?.[0]?.message?.tool_calls?.[0];
+    if (!toolCall?.function?.arguments) throw new Error("No structured response from Gemini");
+    return JSON.parse(toolCall.function.arguments);
+  }
+  throw lastErr instanceof Error ? lastErr : new Error("Gemini failed after retries");
 }
 
 // ── Handler ────────────────────────────────────────────────────────
@@ -643,15 +677,75 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { scanId, domain } = await req.json();
-    if (!scanId || !domain) {
-      return new Response(JSON.stringify({ error: "scanId and domain are required" }),
+    const body = await req.json();
+    const { scanId, domain, phase } = body;
+    if (!domain) {
+      return new Response(JSON.stringify({ error: "domain is required" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
-    // Phase 1 — Crawl (Firecrawl with fallback) + PageSpeed Insights in parallel
+    // ── PHASE: SUMMARY ──────────────────────────────────────────────
+    // Deferred, non-blocking AI text step. Receives the compact promptContext +
+    // scores + checks the score phase already computed, so it never re-crawls.
+    // The score is NOT recomputed here and is never affected by this step.
+    if (phase === "summary") {
+      const { promptContext, scores, checks } = body as {
+        promptContext: PromptSignals; scores: CategoryScores & { total: number }; checks: AuditCheck[];
+      };
+      if (!promptContext || !scores) {
+        return new Response(JSON.stringify({ error: "promptContext and scores are required for summary" }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+      const safeChecks = Array.isArray(checks) ? checks : [];
+      const { system, user } = buildPrompt(domain, promptContext, scores, safeChecks);
+
+      let audit: Record<string, unknown>;
+      let aiGenerated = true;
+      try {
+        audit = await generateGeminiAudit(system, user);
+      } catch (aiErr) {
+        console.error("AI commentary failed — returning templated summary:", aiErr);
+        audit = buildFallbackAudit(domain, scores, safeChecks) as unknown as Record<string, unknown>;
+        aiGenerated = false;
+      }
+
+      // Best-effort persistence — never blocks the response.
+      try {
+        await supabase.from("ai_reports").insert({
+          scan_id: scanId, industry: audit.industry, industry_confidence: aiGenerated ? 0.95 : 0,
+          business_summary: audit.business_summary, overall_summary: audit.overall_summary,
+          final_score: scores.total, weaknesses_json: audit.weaknesses, strengths_json: audit.strengths,
+          biggest_opportunity: audit.biggest_opportunity,
+        });
+        if (scanId) await supabase.from("scans").update({ status: "complete" }).eq("id", scanId);
+      } catch (e) { console.error("ai_reports persist failed (non-fatal):", e); }
+
+      return new Response(JSON.stringify({
+        scanId, aiGenerated,
+        summary: audit.overall_summary,
+        biggestProblem: audit.biggest_problem,
+        weaknesses: audit.weaknesses,
+        strengths: audit.strengths,
+        opportunity: audit.biggest_opportunity,
+        businessImpact: audit.business_impact || [],
+        quickFix: audit.quick_fix,
+        industry: audit.industry,
+        businessSummary: audit.business_summary,
+      }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    // ── PHASE: SCORE (default) ──────────────────────────────────────
+    // Everything needed for the BETYG: crawl + PageSpeed + deterministic
+    // checks + scoring. Returns immediately — the AI text and competitors are
+    // fetched separately afterwards and never block the score.
+    if (!scanId) {
+      return new Response(JSON.stringify({ error: "scanId is required" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    const t0 = Date.now();
     await supabase.from("scans").update({ status: "crawling" }).eq("id", scanId);
 
     let html = "";
@@ -659,11 +753,14 @@ serve(async (req) => {
     let fetchTimeMs = 0;
     let metadata: Record<string, unknown> | undefined;
 
+    // Firecrawl + PageSpeed + SSL probe run in parallel (the long pole is PSI).
+    const tParallel = Date.now();
     const [firecrawlResult, psiData, sslOk] = await Promise.all([
       crawlWithFirecrawl(domain),
       fetchPageSpeedInsights(domain),
       probeSSL(domain),
     ]);
+    const parallelMs = Date.now() - tParallel;
 
     if (psiData.performanceScore != null) {
       console.log("PSI data received:", JSON.stringify({ score: psiData.performanceScore, fcp: psiData.fcp, lcp: psiData.lcp }));
@@ -735,47 +832,23 @@ serve(async (req) => {
       );
     }
 
-    // Phase 3 — AI commentary (best-effort; NEVER fatal).
-    // The deterministic scores + checks above are the real product. If the AI
-    // text step fails for any reason, we synthesise a templated summary and
-    // still return the scores rather than failing the whole analysis.
+    // Score is final & stable here (PageSpeed is already folded in). Leave the
+    // scan at "ai_analysis" — the deferred summary phase flips it to "complete".
     await supabase.from("scans").update({ status: "ai_analysis" }).eq("id", scanId);
-    const { system, user } = buildPrompt(domain, signals, scores, checks);
 
-    let audit: Record<string, unknown>;
-    let aiGenerated = true;
-    try {
-      audit = await generateGeminiAudit(system, user);
-    } catch (aiErr) {
-      console.error("AI commentary failed — returning deterministic scores with templated summary:", aiErr);
-      audit = buildFallbackAudit(domain, scores, checks) as unknown as Record<string, unknown>;
-      aiGenerated = false;
-    }
-
-    // Store
-    await supabase.from("ai_reports").insert({
-      scan_id: scanId, industry: audit.industry, industry_confidence: aiGenerated ? 0.95 : 0,
-      business_summary: audit.business_summary, overall_summary: audit.overall_summary,
-      final_score: scores.total, weaknesses_json: audit.weaknesses, strengths_json: audit.strengths,
-      biggest_opportunity: audit.biggest_opportunity,
-    });
-    await supabase.from("scans").update({ status: "complete" }).eq("id", scanId);
+    // Compact context the (deferred) summary phase needs — so it never re-crawls.
+    const promptContext: PromptSignals = {
+      title: signals.title, metaDesc: signals.metaDesc, h1: signals.h1, h2s: signals.h2s,
+      wordCount: signals.wordCount, imgCount: signals.imgCount, imgAltCount: signals.imgAltCount,
+      ctaCount: signals.ctaCount, sectionCount: signals.sectionCount,
+      trustSignalCount: signals.trustSignalCount, estimatedLoadTimeMs: signals.estimatedLoadTimeMs,
+      textContentPreview: signals.textContentPreview,
+    };
 
     return new Response(JSON.stringify({
       scanId,
-      aiGenerated,
       score: scores.total,
-      summary: audit.overall_summary,
       categoryScores: { seo: scores.seo, conversion: scores.conversion, trust: scores.trust, performance: scores.performance, security: scores.security },
-      biggestProblem: audit.biggest_problem,
-      weaknesses: audit.weaknesses,
-      strengths: audit.strengths,
-      opportunity: audit.biggest_opportunity,
-      businessImpact: audit.business_impact || [],
-      quickFix: audit.quick_fix,
-      industry: audit.industry,
-      businessSummary: audit.business_summary,
-      nearbyCompetitors: audit.nearby_competitors || [],
       auditChecks: checks,
       pageInfo: {
         title: signals.title,
@@ -798,6 +871,14 @@ serve(async (req) => {
         speedIndex: psiData.speedIndex,
         interactive: psiData.interactive,
       } : null,
+      // Handed straight back to the summary phase (no re-crawl).
+      promptContext,
+      scores: { seo: scores.seo, conversion: scores.conversion, trust: scores.trust, performance: scores.performance, security: scores.security, total: scores.total },
+      // Step timings (ms) for measurement once deployed.
+      _timings: {
+        parallelMs,          // max(Firecrawl, PageSpeed, SSL)
+        scorePhaseMs: Date.now() - t0,
+      },
     }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("analyze-website error:", e);

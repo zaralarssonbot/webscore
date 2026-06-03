@@ -22,7 +22,26 @@ interface ResultsSectionProps {
   scanId?: string;
   onNewScan?: () => void;
   googleBusiness?: GoogleBusinessData | null;
+  /** AI commentary still generating (summary/biggest problem/impact). */
+  aiLoading?: boolean;
+  /** Real competitors still being looked up. */
+  competitorsLoading?: boolean;
 }
+
+/** Shimmer placeholder for a deferred card while its data streams in. */
+const CardSkeleton = ({ lines = 3, label }: { lines?: number; label: string }) => (
+  <div className="card-surface p-6 sm:p-8" aria-busy="true" aria-label={`${label} laddas`}>
+    <div className="flex items-center gap-3 mb-5">
+      <div className="w-9 h-9 rounded-xl bg-foreground/10 animate-pulse" />
+      <div className="h-3.5 w-48 rounded bg-foreground/10 animate-pulse" />
+    </div>
+    <div className="space-y-2.5 animate-pulse">
+      {Array.from({ length: lines }).map((_, i) => (
+        <div key={i} className="h-3 rounded bg-foreground/10" style={{ width: `${90 - i * 12}%` }} />
+      ))}
+    </div>
+  </div>
+);
 
 const stagger = {
   hidden: {},
@@ -34,7 +53,7 @@ const fadeUp = {
   show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] as const } },
 };
 
-const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps) => {
+const ResultsSection = ({ domain, data, scanId, onNewScan, aiLoading, competitorsLoading }: ResultsSectionProps) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [remediationOpen, setRemediationOpen] = useState(false);
@@ -97,15 +116,17 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
 
         {/* 1. Score + Summary (Insikt) */}
         <motion.div variants={fadeUp}>
-          <ScoreBlock score={data.score} screenshotUrl={data.pageInfo?.screenshotUrl} domain={domain} categoryScores={data.categoryScores} summary={data.summary} />
+          <ScoreBlock score={data.score} screenshotUrl={data.pageInfo?.screenshotUrl} domain={domain} categoryScores={data.categoryScores} summary={data.summary} summaryLoading={aiLoading} />
         </motion.div>
 
-        {/* 2. Biggest Problem (Problem) */}
-        {data.biggestProblem && (
+        {/* 2. Biggest Problem (Problem) — streams in with the AI summary */}
+        {data.biggestProblem ? (
           <motion.div variants={fadeUp}>
             <BiggestProblemCard problem={data.biggestProblem} />
           </motion.div>
-        )}
+        ) : aiLoading ? (
+          <motion.div variants={fadeUp}><CardSkeleton lines={2} label="Största problemet" /></motion.div>
+        ) : null}
 
         {/* 3. Competitors (Konkurrentgap) */}
         {data.nearbyCompetitors && data.nearbyCompetitors.length > 0 && (
@@ -164,17 +185,24 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
           </motion.div>
         )}
 
+        {/* Competitors still being looked up (real, scraped — never fabricated) */}
+        {!(data.nearbyCompetitors && data.nearbyCompetitors.length > 0) && competitorsLoading && (
+          <motion.div variants={fadeUp}><CardSkeleton lines={3} label="Konkurrenter i ditt område" /></motion.div>
+        )}
+
         {/* Mid-page CTA – after competitors */}
         <motion.div variants={fadeUp}>
           <InlineBookingCTA onBook={handleBook} />
         </motion.div>
 
-        {/* 4. Business Impact (Affärseffekt) */}
-        {data.businessImpact && data.businessImpact.length > 0 && (
+        {/* 4. Business Impact (Affärseffekt) — streams in with the AI summary */}
+        {data.businessImpact && data.businessImpact.length > 0 ? (
           <motion.div variants={fadeUp}>
             <BusinessImpactCard impacts={data.businessImpact} />
           </motion.div>
-        )}
+        ) : aiLoading ? (
+          <motion.div variants={fadeUp}><CardSkeleton lines={3} label="Affärseffekt" /></motion.div>
+        ) : null}
 
         {/* 5. Customer Loss Risk */}
         <motion.div variants={fadeUp}>

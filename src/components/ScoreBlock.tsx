@@ -9,9 +9,11 @@ interface ScoreBlockProps {
   domain?: string;
   categoryScores?: { seo: number; conversion: number; trust: number; performance: number; security: number };
   summary?: string;
+  /** AI summary is still being generated — show a skeleton in its place. */
+  summaryLoading?: boolean;
 }
 
-const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary }: ScoreBlockProps) => {
+const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary, summaryLoading }: ScoreBlockProps) => {
   const getScoreColor = () => {
     if (score >= 80) return { color: "hsl(var(--score-high))", glow: "hsla(160,85%,50%,0.3)", hue: 160 };
     if (score >= 65) return { color: "hsl(var(--score-mid))", glow: "hsla(40,95%,55%,0.3)", hue: 40 };
@@ -109,12 +111,12 @@ const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary }: S
         )}
       </div>
 
-      {/* AI Summary */}
-      {summary && (
+      {/* AI Summary — fills in after the score (skeleton while generating) */}
+      {summary ? (
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9, duration: 0.6 }}
+          transition={{ duration: 0.5 }}
           className="relative mt-8 p-5 rounded-2xl border border-border bg-secondary"
         >
           <div className="absolute top-0 left-0 right-0 h-[1px]" style={{ background: "linear-gradient(90deg, transparent 10%, hsl(var(--neon-cyan) / 0.2) 50%, transparent 90%)" }} />
@@ -128,7 +130,26 @@ const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary }: S
             </div>
           </div>
         </motion.div>
-      )}
+      ) : summaryLoading ? (
+        <div className="relative mt-8 p-5 rounded-2xl border border-border bg-secondary" aria-busy="true" aria-label="Sammanfattning genereras">
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border border-neon-cyan/15 mt-0.5" style={{ background: "hsla(175,95%,50%,0.08)" }}>
+              <BarChart3 className="w-4 h-4 text-neon-cyan animate-pulse" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-3">
+                <p className="data-label text-[0.74rem] text-neon-blue">Sammanfattning</p>
+                <span className="data-label text-[0.74rem] text-muted-foreground/80">genereras…</span>
+              </div>
+              <div className="space-y-2 animate-pulse">
+                <div className="h-3 rounded bg-foreground/10 w-[92%]" />
+                <div className="h-3 rounded bg-foreground/10 w-[80%]" />
+                <div className="h-3 rounded bg-foreground/10 w-[64%]" />
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {/* Category Scores */}
       {categoryScores && (
