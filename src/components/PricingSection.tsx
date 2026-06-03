@@ -64,7 +64,7 @@ const PricingSection = () => {
                     </div>
                   )}
 
-                  <span className="data-label text-[0.58rem] self-start px-3 py-1 rounded-full border border-white/10 bg-white/[0.03] text-neon-cyan/80 mb-4">
+                  <span className="data-label text-[0.58rem] self-start px-3 py-1 rounded-full border border-border bg-secondary text-neon-cyan mb-4">
                     {pkg.tier}
                   </span>
 
@@ -77,7 +77,7 @@ const PricingSection = () => {
                   </div>
                   <p className="text-xs text-muted-foreground/50 mb-6 font-mono">{pkg.priceNote}</p>
 
-                  <div className="border-t border-white/[0.06] pt-5 mb-6 flex-1">
+                  <div className="border-t border-border pt-5 mb-6 flex-1">
                     <p className="data-label text-[0.5rem] text-muted-foreground/50 mb-3">{pkg.includes ?? "INGÅR I PAKETET"}</p>
                     <ul className="space-y-2.5">
                       {pkg.features.map((f, i) => (
@@ -121,7 +121,7 @@ const PricingSection = () => {
             >
               {projectOffers.map((offer) => (
                 <motion.div key={offer.title} variants={fadeUp} className="card-surface p-6 sm:p-8 flex flex-col">
-                  <span className="data-label text-[0.58rem] self-start px-3 py-1 rounded-full border border-white/10 bg-white/[0.03] text-neon-cyan/80 mb-4">
+                  <span className="data-label text-[0.58rem] self-start px-3 py-1 rounded-full border border-border bg-secondary text-neon-cyan mb-4">
                     OFFERT
                   </span>
                   <h3 className="font-display font-semibold text-xl mb-1.5 tracking-[-0.02em]">{offer.title}</h3>
@@ -131,7 +131,7 @@ const PricingSection = () => {
                     <span className="font-mono font-bold text-2xl sm:text-3xl text-foreground tracking-tight">Offert efter behov</span>
                   </div>
 
-                  <div className="border-t border-white/[0.06] pt-5 mb-6 flex-1">
+                  <div className="border-t border-border pt-5 mb-6 flex-1">
                     <ul className="space-y-2.5">
                       {offer.points.map((p, i) => (
                         <li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground/80 leading-[1.5]">

@@ -62,14 +62,14 @@ const LoadingState = ({ screenshotUrl, domain }: LoadingStateProps) => {
         >
           <div className="card-surface overflow-hidden">
             {/* Browser chrome */}
-            <div className="flex items-center gap-2 border-b border-white/[0.06] bg-white/[0.02] px-4 py-2.5">
+            <div className="flex items-center gap-2 border-b border-border bg-secondary px-4 py-2.5">
               <div className="flex gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-full bg-white/10" />
-                <span className="h-2.5 w-2.5 rounded-full bg-white/10" />
-                <span className="h-2.5 w-2.5 rounded-full bg-white/10" />
+                <span className="h-2.5 w-2.5 rounded-full bg-foreground/15" />
+                <span className="h-2.5 w-2.5 rounded-full bg-foreground/15" />
+                <span className="h-2.5 w-2.5 rounded-full bg-foreground/15" />
               </div>
               <div className="mx-3 flex-1">
-                <div className="flex items-center gap-1.5 truncate rounded-md bg-black/30 px-3 py-1 font-mono text-[10px] text-muted-foreground/70">
+                <div className="flex items-center gap-1.5 truncate rounded-md bg-background px-3 py-1 font-mono text-[10px] text-muted-foreground/70">
                   <Lock className="h-2.5 w-2.5 text-neon-cyan/70" />
                   {domain ? `https://${domain}` : "https://…"}
                 </div>
@@ -77,7 +77,7 @@ const LoadingState = ({ screenshotUrl, domain }: LoadingStateProps) => {
             </div>
 
             {/* Viewport */}
-            <div className="relative aspect-[16/10] overflow-hidden bg-black/20">
+            <div className="relative aspect-[16/10] overflow-hidden bg-secondary">
               <AnimatePresence mode="wait">
                 {screenshotUrl ? (
                   <motion.img

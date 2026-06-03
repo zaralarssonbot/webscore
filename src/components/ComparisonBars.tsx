@@ -35,7 +35,7 @@ const ComparisonBars = ({ score }: ComparisonBarsProps) => {
               <span className="text-sm text-muted-foreground/80">{bar.label}</span>
               <span className="font-mono font-semibold tabular-nums text-sm" style={{ color: bar.color }}>{bar.value}</span>
             </div>
-            <div className="h-2.5 rounded-full bg-white/[0.04] overflow-hidden relative">
+            <div className="h-2.5 rounded-full bg-secondary overflow-hidden relative">
               <motion.div
                 initial={{ width: 0 }}
                 whileInView={{ width: `${bar.value}%` }}

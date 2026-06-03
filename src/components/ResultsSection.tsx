@@ -66,7 +66,7 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
 
         {/* Domain tag */}
         <motion.div variants={fadeUp} className="text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/[0.07] bg-white/[0.02] px-5 py-2.5 text-sm text-muted-foreground">
+          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm text-muted-foreground">
             <Globe className="w-3.5 h-3.5 text-neon-cyan" />
             Resultat för <span className="font-mono text-foreground">{domain}</span>
           </span>

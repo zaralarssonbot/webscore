@@ -221,7 +221,7 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto py-8 px-4"
           onClick={handleClose}
         >
-          <div className="absolute inset-0 bg-background/90 backdrop-blur-xl" />
+          <div className="absolute inset-0 bg-foreground/40 backdrop-blur-xl" />
 
           <motion.div
             initial={{ scale: 0.95, opacity: 0, y: 30 }}
@@ -239,7 +239,7 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
             <AnimatePresence mode="wait">
               {/* STEP 1: Problems */}
               {step === "problems" && (
-                <motion.div key="problems" initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.35 }} className="rounded-3xl border border-neon-cyan/15 bg-card/70 backdrop-blur-xl shadow-2xl p-8 sm:p-12">
+                <motion.div key="problems" initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.35 }} className="rounded-3xl border border-neon-cyan/15 bg-card/95 backdrop-blur-xl shadow-2xl p-8 sm:p-12">
                   <div className="text-center mb-8">
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-score-low/10 border border-score-low/15 text-score-low text-sm font-medium mb-4">
                       <AlertTriangle className="w-4 h-4" />
@@ -361,7 +361,7 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
 
               {/* STEP 3: Contact form */}
               {step === "contact" && (
-                <motion.div key="contact" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.35 }} className="rounded-3xl border border-neon-cyan/15 bg-card/70 backdrop-blur-xl shadow-2xl p-8 sm:p-12 max-w-lg mx-auto">
+                <motion.div key="contact" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.35 }} className="rounded-3xl border border-neon-cyan/15 bg-card/95 backdrop-blur-xl shadow-2xl p-8 sm:p-12 max-w-lg mx-auto">
                   <div className="text-center mb-8">
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/15 text-primary text-sm font-medium mb-4">
                       <BadgeCheck className="w-4 h-4" />
@@ -507,7 +507,7 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
 
               {/* STEP 4: Confirmation */}
               {step === "confirmation" && (
-                <motion.div key="confirmation" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: "spring", damping: 20, stiffness: 200 }} className="rounded-3xl border border-neon-cyan/15 bg-card/70 backdrop-blur-xl shadow-2xl p-10 sm:p-14 max-w-lg mx-auto text-center relative overflow-hidden">
+                <motion.div key="confirmation" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: "spring", damping: 20, stiffness: 200 }} className="rounded-3xl border border-neon-cyan/15 bg-card/95 backdrop-blur-xl shadow-2xl p-10 sm:p-14 max-w-lg mx-auto text-center relative overflow-hidden">
                   {/* Background glow — single teal */}
                   <div className="absolute inset-0" style={{ background: "radial-gradient(circle at 50% 30%, hsla(175,95%,50%,0.08) 0%, transparent 60%)" }} />
 

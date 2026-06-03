@@ -95,7 +95,7 @@ const EmailReportModal = ({ open, onClose, scanId, reportData }: EmailReportModa
           className="fixed inset-0 z-50 flex items-center justify-center px-4"
           onClick={handleClose}
         >
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-foreground/40 backdrop-blur-sm" />
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}

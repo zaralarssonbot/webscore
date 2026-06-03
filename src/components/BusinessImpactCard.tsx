@@ -26,7 +26,7 @@ const BusinessImpactCard = ({ impacts }: BusinessImpactCardProps) => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
-            className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05]"
+            className="flex items-start gap-3 p-3 rounded-xl bg-secondary border border-border"
           >
             <span className="w-5 h-5 rounded-full bg-neon-orange/12 flex items-center justify-center shrink-0 mt-0.5 font-mono text-[0.6rem] font-bold text-neon-orange tabular-nums">
               {i + 1}

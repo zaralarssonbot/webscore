@@ -115,7 +115,7 @@ const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary }: S
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.9, duration: 0.6 }}
-          className="relative mt-8 p-5 rounded-2xl border border-white/[0.06] bg-white/[0.02]"
+          className="relative mt-8 p-5 rounded-2xl border border-border bg-secondary"
         >
           <div className="absolute top-0 left-0 right-0 h-[1px]" style={{ background: "linear-gradient(90deg, transparent 10%, hsl(var(--neon-cyan) / 0.2) 50%, transparent 90%)" }} />
           <div className="flex items-start gap-3">

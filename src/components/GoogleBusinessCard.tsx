@@ -65,7 +65,7 @@ const GoogleBusinessCard = ({ data, domain }: GoogleBusinessCardProps) => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ delay: 0.2 }}
-        className="mt-4 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05]"
+        className="mt-4 p-3 rounded-xl bg-secondary border border-border"
       >
         <div className="flex items-center gap-2 mb-1">
           <div className="w-2 h-2 rounded-full" style={{ background: activity.dot, boxShadow: activity.glow ? "0 0 6px hsla(160,85%,50%,0.5)" : "none" }} />
