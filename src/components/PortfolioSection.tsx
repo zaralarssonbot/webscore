@@ -444,10 +444,10 @@ const PortfolioSection = () => {
 
                 <button
                   onClick={scrollToContact}
-                  className="w-full flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-primary text-primary-foreground font-semibold text-[0.9375rem] hover:shadow-[0_0_30px_hsla(175,90%,55%,0.25)] transition-all duration-300 hover:scale-[1.02]"
+                  className="group/cta w-full flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-purple text-white font-semibold text-[0.9375rem] shadow-[0_2px_8px_hsl(var(--neon-blue)/0.28)] transition-[transform,box-shadow,filter] duration-[180ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:brightness-[1.06] hover:shadow-[0_10px_26px_hsl(var(--neon-blue)/0.36)] active:translate-y-0 active:brightness-100"
                 >
                   Vill du ha något liknande?
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 transition-transform duration-[180ms] group-hover/cta:translate-x-1" />
                 </button>
               </div>
             </motion.div>

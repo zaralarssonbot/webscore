@@ -6,9 +6,10 @@
 
 @layer base {
   :root {
-    /* Light premium base (Linear/Stripe) — near-white page, pure-white cards,
-       hairline borders, crisp near-black text. Clean and airy, no dark glow. */
-    --background: 240 20% 99%;       /* #FCFCFD page */
+    /* Light premium base (Linear/Stripe) — subtle gray page so the pure-white
+       cards lift off it everywhere (token-level, every page). Hairline borders,
+       crisp near-black text. Clean and airy, no dark glow. */
+    --background: 225 18% 97%;       /* #F5F6F8 — subtle gray band */
     --foreground: 0 0% 4%;           /* #0A0A0A headings / near-black */
 
     /* Cards sit on white, separated by a hairline border + soft low shadow. */
@@ -96,6 +97,14 @@
 @layer base {
   * {
     @apply border-border;
+  }
+
+  /* Visible focus ring everywhere for accessibility — one consistent style.
+     (The Button component renders its own ring; this covers links, inputs and
+     any other interactive element so nothing is left without a focus state.) */
+  :where(a, input, textarea, select, summary, [role="button"], [tabindex]:not([tabindex="-1"])):focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
   }
 
   /* Nudge the base type up ~3% for a more readable, airier feel (scales the
@@ -262,7 +271,7 @@
     border-color: rgba(15, 23, 42, 0.08);
     background: hsl(var(--card));
     box-shadow: var(--card-shadow);
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
   /* Gradient hairline that lights up along the card's top edge on hover. The
      transparent ends keep it clear of the rounded corners. */
@@ -271,7 +280,7 @@
     position: absolute; top: 0; left: 0; right: 0; height: 2px;
     background: linear-gradient(90deg, transparent, hsl(var(--neon-cyan) / 0.75), hsl(var(--neon-blue) / 0.75) 50%, hsl(var(--neon-purple) / 0.75), transparent);
     opacity: 0;
-    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     pointer-events: none;
   }
   .card-surface:hover {
@@ -287,7 +296,7 @@
     background-image: linear-gradient(135deg, hsl(var(--neon-cyan)), hsl(var(--neon-blue)) 50%, hsl(var(--neon-purple)));
     color: #fff;
     box-shadow: 0 6px 16px hsl(var(--neon-blue) / 0.30), inset 0 1px 0 rgba(255,255,255,0.30);
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .group:hover .icon-chip,
   .card-surface:hover .icon-chip {

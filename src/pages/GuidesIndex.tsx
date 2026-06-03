@@ -60,8 +60,8 @@ const GuidesIndex = () => {
                   <span className="data-label text-[0.5rem] text-muted-foreground/45 inline-flex items-center gap-1.5">
                     <Clock className="w-3 h-3" /> {g.readingMin} min
                   </span>
-                  <span className="data-label text-[0.5rem] text-neon-cyan/70 inline-flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
-                    Läs guiden <ArrowRight className="w-3 h-3" />
+                  <span className="data-label text-[0.5rem] text-neon-blue inline-flex items-center gap-1.5">
+                    Läs guiden <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-[180ms]" />
                   </span>
                 </div>
               </Link>

@@ -102,22 +102,18 @@ const Index = () => {
               />
             </div>
 
-            {/* Subtle light-gray band behind all card sections so the white
-                cards lift off the page. One continuous band → no hard seams. */}
-            <div className="surface-band">
-              <ServicesSection />
-              <ProcessSection />
-              <PortfolioSection />
-              <VideoShowcaseSection />
-              <WhyUsSection />
-              <HomePricingSection />
+            <ServicesSection />
+            <ProcessSection />
+            <PortfolioSection />
+            <VideoShowcaseSection />
+            <WhyUsSection />
+            <HomePricingSection />
 
-              <div ref={webTestRef}>
-                <FinalCTASection
-                  onAnalyze={handleAnalyze}
-                  onBookMeeting={() => setBookingOpen(true)}
-                />
-              </div>
+            <div ref={webTestRef}>
+              <FinalCTASection
+                onAnalyze={handleAnalyze}
+                onBookMeeting={() => setBookingOpen(true)}
+              />
             </div>
             <Footer />
           </motion.div>
