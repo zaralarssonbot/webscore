@@ -283,25 +283,34 @@
     transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     pointer-events: none;
   }
-  .card-surface:hover {
-    transform: translateY(-6px);
-    border-color: hsl(var(--neon-blue) / 0.28);
-    box-shadow: var(--card-shadow-hover);
+  /* Hover lift only on real hover devices — never sticks after a tap. */
+  @media (hover: hover) {
+    .card-surface:hover {
+      transform: translateY(-6px);
+      border-color: hsl(var(--neon-blue) / 0.28);
+      box-shadow: var(--card-shadow-hover);
+    }
+    .card-surface:hover::before { opacity: 1; }
+    .group:hover .icon-chip,
+    .card-surface:hover .icon-chip {
+      transform: translateY(-2px) scale(1.08) rotate(-3deg);
+      box-shadow: 0 12px 24px hsl(var(--neon-blue) / 0.40), inset 0 1px 0 rgba(255,255,255,0.45);
+    }
   }
-  .card-surface:hover::before { opacity: 1; }
+  /* Touch tap feedback — a quick press so cards respond to a finger. */
+  .card-surface:active {
+    transform: translateY(-2px) scale(0.992);
+    box-shadow: var(--card-shadow);
+    transition-duration: 0.09s;
+  }
 
   /* Gradient icon chip — bold, filled with the brand gradient + white icon.
-     Springs to life when its card (or any .group parent) is hovered. */
+     Filled by default so the richness shows on touch too (no hover needed). */
   .icon-chip {
     background-image: linear-gradient(135deg, hsl(var(--neon-cyan)), hsl(var(--neon-blue)) 50%, hsl(var(--neon-purple)));
     color: #fff;
     box-shadow: 0 6px 16px hsl(var(--neon-blue) / 0.30), inset 0 1px 0 rgba(255,255,255,0.30);
     transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .group:hover .icon-chip,
-  .card-surface:hover .icon-chip {
-    transform: translateY(-2px) scale(1.08) rotate(-3deg);
-    box-shadow: 0 12px 24px hsl(var(--neon-blue) / 0.40), inset 0 1px 0 rgba(255,255,255,0.45);
   }
 
   /* The ONE dominant card per section — a crisp gradient border ring + a

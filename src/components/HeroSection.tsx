@@ -103,9 +103,9 @@ const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProp
           {/* ONE discreet trust row + booking link */}
           <motion.div variants={item} className="flex flex-col sm:flex-row items-center lg:items-start gap-2 sm:gap-4 mt-5">
             <span className="data-label text-[0.58rem] text-muted-foreground/55">GRATIS · 60 SEKUNDER · INGEN REGISTRERING</span>
-            <button type="button" onClick={onBookMeeting} className="inline-flex items-center gap-1.5 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors group">
+            <button type="button" onClick={onBookMeeting} className="inline-flex items-center min-h-[44px] gap-1.5 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors group">
               eller boka videomöte
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-[180ms]" />
             </button>
           </motion.div>
         </motion.div>

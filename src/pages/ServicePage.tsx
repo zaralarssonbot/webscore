@@ -362,8 +362,8 @@ const ServicePage = () => {
             <div className="flex items-center justify-center gap-4 sm:gap-6 mt-6 text-[11px] text-muted-foreground/50 font-light relative">
               <span className="flex items-center gap-1.5"><Clock className="w-3 h-3" /> Tar 20 min</span>
               <span className="flex items-center gap-1.5"><ShieldCheck className="w-3 h-3" /> Ingen förpliktelse</span>
-              <Link to="/pricing" className="flex items-center gap-1 text-neon-cyan/70 hover:text-neon-cyan transition-colors">
-                Se priser <ArrowRight className="w-3 h-3" />
+              <Link to="/pricing" className="group inline-flex items-center min-h-[44px] gap-1 text-neon-blue hover:text-neon-cyan transition-colors">
+                Se priser <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-[180ms]" />
               </Link>
             </div>
           </motion.div>

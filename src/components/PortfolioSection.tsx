@@ -312,7 +312,7 @@ const PortfolioSection = () => {
                     key={idx}
                     onClick={() => setPage(idx)}
                     aria-label={`Visa sida ${idx + 1}`}
-                    className="inline-flex items-center justify-center h-11 w-6 group/dot"
+                    className="inline-flex items-center justify-center h-11 w-11 group/dot"
                   >
                     <span
                       className={`h-2 rounded-full transition-all duration-300 ${

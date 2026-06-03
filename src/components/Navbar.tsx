@@ -109,7 +109,7 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
             ))}
             <button
               onClick={() => { setOpen(false); onAnalyze?.(); }}
-              className="w-full text-sm font-semibold text-white bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-purple px-5 py-2.5 rounded-lg mt-2 shadow-[0_2px_8px_hsl(var(--neon-blue)/0.28)] transition-[transform,box-shadow,filter] duration-[180ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:brightness-[1.06] active:translate-y-0"
+              className="w-full min-h-[44px] text-sm font-semibold text-white bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-purple px-5 py-3 rounded-lg mt-2 shadow-[0_2px_8px_hsl(var(--neon-blue)/0.28)] transition-[transform,box-shadow,filter] duration-[180ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:brightness-[1.06] active:translate-y-0"
             >
               Analysera nu
             </button>

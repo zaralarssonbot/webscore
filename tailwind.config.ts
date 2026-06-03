@@ -4,6 +4,9 @@ export default {
   darkMode: ["class"],
   content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
   prefix: "",
+  // Touch-safe hover: hover: utilities only apply on devices that actually
+  // support hover, so no hover state ever "sticks" after a tap on mobile.
+  future: { hoverOnlyWhenSupported: true },
   theme: {
     container: {
       center: true,

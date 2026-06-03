@@ -42,11 +42,12 @@ const buttonVariants = cva(
           "border border-border bg-card text-foreground shadow-sm hover:-translate-y-0.5 hover:border-neon-blue/40 hover:bg-gradient-to-r hover:from-neon-cyan/10 hover:via-neon-blue/10 hover:to-neon-purple/10 hover:shadow-md",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
+        // 44px min so every button is a comfortable touch target.
+        default: "h-11 px-5 py-2",
+        sm: "h-10 rounded-md px-4",
         lg: "h-12 rounded-lg px-8 text-base",
         xl: "h-14 rounded-xl px-10 text-lg",
-        icon: "h-10 w-10",
+        icon: "h-11 w-11",
       },
     },
     defaultVariants: {

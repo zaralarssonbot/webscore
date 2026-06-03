@@ -92,9 +92,9 @@ const FinalCTASection = ({ onAnalyze, onBookMeeting }: FinalCTASectionProps) => 
             </div>
 
             {/* Book meeting — soft secondary */}
-            <button type="button" onClick={onBookMeeting} className="inline-flex items-center gap-1.5 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors group">
+            <button type="button" onClick={onBookMeeting} className="inline-flex items-center min-h-[44px] gap-1.5 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors group">
               Boka gratis analys
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-[180ms]" />
             </button>
 
             <p className="mt-6 data-label text-[0.55rem] text-muted-foreground/40">

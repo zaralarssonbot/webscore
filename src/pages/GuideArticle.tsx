@@ -31,9 +31,9 @@ const GuideArticle = () => {
       <main className="relative z-10 max-w-2xl mx-auto px-6 pt-32 pb-28">
         <Link
           to="/guider"
-          className="data-label text-[0.5rem] text-muted-foreground/60 hover:text-foreground inline-flex items-center gap-1.5 transition-colors"
+          className="group data-label text-[0.5rem] text-muted-foreground/60 hover:text-foreground inline-flex items-center min-h-[44px] gap-1.5 transition-colors"
         >
-          <ArrowLeft className="w-3 h-3" /> Alla guider
+          <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform duration-[180ms]" /> Alla guider
         </Link>
 
         {/* Header */}
