@@ -251,7 +251,7 @@ const ServicePage = () => {
             <div className="inline-flex mb-6">
               <IconBadge><HeroIcon className="w-5 h-5" /></IconBadge>
             </div>
-            <span className="data-label text-[0.6rem] text-neon-cyan/70 mb-4 block">{content.eyebrow}</span>
+            <span className="data-label text-[0.74rem] text-neon-blue mb-4 block">{content.eyebrow}</span>
             <h1 className="font-display font-semibold tracking-[-0.035em] leading-[1.06] text-4xl sm:text-5xl md:text-[3.25rem]">
               {content.title}
             </h1>
@@ -359,7 +359,7 @@ const ServicePage = () => {
                 Boka 20 min genomgång
               </Button>
             </div>
-            <div className="flex items-center justify-center gap-4 sm:gap-6 mt-6 text-[11px] text-muted-foreground/50 font-light relative">
+            <div className="flex items-center justify-center gap-4 sm:gap-6 mt-6 text-[12.5px] text-muted-foreground/80 font-light relative">
               <span className="flex items-center gap-1.5"><Clock className="w-3 h-3" /> Tar 20 min</span>
               <span className="flex items-center gap-1.5"><ShieldCheck className="w-3 h-3" /> Ingen förpliktelse</span>
               <Link to="/pricing" className="group inline-flex items-center min-h-[44px] gap-1 text-neon-blue hover:text-neon-cyan transition-colors">

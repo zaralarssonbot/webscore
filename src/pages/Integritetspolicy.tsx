@@ -29,13 +29,13 @@ const Integritetspolicy = () => {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="mb-10"
         >
-          <span className="data-label text-[0.55rem] text-neon-cyan/70 inline-flex items-center gap-1.5">
+          <span className="data-label text-[0.72rem] text-neon-blue inline-flex items-center gap-1.5">
             <ShieldCheck className="w-3 h-3" /> Legal
           </span>
           <h1 className="font-display font-semibold tracking-[-0.03em] leading-[1.1] text-3xl sm:text-4xl mt-4 mb-3">
             Integritetspolicy för webscore.se
           </h1>
-          <p className="data-label text-[0.5rem] text-muted-foreground/45">
+          <p className="data-label text-[0.72rem] text-muted-foreground/80">
             Senast uppdaterad: 1 juni 2026
           </p>
         </motion.header>

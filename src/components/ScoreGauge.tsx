@@ -170,7 +170,7 @@ const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, 
 
       {/* Center readout */}
       <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ paddingTop: size * 0.02 }}>
-        {label && <span className="data-label text-[0.6rem] text-muted-foreground/70 mb-1">{label}</span>}
+        {label && <span className="data-label text-[0.74rem] text-muted-foreground/80 mb-1">{label}</span>}
         {scanning ? (
           // Indeterminate readout — no fabricated number until the result lands.
           <span className="flex items-center gap-1.5" style={{ height: size * 0.28 }} aria-label="Analyserar">
@@ -201,7 +201,7 @@ const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, 
             >
               {display}
             </span>
-            <span className="font-mono text-muted-foreground/40 text-sm mt-1">/ 100</span>
+            <span className="font-mono text-muted-foreground/80 text-sm mt-1">/ 100</span>
           </>
         )}
       </div>
@@ -211,7 +211,7 @@ const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: delay + 1.4, duration: 0.6 }}
-          className="absolute -bottom-7 data-label text-[0.6rem] text-muted-foreground/50 whitespace-nowrap"
+          className="absolute -bottom-7 data-label text-[0.74rem] text-muted-foreground/80 whitespace-nowrap"
         >
           {caption}
         </motion.p>

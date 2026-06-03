@@ -282,7 +282,7 @@ const CinematicAISection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="glass-card glow-border px-4 py-1.5 mb-8 text-[10px] font-medium tracking-[0.25em] uppercase flex items-center gap-2"
+          className="glass-card glow-border px-4 py-1.5 mb-8 text-[12px] font-medium tracking-[0.25em] uppercase flex items-center gap-2"
           style={{ color: "hsl(var(--neon-green))" }}
         >
           <span className="relative flex h-1.5 w-1.5">

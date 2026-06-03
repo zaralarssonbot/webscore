@@ -179,9 +179,9 @@ const PortfolioSection = () => {
               <button
                 key={f.value}
                 onClick={() => { setActiveFilter(f.value); setPage(0); }}
-                className={`data-label text-[0.58rem] px-4 min-h-[44px] inline-flex items-center rounded-full transition-all duration-300 border ${
+                className={`data-label text-[0.74rem] px-4 min-h-[44px] inline-flex items-center rounded-full transition-all duration-300 border ${
                   activeFilter === f.value
-                    ? "bg-neon-cyan/10 border-neon-cyan/35 text-neon-cyan shadow-glow-soft"
+                    ? "bg-neon-blue/10 border-neon-blue/40 text-neon-blue shadow-glow-soft"
                     : "bg-secondary border-border text-muted-foreground/80 hover:text-foreground hover:border-neon-blue/30"
                 }`}
               >
@@ -252,7 +252,7 @@ const PortfolioSection = () => {
 
                         {/* Hover overlay */}
                         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-400">
-                          <div className="px-4 py-2 rounded-full bg-primary/30 border border-primary/30 text-primary text-[0.8125rem] font-medium flex items-center gap-2 shadow-[0_0_20px_hsla(175,90%,55%,0.15)]">
+                          <div className="px-4 py-2 rounded-full bg-primary text-white text-[0.8125rem] font-semibold flex items-center gap-2 shadow-[0_4px_16px_hsla(214,82%,46%,0.35)]">
                             <Search className="w-3.5 h-3.5" />
                             Visa projekt
                           </div>
@@ -272,7 +272,7 @@ const PortfolioSection = () => {
                         {project.badges.map((badge) => (
                           <span
                             key={badge}
-                            className="data-label text-[0.55rem] px-2.5 py-1 rounded-full border"
+                            className="data-label text-[0.72rem] px-2.5 py-1 rounded-full border"
                             style={{
                               background: badgeColors[badge].bg,
                               color: badgeColors[badge].text,
@@ -371,7 +371,7 @@ const PortfolioSection = () => {
                   <div className="w-2.5 h-2.5 rounded-full bg-red-400/60" />
                   <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/60" />
                   <div className="w-2.5 h-2.5 rounded-full bg-green-400/60" />
-                  <div className="flex-1 ml-3 px-3 py-1 rounded-md bg-background/50 text-[0.6875rem] text-muted-foreground truncate">
+                  <div className="flex-1 ml-3 px-3 py-1 rounded-md bg-background/50 text-[0.78rem] text-muted-foreground truncate">
                     {selectedProject.name.toLowerCase().replace(/\s+/g, '')}.se
                   </div>
                 </div>
@@ -405,7 +405,7 @@ const PortfolioSection = () => {
                   {selectedProject.badges.map((badge) => (
                     <span
                       key={badge}
-                      className="text-[0.6875rem] font-medium px-2.5 py-1 rounded-full border"
+                      className="text-[0.78rem] font-medium px-2.5 py-1 rounded-full border"
                       style={{
                         background: badgeColors[badge].bg,
                         color: badgeColors[badge].text,

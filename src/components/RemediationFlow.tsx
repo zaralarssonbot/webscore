@@ -306,12 +306,12 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
                         <div className="accent-line-top" style={{ background: `linear-gradient(90deg, transparent, ${pkg.color}, transparent)` }} />
 
                         {/* Tier badge */}
-                        <div className="inline-flex self-start data-label text-[0.58rem] px-3 py-1 rounded-full mb-4" style={{ color: pkg.color, background: pkg.colorBg, border: `1px solid ${pkg.colorBorder}` }}>
+                        <div className="inline-flex self-start data-label text-[0.74rem] px-3 py-1 rounded-full mb-4" style={{ color: pkg.color, background: pkg.colorBg, border: `1px solid ${pkg.colorBorder}` }}>
                           {pkg.tier}
                         </div>
 
                         {pkg.popular && (
-                          <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider" style={{ background: pkg.color, color: "hsl(var(--background))" }}>
+                          <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[12px] font-bold tracking-wider" style={{ background: pkg.color, color: "hsl(var(--background))" }}>
                             POPULÄRAST
                           </div>
                         )}
@@ -323,11 +323,11 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
                           <span className="text-2xl sm:text-3xl font-bold font-mono tabular-nums tracking-tight" style={{ color: pkg.color }}>{pkg.price}</span>
                           <span className="text-muted-foreground text-sm font-light"> /mån</span>
                         </div>
-                        <p className="text-xs text-muted-foreground/60 font-light mb-5">{pkg.priceNote}</p>
+                        <p className="text-xs text-muted-foreground/80 font-light mb-5">{pkg.priceNote}</p>
 
                         <div className="border-t border-border/10 pt-4 mb-6 flex-1">
                           {pkg.includes && (
-                            <p className="data-label text-[0.5rem] text-muted-foreground/50 mb-3">{pkg.includes}</p>
+                            <p className="data-label text-[0.72rem] text-muted-foreground/80 mb-3">{pkg.includes}</p>
                           )}
                           <ul className="space-y-2.5">
                             {pkg.features.map((f, j) => (
@@ -374,16 +374,16 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
                   <form onSubmit={handleSubmit} className="space-y-4">
                     {/* Org number with lookup button */}
                     <div>
-                      <label className="data-label text-[0.55rem] text-muted-foreground/60 mb-1.5 block">Organisationsnummer</label>
+                      <label className="data-label text-[0.72rem] text-muted-foreground/80 mb-1.5 block">Organisationsnummer</label>
                       <div className="flex gap-2">
                         <div className="relative flex-1">
-                          <Hash className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+                          <Hash className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" />
                           <input
                             type="text"
                             placeholder="XXXXXX-XXXX"
                             value={orgNumber}
                             onChange={(e) => { setOrgNumber(e.target.value); setLookupDone(false); }}
-                            className="w-full bg-secondary/20 border border-border/20 rounded-xl pl-11 pr-4 py-3.5 text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary/40 transition-colors text-sm font-mono"
+                            className="w-full bg-secondary/20 border border-border/20 rounded-xl pl-11 pr-4 py-3.5 text-foreground placeholder:text-muted-foreground/80 outline-none focus:border-primary/40 transition-colors text-sm font-mono"
                             maxLength={13}
                           />
                         </div>
@@ -424,15 +424,15 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
 
                           {/* Company name */}
                           <div>
-                            <label className="data-label text-[0.55rem] text-muted-foreground/60 mb-1.5 block">Företagsnamn</label>
+                            <label className="data-label text-[0.72rem] text-muted-foreground/80 mb-1.5 block">Företagsnamn</label>
                             <div className="relative">
-                              <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+                              <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" />
                               <input
                                 type="text"
                                 placeholder="Företagsnamn"
                                 value={company}
                                 onChange={(e) => setCompany(e.target.value)}
-                                className="w-full bg-secondary/20 border border-border/20 rounded-xl pl-11 pr-4 py-3.5 text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary/40 transition-colors text-sm"
+                                className="w-full bg-secondary/20 border border-border/20 rounded-xl pl-11 pr-4 py-3.5 text-foreground placeholder:text-muted-foreground/80 outline-none focus:border-primary/40 transition-colors text-sm"
                                 maxLength={200}
                               />
                             </div>
@@ -442,14 +442,14 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
                           {/* Address */}
                           {address && (
                             <div>
-                              <label className="data-label text-[0.55rem] text-muted-foreground/60 mb-1.5 block">Adress</label>
+                              <label className="data-label text-[0.72rem] text-muted-foreground/80 mb-1.5 block">Adress</label>
                               <div className="relative">
-                                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+                                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" />
                                 <input
                                   type="text"
                                   value={address}
                                   onChange={(e) => setAddress(e.target.value)}
-                                  className="w-full bg-secondary/20 border border-border/20 rounded-xl pl-11 pr-4 py-3.5 text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary/40 transition-colors text-sm"
+                                  className="w-full bg-secondary/20 border border-border/20 rounded-xl pl-11 pr-4 py-3.5 text-foreground placeholder:text-muted-foreground/80 outline-none focus:border-primary/40 transition-colors text-sm"
                                   readOnly
                                 />
                               </div>
@@ -458,15 +458,15 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
 
                           {/* Signatory / Contact person */}
                           <div>
-                            <label className="data-label text-[0.55rem] text-muted-foreground/60 mb-1.5 block">Kontaktperson / Firmatecknare</label>
+                            <label className="data-label text-[0.72rem] text-muted-foreground/80 mb-1.5 block">Kontaktperson / Firmatecknare</label>
                             <div className="relative">
-                              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+                              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" />
                               <input
                                 type="text"
                                 placeholder="Kontaktperson"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                className="w-full bg-secondary/20 border border-border/20 rounded-xl pl-11 pr-4 py-3.5 text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary/40 transition-colors text-sm"
+                                className="w-full bg-secondary/20 border border-border/20 rounded-xl pl-11 pr-4 py-3.5 text-foreground placeholder:text-muted-foreground/80 outline-none focus:border-primary/40 transition-colors text-sm"
                                 maxLength={100}
                               />
                             </div>
@@ -475,22 +475,22 @@ const RemediationFlow = ({ open, onClose, weaknesses, score, scanId }: Remediati
 
                           {/* Phone */}
                           <div>
-                            <label className="data-label text-[0.55rem] text-muted-foreground/60 mb-1.5 block">Telefonnummer</label>
+                            <label className="data-label text-[0.72rem] text-muted-foreground/80 mb-1.5 block">Telefonnummer</label>
                             <div className="relative">
-                              <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+                              <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" />
                               <input
                                 type="tel"
                                 placeholder="Telefonnummer"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
-                                className="w-full bg-secondary/20 border border-border/20 rounded-xl pl-11 pr-4 py-3.5 text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary/40 transition-colors text-sm"
+                                className="w-full bg-secondary/20 border border-border/20 rounded-xl pl-11 pr-4 py-3.5 text-foreground placeholder:text-muted-foreground/80 outline-none focus:border-primary/40 transition-colors text-sm"
                                 maxLength={30}
                               />
                             </div>
                             {errors.phone && <p className="text-score-low text-xs mt-1.5 ml-1">{errors.phone}</p>}
                           </div>
 
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground/70 pt-1">
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground/80 pt-1">
                             <Shield className="w-3.5 h-3.5" />
                             <span>Uppgifterna hämtas från offentliga register och kan redigeras</span>
                           </div>

@@ -32,7 +32,7 @@ const UrgencySection = () => {
           <p className="text-muted-foreground font-normal max-w-md mx-auto mb-4 leading-[1.75] relative text-[0.9375rem]">
             Varje dag din hemsida inte presterar tappar du kunder till konkurrenter.
           </p>
-          <p className="text-[0.8125rem] text-muted-foreground/60 italic relative leading-[1.7]">
+          <p className="text-[0.8125rem] text-muted-foreground/80 italic relative leading-[1.7]">
             Skillnaden mellan en okej sida och en bra sida kan vara avgörande.
           </p>
         </motion.div>

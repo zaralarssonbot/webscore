@@ -40,7 +40,7 @@ const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary }: S
       <div className="relative flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
         {/* Score gauge */}
         <div className="flex flex-col items-center flex-shrink-0">
-          <p className="data-label text-[0.6rem] text-muted-foreground/70 mb-5">
+          <p className="data-label text-[0.74rem] text-muted-foreground/80 mb-5">
             Helhetsbedömning
           </p>
 
@@ -67,7 +67,7 @@ const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary }: S
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.2 }}
-              className="mt-3 text-xs text-muted-foreground/60 font-light text-center max-w-[220px] leading-relaxed"
+              className="mt-3 text-xs text-muted-foreground/80 font-light text-center max-w-[220px] leading-relaxed"
             >
               Du ligger efter företag i ditt område – och det kan kosta dig kunder varje dag
             </motion.p>
@@ -90,7 +90,7 @@ const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary }: S
                   <div className="w-2 h-2 rounded-full bg-score-high/50" />
                 </div>
                 <div className="flex-1 mx-2">
-                  <div className="bg-secondary/50 rounded px-2 py-0.5 text-[9px] text-muted-foreground/50 font-mono truncate">
+                  <div className="bg-secondary/50 rounded px-2 py-0.5 text-[12px] text-muted-foreground/80 font-mono truncate">
                     {domain || "..."}
                   </div>
                 </div>
@@ -104,7 +104,7 @@ const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary }: S
                 <div className="absolute bottom-0 left-0 right-0 h-16" style={{ background: "linear-gradient(transparent, hsl(var(--card)))" }} />
               </div>
             </div>
-            <p className="text-center text-[10px] text-muted-foreground/30 mt-2 font-light">Skärmdump tagen vid analystillfället</p>
+            <p className="text-center text-[12px] text-muted-foreground/80 mt-2 font-light">Skärmdump tagen vid analystillfället</p>
           </motion.div>
         )}
       </div>
@@ -123,7 +123,7 @@ const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary }: S
               <BarChart3 className="w-4 h-4 text-neon-cyan" />
             </div>
             <div>
-              <p className="data-label text-[0.58rem] text-neon-cyan/60 mb-1.5">Sammanfattning</p>
+              <p className="data-label text-[0.74rem] text-neon-blue mb-1.5">Sammanfattning</p>
               <p className="text-muted-foreground text-sm font-light leading-relaxed">{summary}</p>
             </div>
           </div>
@@ -139,7 +139,7 @@ const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary }: S
           className="relative mt-6 pt-6 border-t border-border/10"
         >
           <p className="text-xs font-semibold font-display text-center mb-1">Var problemet ligger</p>
-          <p className="text-[10px] text-muted-foreground/50 font-light text-center mb-5">Så här presterar din hemsida inom viktiga områden</p>
+          <p className="text-[12px] text-muted-foreground/80 font-light text-center mb-5">Så här presterar din hemsida inom viktiga områden</p>
           <div className="grid grid-cols-5 gap-2 sm:gap-4">
             {categoryConfig.map((cat, i) => {
               const s = categoryScores[cat.key];
@@ -180,8 +180,8 @@ const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary }: S
                     <div className="w-5 h-5 mx-auto mb-1 rounded-md flex items-center justify-center" style={{ background: catColor.bg }}>
                       <cat.icon className="w-3 h-3" style={{ color: catColor.ring }} />
                     </div>
-                    <span className="text-[10px] sm:text-[11px] text-muted-foreground/70 leading-tight block font-medium">{cat.label}</span>
-                    {cat.weight && <span className="text-[9px] text-muted-foreground/30 font-light">{cat.weight}</span>}
+                    <span className="text-[12px] sm:text-[12.5px] text-muted-foreground/80 leading-tight block font-medium">{cat.label}</span>
+                    {cat.weight && <span className="text-[12px] text-muted-foreground/80 font-light">{cat.weight}</span>}
                   </div>
                 </motion.div>
               );

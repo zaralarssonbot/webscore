@@ -80,7 +80,7 @@ const CategoryScoreCard = ({ label, score, icon: Icon, weight, delay }: Category
           </div>
           <span className="text-xs font-semibold">{label}</span>
         </div>
-        {weight && <span className="text-[10px] text-muted-foreground/50 font-light">{weight}</span>}
+        {weight && <span className="text-[12px] text-muted-foreground/80 font-light">{weight}</span>}
       </div>
     </motion.div>
   );

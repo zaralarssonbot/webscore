@@ -69,8 +69,8 @@ const LoadingState = ({ screenshotUrl, domain }: LoadingStateProps) => {
                 <span className="h-2.5 w-2.5 rounded-full bg-foreground/15" />
               </div>
               <div className="mx-3 flex-1">
-                <div className="flex items-center gap-1.5 truncate rounded-md bg-background px-3 py-1 font-mono text-[10px] text-muted-foreground/70">
-                  <Lock className="h-2.5 w-2.5 text-neon-cyan/70" />
+                <div className="flex items-center gap-1.5 truncate rounded-md bg-background px-3 py-1 font-mono text-[12px] text-muted-foreground/80">
+                  <Lock className="h-2.5 w-2.5 text-neon-blue" />
                   {domain ? `https://${domain}` : "https://…"}
                 </div>
               </div>
@@ -99,7 +99,7 @@ const LoadingState = ({ screenshotUrl, domain }: LoadingStateProps) => {
                       animate={{ rotate: 360 }}
                       transition={{ duration: 2.4, repeat: Infinity, ease: "linear" }}
                     >
-                      <Globe className="h-8 w-8 text-muted-foreground/20" />
+                      <Globe className="h-8 w-8 text-muted-foreground/80" />
                     </motion.div>
                   </motion.div>
                 )}
@@ -138,7 +138,7 @@ const LoadingState = ({ screenshotUrl, domain }: LoadingStateProps) => {
                 transition={{ duration: 2, repeat: Infinity }}
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-neon-cyan" style={{ boxShadow: "0 0 8px hsl(var(--neon-cyan))" }} />
-                <span className="data-label text-[0.5rem] text-neon-cyan">Skannar</span>
+                <span className="data-label text-[0.72rem] text-neon-cyan">Skannar</span>
               </motion.div>
             </div>
           </div>
@@ -154,7 +154,7 @@ const LoadingState = ({ screenshotUrl, domain }: LoadingStateProps) => {
           <ScoreGauge value={0} scanning size={208} label="ANALYSERAR" />
 
           <div className="w-full max-w-xs">
-            <p className="data-label mb-4 text-[0.5rem] text-muted-foreground/50">Diagnostik</p>
+            <p className="data-label mb-4 text-[0.72rem] text-muted-foreground/80">Diagnostik</p>
             <ul className="space-y-2.5">
               {steps.map((step, i) => {
                 const done = i < stepIndex;
@@ -188,7 +188,7 @@ const LoadingState = ({ screenshotUrl, domain }: LoadingStateProps) => {
                     </span>
                     <span
                       className={`font-mono text-xs transition-colors duration-300 ${
-                        active ? "text-foreground" : "text-muted-foreground/55"
+                        active ? "text-foreground" : "text-muted-foreground/80"
                       }`}
                     >
                       {step}

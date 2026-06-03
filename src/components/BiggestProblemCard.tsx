@@ -22,7 +22,7 @@ const BiggestProblemCard = ({ problem }: BiggestProblemCardProps) => {
         </motion.div>
         <div>
           <h2 className="text-base font-semibold font-display tracking-[-0.01em]">Det här gör att du tappar kunder</h2>
-          <p className="data-label text-[0.5rem] text-score-low/60 mt-0.5">STÖRSTA PROBLEMET JUST NU</p>
+          <p className="data-label text-[0.72rem] text-score-low/60 mt-0.5">STÖRSTA PROBLEMET JUST NU</p>
         </div>
       </div>
 

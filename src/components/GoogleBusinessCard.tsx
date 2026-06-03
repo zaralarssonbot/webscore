@@ -28,7 +28,7 @@ const GoogleBusinessCard = ({ data, domain }: GoogleBusinessCardProps) => {
         </div>
         <div>
           <h2 className="text-base font-semibold font-display tracking-[-0.01em]">Google Business Profile</h2>
-          <p className="data-label text-[0.5rem] text-muted-foreground/50 mt-0.5">{domain}</p>
+          <p className="data-label text-[0.72rem] text-muted-foreground/80 mt-0.5">{domain}</p>
         </div>
       </div>
 
@@ -48,14 +48,14 @@ const GoogleBusinessCard = ({ data, domain }: GoogleBusinessCardProps) => {
             ))}
           </div>
           <span className="font-mono font-bold tabular-nums text-2xl text-amber-400">{stars.toFixed(1)}</span>
-          <p className="data-label text-[0.5rem] text-muted-foreground/50 mt-1">BETYG</p>
+          <p className="data-label text-[0.72rem] text-muted-foreground/80 mt-1">BETYG</p>
         </div>
 
         {/* Review count */}
         <div className="card-surface p-4 text-center bg-neon-cyan/[0.04] border-neon-cyan/10">
           <MessageSquare className="w-5 h-5 text-neon-cyan mx-auto mb-2" />
           <span className="font-mono font-bold tabular-nums text-2xl text-neon-cyan">{data.reviewCount ?? "–"}</span>
-          <p className="data-label text-[0.5rem] text-muted-foreground/50 mt-1">OMDÖMEN</p>
+          <p className="data-label text-[0.72rem] text-muted-foreground/80 mt-1">OMDÖMEN</p>
         </div>
       </div>
 

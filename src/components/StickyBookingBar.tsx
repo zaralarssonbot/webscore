@@ -34,7 +34,7 @@ const StickyBookingBar = ({ onBook, score }: StickyBookingBarProps) => {
             style={{ background: "hsla(0,0%,100%,0.92)" }}
           >
             <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-              <div className="hidden sm:flex items-center gap-4 text-[11px] text-muted-foreground font-light">
+              <div className="hidden sm:flex items-center gap-4 text-[12.5px] text-muted-foreground font-light">
                 <span className="flex items-center gap-1.5">
                   <Clock className="w-3 h-3 text-neon-cyan" />
                   Tar 20 min

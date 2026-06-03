@@ -26,7 +26,7 @@
     --secondary-foreground: 220 22% 14%;
 
     --muted: 220 16% 96%;
-    --muted-foreground: 218 11% 30%; /* ~#3C4149 body text */
+    --muted-foreground: 218 13% 26%; /* ~#3A3F47 — darkened so secondary text hits AA (≥4.5:1) even at /80 */
 
     --accent: 256 64% 56%;
     --accent-foreground: 0 0% 100%;
@@ -43,7 +43,7 @@
     /* Brand palette — kept vivid for the teal→blue→purple gradient (CTAs, the
        87 ring, key highlights) but deepened enough to stay legible on white. */
     --neon-cyan: 187 78% 40%;
-    --neon-blue: 214 82% 50%;
+    --neon-blue: 214 82% 46%; /* deep enough that small accent text/eyebrows pass AA on white & the gray band */
     --neon-green: 160 72% 38%;
     --neon-magenta: 256 62% 56%;
     --neon-purple: 256 62% 56%;
@@ -110,7 +110,9 @@
   /* Nudge the base type up ~3% for a more readable, airier feel (scales the
      rem-based scale uniformly). Smooth in-page scrolling for anchor jumps. */
   html {
-    font-size: 16.5px;
+    /* Comfortable reading base: body lands at ~17px (≥16 on mobile, 17 on
+       desktop). All rem-based sizes scale from here, so user zoom works too. */
+    font-size: 17px;
     scroll-behavior: smooth;
   }
 
@@ -223,8 +225,9 @@
   .data-label {
     font-family: 'JetBrains Mono', ui-monospace, monospace;
     text-transform: uppercase;
-    letter-spacing: 0.28em;
-    font-weight: 500;
+    /* Tighter than before so labels stay legible at the new ≥12px floor. */
+    letter-spacing: 0.14em;
+    font-weight: 600;
   }
 
   /* Article reading surface — clean typography for /guider/:slug */

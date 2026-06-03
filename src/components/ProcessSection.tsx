@@ -39,7 +39,7 @@ const ProcessSection = () => {
                     <div className="icon-chip w-14 h-14 rounded-full flex items-center justify-center">
                       <step.icon className="w-6 h-6" />
                     </div>
-                    <span className="absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center font-mono text-[0.6rem] font-semibold bg-card border border-border text-neon-blue shadow-sm">
+                    <span className="absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center font-mono text-[0.74rem] font-semibold bg-card border border-border text-neon-blue shadow-sm">
                       {step.number}
                     </span>
                   </div>
@@ -57,7 +57,7 @@ const ProcessSection = () => {
                   transition={{ duration: 0.5, delay: i * 0.08 + 0.25, ease: [0.16, 1, 0.3, 1] }}
                   className="card-surface p-5 text-center"
                 >
-                  <span className="data-label text-[0.55rem] text-neon-cyan/70 block mb-1.5">{step.day}</span>
+                  <span className="data-label text-[0.72rem] text-neon-blue block mb-1.5">{step.day}</span>
                   <h3 className="font-display font-semibold text-sm tracking-[-0.01em]">{step.title}</h3>
                 </motion.div>
               ))}
@@ -77,12 +77,12 @@ const ProcessSection = () => {
               >
                 <div className="icon-chip w-12 h-12 rounded-full flex items-center justify-center shrink-0 relative">
                   <step.icon className="w-5 h-5" />
-                  <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center font-mono text-[0.55rem] font-semibold bg-card border border-border text-neon-blue shadow-sm">
+                  <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center font-mono text-[0.72rem] font-semibold bg-card border border-border text-neon-blue shadow-sm">
                     {step.number}
                   </span>
                 </div>
                 <div>
-                  <span className="data-label text-[0.55rem] text-neon-cyan/70 block mb-0.5">{step.day}</span>
+                  <span className="data-label text-[0.72rem] text-neon-blue block mb-0.5">{step.day}</span>
                   <h3 className="font-display font-semibold text-sm">{step.title}</h3>
                 </div>
               </motion.div>

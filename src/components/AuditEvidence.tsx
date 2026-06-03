@@ -72,7 +72,7 @@ const AuditEvidence = ({ checks }: AuditEvidenceProps) => {
                 />
               </div>
 
-              <span className="font-mono text-xs text-muted-foreground/70 tabular-nums">
+              <span className="font-mono text-xs text-muted-foreground/80 tabular-nums">
                 {passed}/{total}
               </span>
 
@@ -124,7 +124,7 @@ const AuditEvidence = ({ checks }: AuditEvidenceProps) => {
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="text-sm font-medium">{check.label}</span>
                           <span
-                            className="data-label text-[0.5rem] px-2 py-0.5 rounded-full border"
+                            className="data-label text-[0.72rem] px-2 py-0.5 rounded-full border"
                             style={{
                               background: check.impact === "high" ? "hsla(0,80%,58%,0.07)" : check.impact === "medium" ? "hsla(40,95%,55%,0.07)" : "hsla(220,20%,50%,0.07)",
                               color: check.impact === "high" ? "hsl(var(--score-low))" : check.impact === "medium" ? "hsl(var(--score-mid))" : "hsl(var(--muted-foreground))",

@@ -14,7 +14,7 @@ const BusinessImpactCard = ({ impacts }: BusinessImpactCardProps) => {
         </div>
         <div>
           <h2 className="text-base font-semibold font-display tracking-[-0.01em]">Vad detta betyder för ditt företag</h2>
-          <p className="data-label text-[0.5rem] text-muted-foreground/50 mt-0.5">KONKRET AFFÄRSPÅVERKAN</p>
+          <p className="data-label text-[0.72rem] text-muted-foreground/80 mt-0.5">KONKRET AFFÄRSPÅVERKAN</p>
         </div>
       </div>
 
@@ -28,7 +28,7 @@ const BusinessImpactCard = ({ impacts }: BusinessImpactCardProps) => {
             transition={{ delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
             className="flex items-start gap-3 p-3 rounded-xl bg-secondary border border-border"
           >
-            <span className="w-5 h-5 rounded-full bg-neon-orange/12 flex items-center justify-center shrink-0 mt-0.5 font-mono text-[0.6rem] font-bold text-neon-orange tabular-nums">
+            <span className="w-5 h-5 rounded-full bg-neon-orange/12 flex items-center justify-center shrink-0 mt-0.5 font-mono text-[0.74rem] font-bold text-neon-orange tabular-nums">
               {i + 1}
             </span>
             <p className="text-sm text-muted-foreground/80 leading-[1.6]">{impact}</p>

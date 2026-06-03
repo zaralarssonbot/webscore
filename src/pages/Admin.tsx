@@ -347,18 +347,18 @@ const Admin = () => {
                           {lead.lead_status === "analysis_sent" || lead.lead_status === "meeting_booked" ? (
                             <Mail className="w-4 h-4 text-neon-cyan" />
                           ) : (
-                            <span className="text-muted-foreground/40">—</span>
+                            <span className="text-muted-foreground/80">—</span>
                           )}
                         </td>
                         <td className="px-4 py-3">
                           {lead.booking_clicked_at ? (
                             <CalendarCheck className="w-4 h-4 text-score-high" />
                           ) : (
-                            <span className="text-muted-foreground/40">—</span>
+                            <span className="text-muted-foreground/80">—</span>
                           )}
                         </td>
                         <td className="px-4 py-3">
-                          {temperatureIcon(lead.lead_status) || <span className="text-muted-foreground/40">—</span>}
+                          {temperatureIcon(lead.lead_status) || <span className="text-muted-foreground/80">—</span>}
                         </td>
                         <td className="px-4 py-3 text-xs text-muted-foreground whitespace-nowrap">
                           {new Date(lead.created_at).toLocaleDateString("sv-SE")}

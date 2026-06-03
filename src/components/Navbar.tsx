@@ -70,7 +70,7 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
                 key={l.href}
                 href={l.href}
                 onClick={(e) => handleNav(e, l.href)}
-                className="data-label text-[0.62rem] text-muted-foreground/70 hover:text-foreground transition-colors relative group cursor-pointer"
+                className="data-label text-[0.74rem] text-muted-foreground/80 hover:text-foreground transition-colors relative group cursor-pointer"
               >
                 {l.label}
                 <span className="absolute -bottom-1.5 left-0 right-0 h-px scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" style={{ background: "linear-gradient(90deg, hsl(var(--neon-cyan)), transparent)" }} />
@@ -103,7 +103,7 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
             className="md:hidden rounded-xl p-4 mb-4 space-y-1 border border-border bg-card/95 backdrop-blur-xl shadow-lg"
           >
             {links.map((l) => (
-              <a key={l.href} href={l.href} onClick={(e) => handleNav(e, l.href)} className="flex items-center min-h-[44px] px-2 -mx-2 rounded-lg data-label text-[0.62rem] text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer">
+              <a key={l.href} href={l.href} onClick={(e) => handleNav(e, l.href)} className="flex items-center min-h-[44px] px-2 -mx-2 rounded-lg data-label text-[0.74rem] text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer">
                 {l.label}
               </a>
             ))}

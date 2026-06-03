@@ -141,8 +141,8 @@ const LeadCaptureModal = ({ open, onClose, scanId, title = "Boka gratis analys",
     }
   };
 
-  const inputClass = "w-full bg-secondary/20 border border-border/20 rounded-xl px-4 py-3.5 text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary/40 transition-colors text-sm";
-  const iconInputClass = "w-full bg-secondary/20 border border-border/20 rounded-xl pl-11 pr-4 py-3.5 text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary/40 transition-colors text-sm";
+  const inputClass = "w-full bg-secondary/20 border border-border/20 rounded-xl px-4 py-3.5 text-foreground placeholder:text-muted-foreground/80 outline-none focus:border-primary/40 transition-colors text-sm";
+  const iconInputClass = "w-full bg-secondary/20 border border-border/20 rounded-xl pl-11 pr-4 py-3.5 text-foreground placeholder:text-muted-foreground/80 outline-none focus:border-primary/40 transition-colors text-sm";
 
   return (
     <AnimatePresence>
@@ -181,7 +181,7 @@ const LeadCaptureModal = ({ open, onClose, scanId, title = "Boka gratis analys",
                 <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">Organisationsnummer</label>
                 <div className="flex gap-2">
                   <div className="relative flex-1">
-                    <Hash className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+                    <Hash className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" />
                     <input
                       type="text"
                       placeholder="XXXXXX-XXXX"
@@ -226,7 +226,7 @@ const LeadCaptureModal = ({ open, onClose, scanId, title = "Boka gratis analys",
                     <div>
                       <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">Företagsnamn</label>
                       <div className="relative">
-                        <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+                        <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" />
                         <input type="text" value={company} onChange={(e) => setCompany(e.target.value)} className={iconInputClass} placeholder="Företagsnamn" maxLength={200} />
                       </div>
                       {errors.company && <p className="text-score-low text-xs mt-1">{errors.company}</p>}
@@ -237,7 +237,7 @@ const LeadCaptureModal = ({ open, onClose, scanId, title = "Boka gratis analys",
                       <div>
                         <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">Adress</label>
                         <div className="relative">
-                          <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+                          <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" />
                           <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className={iconInputClass} placeholder="Adress" />
                         </div>
                       </div>
@@ -248,7 +248,7 @@ const LeadCaptureModal = ({ open, onClose, scanId, title = "Boka gratis analys",
                       <div>
                         <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">Firmatecknare</label>
                         <div className="relative">
-                          <Shield className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+                          <Shield className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" />
                           <input type="text" value={signatory} onChange={(e) => setSignatory(e.target.value)} className={iconInputClass} readOnly />
                         </div>
                       </div>
@@ -261,7 +261,7 @@ const LeadCaptureModal = ({ open, onClose, scanId, title = "Boka gratis analys",
               <div>
                 <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">Kontaktperson</label>
                 <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" />
                   <input type="text" placeholder="Ditt namn" value={name} onChange={(e) => setName(e.target.value)} className={iconInputClass} maxLength={100} />
                 </div>
                 {errors.name && <p className="text-score-low text-xs mt-1">{errors.name}</p>}
@@ -278,7 +278,7 @@ const LeadCaptureModal = ({ open, onClose, scanId, title = "Boka gratis analys",
               <div>
                 <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">Telefonnummer</label>
                 <div className="relative">
-                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" />
                   <input type="tel" placeholder="Telefonnummer" value={phone} onChange={(e) => setPhone(e.target.value)} className={iconInputClass} maxLength={30} />
                 </div>
                 {errors.phone && <p className="text-score-low text-xs mt-1">{errors.phone}</p>}
@@ -295,7 +295,7 @@ const LeadCaptureModal = ({ open, onClose, scanId, title = "Boka gratis analys",
                 )}
               </Button>
 
-              <p className="text-center text-xs text-muted-foreground/50">
+              <p className="text-center text-xs text-muted-foreground/80">
                 Vi återkommer inom 24 timmar
               </p>
             </form>

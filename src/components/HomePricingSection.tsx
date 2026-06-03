@@ -48,18 +48,18 @@ const HomePricingSection = () => {
                 className={`card-surface p-6 flex flex-col ${tier.popular ? "card-focus sm:-mt-2 sm:mb-2 z-10" : ""}`}
               >
                 <div className="flex items-center justify-between mb-4">
-                  <span className="data-label text-[0.5rem] text-neon-blue">{tier.tier}</span>
+                  <span className="data-label text-[0.72rem] text-neon-blue">{tier.tier}</span>
                   {tier.popular && (
-                    <span className="data-label text-[0.45rem] px-2.5 py-1 rounded-full text-white bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-purple">POPULÄRAST</span>
+                    <span className="data-label text-[0.72rem] px-2.5 py-1 rounded-full text-white bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-purple">POPULÄRAST</span>
                   )}
                 </div>
                 <h3 className="font-display font-bold text-lg mb-1 tracking-[-0.01em]">{tier.name}</h3>
                 <div className="mb-1 mt-2">
                   <span className="font-mono font-bold tabular-nums text-2xl text-foreground tracking-tight">{tier.price} kr</span>
-                  <span className="text-xs text-muted-foreground/60 font-mono">/mån</span>
+                  <span className="text-xs text-muted-foreground/80 font-mono">/mån</span>
                 </div>
-                <p className="text-[0.6rem] text-muted-foreground/45 font-mono mb-4 leading-[1.5]">{tier.priceNote}</p>
-                <p className="text-[0.8125rem] text-muted-foreground/75 leading-[1.6] flex-1">{tier.description}</p>
+                <p className="text-[0.74rem] text-muted-foreground/80 font-mono mb-4 leading-[1.5]">{tier.priceNote}</p>
+                <p className="text-[0.8125rem] text-muted-foreground/80 leading-[1.6] flex-1">{tier.description}</p>
               </motion.div>
             ))}
 
@@ -72,16 +72,16 @@ const HomePricingSection = () => {
               viewport={{ once: true, margin: "-50px" }}
               className="card-surface p-6 flex flex-col"
             >
-              <span className="data-label text-[0.5rem] text-neon-cyan/80 mb-4">PROJEKT</span>
+              <span className="data-label text-[0.72rem] text-neon-blue mb-4">PROJEKT</span>
               <h3 className="font-display font-semibold text-base mb-1 tracking-[-0.01em]">Skräddarsydd offert</h3>
               <div className="mb-1 mt-2">
                 <span className="font-mono font-bold text-xl text-foreground tracking-tight">Offert efter behov</span>
               </div>
-              <p className="text-[0.6rem] text-muted-foreground/45 font-mono mb-4 leading-[1.5]">intranät · webbappar · system</p>
-              <p className="text-[0.8125rem] text-muted-foreground/75 leading-[1.6] flex-1">
+              <p className="text-[0.74rem] text-muted-foreground/80 font-mono mb-4 leading-[1.5]">intranät · webbappar · system</p>
+              <p className="text-[0.8125rem] text-muted-foreground/80 leading-[1.6] flex-1">
                 Större projekt prissätts efter omfattning – du får en tydlig offert efter en genomgång.
               </p>
-              <span className="data-label text-[0.5rem] text-neon-cyan/70 mt-4 inline-flex items-center gap-1.5">
+              <span className="data-label text-[0.72rem] text-neon-blue mt-4 inline-flex items-center gap-1.5">
                 <FileText className="w-3 h-3" /> Begär offert
               </span>
             </motion.div>
@@ -100,8 +100,8 @@ const HomePricingSection = () => {
             </Button>
           </div>
 
-          <p className="text-center data-label text-[0.5rem] text-muted-foreground/40 mt-6 flex items-center justify-center gap-2">
-            <Check className="w-3 h-3 text-neon-cyan/60" /> Ingen bindningstid efter 12 mån · exkl. moms
+          <p className="text-center data-label text-[0.72rem] text-muted-foreground/80 mt-6 flex items-center justify-center gap-2">
+            <Check className="w-3 h-3 text-neon-blue" /> Ingen bindningstid efter 12 mån · exkl. moms
           </p>
         </div>
       </section>

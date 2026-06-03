@@ -51,16 +51,16 @@ const GuidesIndex = () => {
               viewport={{ once: true, margin: "-50px" }}
             >
               <Link to={`/guider/${g.slug}`} className="card-surface p-6 group flex flex-col h-full">
-                <span className="data-label text-[0.5rem] text-neon-cyan/70">{g.eyebrow}</span>
+                <span className="data-label text-[0.72rem] text-neon-blue">{g.eyebrow}</span>
                 <h2 className="font-display font-semibold text-lg mt-3 mb-2.5 tracking-[-0.01em] leading-snug">
                   {g.title}
                 </h2>
                 <p className="text-[0.875rem] text-muted-foreground/80 leading-[1.7] flex-1">{g.excerpt}</p>
                 <div className="flex items-center justify-between mt-5">
-                  <span className="data-label text-[0.5rem] text-muted-foreground/45 inline-flex items-center gap-1.5">
+                  <span className="data-label text-[0.72rem] text-muted-foreground/80 inline-flex items-center gap-1.5">
                     <Clock className="w-3 h-3" /> {g.readingMin} min
                   </span>
-                  <span className="data-label text-[0.5rem] text-neon-blue inline-flex items-center gap-1.5">
+                  <span className="data-label text-[0.72rem] text-neon-blue inline-flex items-center gap-1.5">
                     Läs guiden <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-[180ms]" />
                   </span>
                 </div>

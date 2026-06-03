@@ -100,7 +100,7 @@ const WebTestSection = ({ onAnalyze }: WebTestSectionProps) => {
               )}
             </form>
 
-            <p className="text-xs text-muted-foreground/50 tracking-wide">
+            <p className="text-xs text-muted-foreground/80 tracking-wide">
               Du får en tydlig bild på under 60 sekunder
             </p>
           </motion.div>

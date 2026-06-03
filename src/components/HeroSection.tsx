@@ -82,7 +82,7 @@ const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProp
                   value={domain}
                   onChange={(e) => { setDomain(e.target.value); setError(""); }}
                   placeholder="dinsida.se"
-                  className="flex-1 bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/45 px-2.5 py-3.5 text-[1.05rem] font-mono tracking-tight min-w-0"
+                  className="flex-1 bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/80 px-2.5 py-3.5 text-[1.05rem] font-mono tracking-tight min-w-0"
                   maxLength={253}
                 />
                 <Button type="submit" variant="glow-gradient" size="lg" className="shrink-0 h-12 px-5 glow-precision">
@@ -102,7 +102,7 @@ const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProp
 
           {/* ONE discreet trust row + booking link */}
           <motion.div variants={item} className="flex flex-col sm:flex-row items-center lg:items-start gap-2 sm:gap-4 mt-5">
-            <span className="data-label text-[0.58rem] text-muted-foreground/55">GRATIS · 60 SEKUNDER · INGEN REGISTRERING</span>
+            <span className="data-label text-[0.74rem] text-muted-foreground/80">GRATIS · 60 SEKUNDER · INGEN REGISTRERING</span>
             <button type="button" onClick={onBookMeeting} className="inline-flex items-center min-h-[44px] gap-1.5 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors group">
               eller boka videomöte
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-[180ms]" />

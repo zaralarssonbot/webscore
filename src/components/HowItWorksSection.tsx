@@ -73,7 +73,7 @@ const HowItWorksSection = () => {
               >
                 <step.icon className="w-5 h-5" style={{ color: `hsl(${step.hue} 90% 55%)` }} />
                 <span
-                  className="absolute -top-2 -right-2 text-[10px] font-bold font-display px-1.5 py-0.5 rounded-md border"
+                  className="absolute -top-2 -right-2 text-[12px] font-bold font-display px-1.5 py-0.5 rounded-md border"
                   style={{
                     background: `hsla(${step.hue},90%,55%,0.12)`,
                     borderColor: `hsla(${step.hue},90%,55%,0.2)`,
@@ -89,7 +89,7 @@ const HowItWorksSection = () => {
 
               {i < steps.length - 1 && (
                 <div className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-secondary/50 items-center justify-center border border-border/20">
-                  <ArrowRight className="w-3 h-3 text-muted-foreground/50" />
+                  <ArrowRight className="w-3 h-3 text-muted-foreground/80" />
                 </div>
               )}
             </motion.div>

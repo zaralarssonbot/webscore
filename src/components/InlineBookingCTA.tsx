@@ -29,8 +29,8 @@ const InlineBookingCTA = ({ onBook }: InlineBookingCTAProps) => {
 
       <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 relative">
         {meta.map((m) => (
-          <span key={m.text} className="flex items-center gap-1.5 data-label text-[0.5rem] text-muted-foreground/50">
-            <m.icon className="w-3 h-3 text-neon-cyan/60" />
+          <span key={m.text} className="flex items-center gap-1.5 data-label text-[0.72rem] text-muted-foreground/80">
+            <m.icon className="w-3 h-3 text-neon-blue" />
             {m.text}
           </span>
         ))}

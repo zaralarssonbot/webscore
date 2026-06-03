@@ -154,7 +154,7 @@ const EmailReportModal = ({ open, onClose, scanId, reportData }: EmailReportModa
                       </>
                     )}
                   </Button>
-                  <p className="text-[11px] text-muted-foreground/60 text-center font-light">
+                  <p className="text-[12.5px] text-muted-foreground/80 text-center font-light">
                     Vi delar aldrig din e-post. Du kan också boka en kostnadsfri 20‑minuters genomgång.
                   </p>
                 </form>

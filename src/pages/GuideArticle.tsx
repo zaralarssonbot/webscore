@@ -31,7 +31,7 @@ const GuideArticle = () => {
       <main className="relative z-10 max-w-2xl mx-auto px-6 pt-32 pb-28">
         <Link
           to="/guider"
-          className="group data-label text-[0.5rem] text-muted-foreground/60 hover:text-foreground inline-flex items-center min-h-[44px] gap-1.5 transition-colors"
+          className="group data-label text-[0.72rem] text-muted-foreground/80 hover:text-foreground inline-flex items-center min-h-[44px] gap-1.5 transition-colors"
         >
           <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform duration-[180ms]" /> Alla guider
         </Link>
@@ -43,11 +43,11 @@ const GuideArticle = () => {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="mt-6 mb-10"
         >
-          <span className="data-label text-[0.55rem] text-neon-cyan/70">{guide.eyebrow}</span>
+          <span className="data-label text-[0.72rem] text-neon-blue">{guide.eyebrow}</span>
           <h1 className="font-display font-semibold tracking-[-0.03em] leading-[1.1] text-3xl sm:text-4xl mt-4 mb-4">
             {guide.title}
           </h1>
-          <div className="flex items-center gap-4 data-label text-[0.5rem] text-muted-foreground/45">
+          <div className="flex items-center gap-4 data-label text-[0.72rem] text-muted-foreground/80">
             <span className="inline-flex items-center gap-1.5">
               <Clock className="w-3 h-3" /> {guide.readingMin} min läsning
             </span>

@@ -21,7 +21,7 @@ const NotFound = () => {
       <Navbar onAnalyze={() => navigate("/")} />
 
       <main className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 text-center">
-        <span className="data-label text-[0.6rem] text-neon-cyan/70 mb-5">FEL · 404</span>
+        <span className="data-label text-[0.74rem] text-neon-blue mb-5">FEL · 404</span>
         <h1
           className="font-mono font-bold tabular-nums leading-none text-7xl sm:text-8xl gradient-text"
           style={{ textShadow: "0 0 60px hsla(175,90%,55%,0.25)" }}

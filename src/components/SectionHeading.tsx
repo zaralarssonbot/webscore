@@ -21,7 +21,7 @@ const SectionHeading = ({ eyebrow, title, subtitle, className = "" }: SectionHea
     transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
     className={`text-center max-w-2xl mx-auto ${className}`}
   >
-    {eyebrow && <span className="data-label text-[0.6rem] text-neon-cyan/70 mb-4 inline-block">{eyebrow}</span>}
+    {eyebrow && <span className="data-label text-[0.74rem] text-neon-blue mb-4 inline-block">{eyebrow}</span>}
     <h2 className="font-display font-semibold tracking-[-0.035em] leading-[1.06] text-3xl sm:text-4xl md:text-[2.75rem]">
       {title}
     </h2>

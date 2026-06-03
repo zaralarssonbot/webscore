@@ -24,7 +24,7 @@ const ComparisonBars = ({ score }: ComparisonBarsProps) => {
         </div>
         <div>
           <h2 className="text-base font-semibold font-display tracking-[-0.01em]">Hur du ligger till</h2>
-          <p className="data-label text-[0.5rem] text-muted-foreground/50 mt-0.5">JÄMFÖRT MED MARKNADEN</p>
+          <p className="data-label text-[0.72rem] text-muted-foreground/80 mt-0.5">JÄMFÖRT MED MARKNADEN</p>
         </div>
       </div>
 

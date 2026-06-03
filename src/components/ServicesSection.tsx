@@ -72,7 +72,7 @@ const ServicesSection = () => {
             {serviceGroups.map((group, gi) => (
               <div key={group.label}>
                 <div className="flex items-center gap-4 mb-5">
-                  <span className="data-label text-[0.55rem] text-neon-cyan/70 whitespace-nowrap">{group.label}</span>
+                  <span className="data-label text-[0.72rem] text-neon-blue whitespace-nowrap">{group.label}</span>
                   <span className="h-px flex-1" style={{ background: "linear-gradient(90deg, hsl(var(--neon-cyan) / 0.25), transparent)" }} />
                 </div>
                 <div className="grid md:grid-cols-3 gap-4">
@@ -88,14 +88,14 @@ const ServicesSection = () => {
                         <div className="flex items-center justify-between">
                           <IconBadge><service.icon className="w-6 h-6" /></IconBadge>
                           {focus && (
-                            <span className="data-label text-[0.45rem] px-2.5 py-1 rounded-full text-white bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-purple">
+                            <span className="data-label text-[0.72rem] px-2.5 py-1 rounded-full text-white bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-purple">
                               HUVUDTJÄNST
                             </span>
                           )}
                         </div>
                         <h3 className="font-display font-bold text-xl mt-5 mb-2.5 tracking-[-0.02em]">{service.title}</h3>
                         <p className="text-[0.9rem] text-muted-foreground leading-[1.7] flex-1">{service.description}</p>
-                        <span className="data-label text-[0.5rem] text-neon-blue mt-6 inline-flex items-center gap-1.5">
+                        <span className="data-label text-[0.72rem] text-neon-blue mt-6 inline-flex items-center gap-1.5">
                           Läs mer <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-300" />
                         </span>
                       </Link>
@@ -143,7 +143,7 @@ const ServicesSection = () => {
               >
                 <div className="relative inline-flex">
                   <IconBadge><step.icon className="w-6 h-6" /></IconBadge>
-                  <span className="absolute -top-2 -right-2 font-mono text-[0.6rem] font-semibold px-1.5 py-0.5 rounded-md bg-card border border-border text-neon-cyan">
+                  <span className="absolute -top-2 -right-2 font-mono text-[0.74rem] font-semibold px-1.5 py-0.5 rounded-md bg-card border border-border text-neon-blue">
                     {step.number}
                   </span>
                 </div>

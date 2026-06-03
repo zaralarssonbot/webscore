@@ -17,7 +17,7 @@ const QuickFixCard = ({ fix }: QuickFixCardProps) => {
           <Zap className="w-4 h-4 text-neon-cyan" />
         </motion.div>
         <div>
-          <h2 className="data-label text-[0.55rem] text-neon-cyan/70 mb-1.5">SNABB ÅTGÄRD</h2>
+          <h2 className="data-label text-[0.72rem] text-neon-blue mb-1.5">SNABB ÅTGÄRD</h2>
           <p className="text-muted-foreground/80 text-sm leading-[1.6]">{fix}</p>
         </div>
       </div>

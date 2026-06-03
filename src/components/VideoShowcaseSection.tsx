@@ -60,7 +60,7 @@ const VideoShowcaseSection = () => {
                   <div className="w-6 h-6 rounded-full bg-primary/20 backdrop-blur-sm border border-primary/30 flex items-center justify-center">
                     <Play className="w-3 h-3 text-primary fill-primary" />
                   </div>
-                  <span className="data-label text-[0.55rem] text-foreground/90">
+                  <span className="data-label text-[0.72rem] text-foreground/90">
                     {video.label}
                   </span>
                 </div>

@@ -40,7 +40,7 @@ const FinalCTASection = ({ onAnalyze, onBookMeeting }: FinalCTASectionProps) => 
           <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 0%, hsl(var(--neon-blue) / 0.06) 0%, transparent 60%)" }} />
 
           <div className="relative">
-            <span className="data-label text-[0.6rem] text-neon-cyan/70 mb-4 inline-block">KOSTNADSFRITT WEBBTEST</span>
+            <span className="data-label text-[0.74rem] text-neon-blue mb-4 inline-block">KOSTNADSFRITT WEBBTEST</span>
             <h2 className="font-display font-semibold text-2xl sm:text-3xl md:text-[2.25rem] mb-4 tracking-[-0.035em] leading-[1.1]">
               Redo att ta din hemsida till{" "}
               <span className="gradient-text">nästa nivå?</span>
@@ -70,7 +70,7 @@ const FinalCTASection = ({ onAnalyze, onBookMeeting }: FinalCTASectionProps) => 
                     value={domain}
                     onChange={(e) => { setDomain(e.target.value); setError(""); }}
                     placeholder="dinsida.se"
-                    className="flex-1 bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/50 px-3 py-3 text-base font-mono tracking-tight min-w-0"
+                    className="flex-1 bg-transparent border-none outline-none text-foreground placeholder:text-muted-foreground/80 px-3 py-3 text-base font-mono tracking-tight min-w-0"
                     maxLength={253}
                   />
                   <Button type="submit" variant="glow-gradient" size="lg" className="shrink-0 glow-precision">
@@ -87,7 +87,7 @@ const FinalCTASection = ({ onAnalyze, onBookMeeting }: FinalCTASectionProps) => 
             {/* Divider */}
             <div className="flex items-center gap-4 max-w-sm mx-auto mb-6">
               <div className="flex-1 h-px bg-border" />
-              <span className="data-label text-[0.55rem] text-muted-foreground/40">ELLER</span>
+              <span className="data-label text-[0.72rem] text-muted-foreground/80">ELLER</span>
               <div className="flex-1 h-px bg-border" />
             </div>
 
@@ -97,7 +97,7 @@ const FinalCTASection = ({ onAnalyze, onBookMeeting }: FinalCTASectionProps) => 
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-[180ms]" />
             </button>
 
-            <p className="mt-6 data-label text-[0.55rem] text-muted-foreground/40">
+            <p className="mt-6 data-label text-[0.72rem] text-muted-foreground/80">
               UNDER 60 SEKUNDER · SVAR INOM 24H
             </p>
           </div>

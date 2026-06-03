@@ -36,7 +36,7 @@ const Footer = () => {
                 Web<span className="gradient-text">score</span>
               </span>
             </div>
-            <p className="text-[0.8125rem] text-muted-foreground/70 leading-[1.7] max-w-xs">
+            <p className="text-[0.8125rem] text-muted-foreground/80 leading-[1.7] max-w-xs">
               Vi hjälper företag att synas, övertyga och växa online genom hemsida, SEO och branding.
             </p>
           </div>
@@ -44,7 +44,7 @@ const Footer = () => {
           {/* Link columns */}
           {columns.map((col) => (
             <div key={col.heading}>
-              <h4 className="data-label text-[0.55rem] text-muted-foreground/50 mb-4">{col.heading}</h4>
+              <h4 className="data-label text-[0.72rem] text-muted-foreground/80 mb-4">{col.heading}</h4>
               <ul className="space-y-2.5">
                 {col.links.map((l) => (
                   <li key={l.label}>
@@ -60,10 +60,10 @@ const Footer = () => {
 
         {/* Bottom */}
         <div className="border-t border-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="data-label text-[0.55rem] text-muted-foreground/40">
+          <p className="data-label text-[0.72rem] text-muted-foreground/80">
             © {new Date().getFullYear()} WEBSCORE · ALLA RÄTTIGHETER FÖRBEHÅLLNA
           </p>
-          <p className="data-label text-[0.55rem] text-muted-foreground/40">SVERIGE</p>
+          <p className="data-label text-[0.72rem] text-muted-foreground/80">SVERIGE</p>
         </div>
       </div>
     </footer>

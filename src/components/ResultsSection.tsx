@@ -74,23 +74,23 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
 
         {/* Expert positioning */}
         <motion.div variants={fadeUp} className="text-center max-w-2xl mx-auto">
-          <p className="text-sm text-muted-foreground/70 font-light leading-relaxed">
+          <p className="text-sm text-muted-foreground/80 font-light leading-relaxed">
             Den här analysen bygger på 41 automatiska kontroller av din sida – faktorer som påverkar hur företag presterar online.
           </p>
         </motion.div>
 
         {/* Trust badges row */}
-        <motion.div variants={fadeUp} className="flex items-center justify-center gap-4 sm:gap-6 text-[11px] text-muted-foreground/60 font-light">
+        <motion.div variants={fadeUp} className="flex items-center justify-center gap-4 sm:gap-6 text-[12.5px] text-muted-foreground/80 font-light">
           <span className="flex items-center gap-1.5">
-            <BarChart3 className="w-3 h-3 text-neon-cyan/50" />
+            <BarChart3 className="w-3 h-3 text-neon-blue" />
             Baserat på verklig data
           </span>
           <span className="flex items-center gap-1.5">
-            <ShieldCheck className="w-3 h-3 text-neon-cyan/50" />
+            <ShieldCheck className="w-3 h-3 text-neon-blue" />
             Expertgranskning
           </span>
           <span className="flex items-center gap-1.5 hidden sm:flex">
-            <Users className="w-3 h-3 text-neon-cyan/50" />
+            <Users className="w-3 h-3 text-neon-blue" />
             Jämför med företag i ditt område
           </span>
         </motion.div>
@@ -119,7 +119,7 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
                 </div>
                 <div>
                   <h2 className="text-base font-semibold font-display">Företag du konkurrerar med online</h2>
-                  <p className="data-label text-[0.5rem] text-muted-foreground/50 mt-0.5">Företag i ditt område som presterar bra</p>
+                  <p className="data-label text-[0.72rem] text-muted-foreground/80 mt-0.5">Företag i ditt område som presterar bra</p>
                 </div>
               </div>
 
@@ -139,7 +139,7 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
                             href={comp.url || `https://${comp.domain}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[10px] text-neon-cyan/60 hover:text-neon-cyan font-mono truncate hidden sm:inline transition-colors"
+                            className="text-[12px] text-neon-blue hover:text-neon-cyan font-mono truncate hidden sm:inline transition-colors"
                           >
                             {comp.domain} ↗
                           </a>
@@ -147,7 +147,7 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
                         {comp.strength && <span className="text-xs text-foreground/70 font-light">{comp.strength}</span>}
                         {comp.has_reviews && (
                           <div className="flex items-center gap-1.5 mt-1 flex-wrap">
-                            <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-score-mid/8 text-score-mid border border-score-mid/12 flex items-center gap-0.5">
+                            <span className="text-[12px] px-1.5 py-0.5 rounded-full bg-score-mid/8 text-score-mid border border-score-mid/12 flex items-center gap-0.5">
                               <Star className="w-2.5 h-2.5" />Visar omdömen
                             </span>
                           </div>
@@ -183,14 +183,14 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
 
         {/* Urgency nudge */}
         <motion.div variants={fadeUp} className="text-center">
-          <p className="text-sm text-muted-foreground/70 font-light italic max-w-lg mx-auto leading-relaxed">
+          <p className="text-sm text-muted-foreground/80 font-light italic max-w-lg mx-auto leading-relaxed">
             "Företag i din bransch förbättrar ofta detta först när de ser hur mycket kunder de tappar."
           </p>
         </motion.div>
 
         {/* Expert identity line */}
         <motion.div variants={fadeUp} className="text-center">
-          <p className="text-xs text-muted-foreground/50 font-light italic max-w-lg mx-auto">
+          <p className="text-xs text-muted-foreground/80 font-light italic max-w-lg mx-auto">
             Denna analys speglar hur företag som presterar bäst online är uppbyggda idag.
           </p>
         </motion.div>
@@ -205,7 +205,7 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
             </div>
             <div>
               <h2 className="text-base font-semibold font-display">Vi bygger hemsidor som faktiskt genererar kunder</h2>
-              <p className="data-label text-[0.5rem] text-muted-foreground/50 mt-0.5">Expertis inom hemsidor, SEO och digital synlighet</p>
+              <p className="data-label text-[0.72rem] text-muted-foreground/80 mt-0.5">Expertis inom hemsidor, SEO och digital synlighet</p>
             </div>
           </div>
 
@@ -266,7 +266,7 @@ const ResultsSection = ({ domain, data, scanId, onNewScan }: ResultsSectionProps
               Få en personlig genomgång
             </Button>
           </div>
-          <div className="flex items-center justify-center gap-4 sm:gap-6 mt-5 text-[11px] text-muted-foreground/50 font-light relative">
+          <div className="flex items-center justify-center gap-4 sm:gap-6 mt-5 text-[12.5px] text-muted-foreground/80 font-light relative">
             <span className="flex items-center gap-1.5">
               <Clock className="w-3 h-3" />
               Tar 20 min

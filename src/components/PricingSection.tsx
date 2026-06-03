@@ -36,10 +36,10 @@ const PricingSection = () => {
           {/* LÖPANDE — abonnemang */}
           <div className="mb-20">
             <div className="flex items-center gap-4 mb-6">
-              <span className="data-label text-[0.55rem] text-neon-cyan/70 whitespace-nowrap">LÖPANDE · ABONNEMANG</span>
+              <span className="data-label text-[0.72rem] text-neon-blue whitespace-nowrap">LÖPANDE · ABONNEMANG</span>
               <span className="h-px flex-1" style={{ background: "linear-gradient(90deg, hsl(var(--neon-cyan) / 0.25), transparent)" }} />
             </div>
-            <p className="text-sm text-muted-foreground/70 mb-8 max-w-2xl leading-[1.7]">
+            <p className="text-sm text-muted-foreground/80 mb-8 max-w-2xl leading-[1.7]">
               Hemsida med löpande drift och support. Alla priser är per månad i 12 månader – ingen bindningstid efter det. Engångspris finns som alternativ.
             </p>
 
@@ -59,12 +59,12 @@ const PricingSection = () => {
                   }`}
                 >
                   {pkg.popular && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 data-label text-[0.55rem] px-4 py-1 rounded-full text-white bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-purple shadow-md">
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 data-label text-[0.72rem] px-4 py-1 rounded-full text-white bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-purple shadow-md">
                       POPULÄRAST
                     </div>
                   )}
 
-                  <span className="data-label text-[0.58rem] self-start px-3 py-1 rounded-full border border-border bg-secondary text-neon-cyan mb-4">
+                  <span className="data-label text-[0.74rem] self-start px-3 py-1 rounded-full border border-border bg-secondary text-neon-blue mb-4">
                     {pkg.tier}
                   </span>
 
@@ -73,12 +73,12 @@ const PricingSection = () => {
 
                   <div className="mb-1">
                     <span className="font-mono font-bold tabular-nums text-3xl sm:text-4xl text-foreground tracking-tight">{pkg.price} kr</span>
-                    <span className="text-sm text-muted-foreground/60 font-mono">/mån</span>
+                    <span className="text-sm text-muted-foreground/80 font-mono">/mån</span>
                   </div>
-                  <p className="text-xs text-muted-foreground/50 mb-6 font-mono">{pkg.priceNote}</p>
+                  <p className="text-xs text-muted-foreground/80 mb-6 font-mono">{pkg.priceNote}</p>
 
                   <div className="border-t border-border pt-5 mb-6 flex-1">
-                    <p className="data-label text-[0.5rem] text-muted-foreground/50 mb-3">{pkg.includes ?? "INGÅR I PAKETET"}</p>
+                    <p className="data-label text-[0.72rem] text-muted-foreground/80 mb-3">{pkg.includes ?? "INGÅR I PAKETET"}</p>
                     <ul className="space-y-2.5">
                       {pkg.features.map((f, i) => (
                         <li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground/80 leading-[1.5]">
@@ -105,10 +105,10 @@ const PricingSection = () => {
           {/* PROJEKT — offert efter behov */}
           <div>
             <div className="flex items-center gap-4 mb-6">
-              <span className="data-label text-[0.55rem] text-neon-cyan/70 whitespace-nowrap">PROJEKT · OFFERT EFTER BEHOV</span>
+              <span className="data-label text-[0.72rem] text-neon-blue whitespace-nowrap">PROJEKT · OFFERT EFTER BEHOV</span>
               <span className="h-px flex-1" style={{ background: "linear-gradient(90deg, hsl(var(--neon-cyan) / 0.25), transparent)" }} />
             </div>
-            <p className="text-sm text-muted-foreground/70 mb-8 max-w-2xl leading-[1.7]">
+            <p className="text-sm text-muted-foreground/80 mb-8 max-w-2xl leading-[1.7]">
               Intranät och skräddarsydd mjukvara ser olika ut för varje företag. Därför sätter vi inget hyllpris – du får en tydlig offert efter en kostnadsfri genomgång.
             </p>
 
@@ -121,7 +121,7 @@ const PricingSection = () => {
             >
               {projectOffers.map((offer) => (
                 <motion.div key={offer.title} variants={fadeUp} className="card-surface p-6 sm:p-8 flex flex-col">
-                  <span className="data-label text-[0.58rem] self-start px-3 py-1 rounded-full border border-border bg-secondary text-neon-cyan mb-4">
+                  <span className="data-label text-[0.74rem] self-start px-3 py-1 rounded-full border border-border bg-secondary text-neon-blue mb-4">
                     OFFERT
                   </span>
                   <h3 className="font-display font-semibold text-xl mb-1.5 tracking-[-0.02em]">{offer.title}</h3>

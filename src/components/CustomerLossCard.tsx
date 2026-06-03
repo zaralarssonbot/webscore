@@ -31,7 +31,7 @@ const CustomerLossCard = ({ score }: CustomerLossCardProps) => {
         </motion.div>
         <div>
           <h2 className="text-base font-semibold font-display tracking-[-0.01em]">Ni kan tappa kunder varje dag</h2>
-          <p className="data-label text-[0.5rem] text-score-low/60 mt-0.5">UPPSKATTAD RISK BASERAT PÅ ANALYSEN</p>
+          <p className="data-label text-[0.72rem] text-score-low/60 mt-0.5">UPPSKATTAD RISK BASERAT PÅ ANALYSEN</p>
         </div>
       </div>
 
@@ -47,7 +47,7 @@ const CustomerLossCard = ({ score }: CustomerLossCardProps) => {
           >
             {risk.level}
           </motion.span>
-          <span className="data-label text-[0.5rem] text-muted-foreground/50 mt-1.5">RISKNIVÅ</span>
+          <span className="data-label text-[0.72rem] text-muted-foreground/80 mt-1.5">RISKNIVÅ</span>
         </div>
         <div className="flex-1">
           <p className="text-sm text-muted-foreground/80 leading-[1.6]">
