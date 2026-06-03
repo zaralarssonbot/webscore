@@ -45,15 +45,15 @@ const HomePricingSection = () => {
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true, margin: "-50px" }}
-                className={`card-surface p-6 flex flex-col ${tier.popular ? "border-neon-cyan/25 ring-1 ring-neon-cyan/20" : ""}`}
+                className={`card-surface p-6 flex flex-col ${tier.popular ? "card-focus sm:-mt-2 sm:mb-2 z-10" : ""}`}
               >
                 <div className="flex items-center justify-between mb-4">
-                  <span className="data-label text-[0.5rem] text-neon-cyan/80">{tier.tier}</span>
+                  <span className="data-label text-[0.5rem] text-neon-blue">{tier.tier}</span>
                   {tier.popular && (
-                    <span className="data-label text-[0.45rem] px-2 py-0.5 rounded-full bg-neon-cyan text-background">POPULÄRAST</span>
+                    <span className="data-label text-[0.45rem] px-2.5 py-1 rounded-full text-white bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-purple">POPULÄRAST</span>
                   )}
                 </div>
-                <h3 className="font-display font-semibold text-base mb-1 tracking-[-0.01em]">{tier.name}</h3>
+                <h3 className="font-display font-bold text-lg mb-1 tracking-[-0.01em]">{tier.name}</h3>
                 <div className="mb-1 mt-2">
                   <span className="font-mono font-bold tabular-nums text-2xl text-foreground tracking-tight">{tier.price} kr</span>
                   <span className="text-xs text-muted-foreground/60 font-mono">/mån</span>

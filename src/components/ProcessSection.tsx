@@ -35,11 +35,11 @@ const ProcessSection = () => {
                   transition={{ duration: 0.5, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
                   className="relative flex flex-col items-center"
                 >
-                  <div className="w-24 h-24 rounded-full flex items-center justify-center relative bg-card border border-border shadow-sm">
-                    <div className="w-14 h-14 rounded-full flex items-center justify-center border border-neon-cyan/20 bg-neon-cyan/[0.07]">
-                      <step.icon className="w-6 h-6 text-neon-cyan" />
+                  <div className="w-24 h-24 rounded-full flex items-center justify-center relative bg-card border border-border shadow-[var(--card-shadow)]">
+                    <div className="icon-chip w-14 h-14 rounded-full flex items-center justify-center">
+                      <step.icon className="w-6 h-6" />
                     </div>
-                    <span className="absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center font-mono text-[0.6rem] font-semibold bg-neon-cyan text-background">
+                    <span className="absolute -top-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center font-mono text-[0.6rem] font-semibold bg-card border border-border text-neon-blue shadow-sm">
                       {step.number}
                     </span>
                   </div>
@@ -75,9 +75,9 @@ const ProcessSection = () => {
                 transition={{ duration: 0.45, delay: i * 0.07, ease: [0.16, 1, 0.3, 1] }}
                 className="card-surface p-5 flex items-center gap-4"
               >
-                <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 relative border border-neon-cyan/20 bg-neon-cyan/[0.07]">
-                  <step.icon className="w-5 h-5 text-neon-cyan" />
-                  <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center font-mono text-[0.55rem] font-semibold bg-neon-cyan text-background">
+                <div className="icon-chip w-12 h-12 rounded-full flex items-center justify-center shrink-0 relative">
+                  <step.icon className="w-5 h-5" />
+                  <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center font-mono text-[0.55rem] font-semibold bg-card border border-border text-neon-blue shadow-sm">
                     {step.number}
                   </span>
                 </div>

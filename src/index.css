@@ -74,6 +74,14 @@
     --shadow-depth-2: 0 6px 16px rgba(16,24,40,0.06), 0 12px 32px rgba(16,24,40,0.08);
     --shadow-depth-3: 0 12px 32px rgba(16,24,40,0.08), 0 24px 64px rgba(16,24,40,0.10);
 
+    /* Stacked, low-opacity card shadows (Stripe/Linear style) — real layered
+       depth at rest, deeper on hover. */
+    --card-shadow: 0 1px 2px rgba(16,24,40,0.05), 0 4px 12px rgba(16,24,40,0.05), 0 12px 28px rgba(16,24,40,0.06);
+    --card-shadow-hover: 0 2px 4px rgba(16,24,40,0.06), 0 10px 24px rgba(16,24,40,0.09), 0 28px 56px rgba(16,24,40,0.13);
+
+    /* Subtle light-gray band the white cards sit on, so they lift off the page. */
+    --surface-band: 225 18% 97%;
+
     --sidebar-background: 240 20% 99%;
     --sidebar-foreground: 0 0% 12%;
     --sidebar-primary: 199 89% 44%;
@@ -242,19 +250,68 @@
     @apply text-neon-cyan underline-offset-2 hover:underline;
   }
 
-  /* One cohesive card surface — white, hairline border, soft low shadow; a
-     restrained lift + faint brand-tinted border on hover. */
+  /* Light-gray band white cards sit on, so they visibly lift off the page. */
+  .surface-band {
+    background-color: hsl(var(--surface-band));
+  }
+
+  /* One cohesive card surface — white, hairline border, real layered shadow;
+     lifts with a deeper shadow + brand border + a gradient top-line on hover. */
   .card-surface {
-    @apply rounded-2xl border;
+    @apply rounded-2xl border relative;
     border-color: rgba(15, 23, 42, 0.08);
     background: hsl(var(--card));
-    box-shadow: var(--shadow-depth-1);
-    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: var(--card-shadow);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  /* Gradient hairline that lights up along the card's top edge on hover. The
+     transparent ends keep it clear of the rounded corners. */
+  .card-surface::before {
+    content: "";
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, hsl(var(--neon-cyan) / 0.75), hsl(var(--neon-blue) / 0.75) 50%, hsl(var(--neon-purple) / 0.75), transparent);
+    opacity: 0;
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
   }
   .card-surface:hover {
-    transform: translateY(-3px);
-    border-color: hsl(var(--neon-blue) / 0.32);
-    box-shadow: var(--shadow-depth-2);
+    transform: translateY(-6px);
+    border-color: hsl(var(--neon-blue) / 0.28);
+    box-shadow: var(--card-shadow-hover);
+  }
+  .card-surface:hover::before { opacity: 1; }
+
+  /* Gradient icon chip — bold, filled with the brand gradient + white icon.
+     Springs to life when its card (or any .group parent) is hovered. */
+  .icon-chip {
+    background-image: linear-gradient(135deg, hsl(var(--neon-cyan)), hsl(var(--neon-blue)) 50%, hsl(var(--neon-purple)));
+    color: #fff;
+    box-shadow: 0 6px 16px hsl(var(--neon-blue) / 0.30), inset 0 1px 0 rgba(255,255,255,0.30);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .group:hover .icon-chip,
+  .card-surface:hover .icon-chip {
+    transform: translateY(-2px) scale(1.08) rotate(-3deg);
+    box-shadow: 0 12px 24px hsl(var(--neon-blue) / 0.40), inset 0 1px 0 rgba(255,255,255,0.45);
+  }
+
+  /* The ONE dominant card per section — a crisp gradient border ring + a
+     permanently-elevated shadow so the eye lands here first. */
+  .card-focus {
+    border-color: transparent;
+    box-shadow: var(--card-shadow-hover);
+  }
+  .card-focus::after {
+    content: "";
+    position: absolute; inset: 0;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: linear-gradient(135deg, hsl(var(--neon-cyan)), hsl(var(--neon-blue)) 50%, hsl(var(--neon-purple)));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
   }
 
   .gradient-text {

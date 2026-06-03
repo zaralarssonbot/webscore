@@ -206,8 +206,8 @@ const PortfolioSection = () => {
                   onClick={() => setSelectedProject(project)}
                   className="group relative cursor-pointer"
                 >
-                  {/* Card with glow + depth */}
-                  <div className="rounded-2xl overflow-hidden relative transition-all duration-500 hover:shadow-[var(--shadow-depth-2)] hover:translate-y-[-4px] bg-card border border-border hover:border-neon-blue/30">
+                  {/* Card with layered depth + gradient top-line on hover */}
+                  <div className="card-surface overflow-hidden">
                     {/* Ambient glow behind card on hover */}
                     <div
                       className="absolute -inset-1 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-xl -z-10"

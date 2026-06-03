@@ -9,22 +9,22 @@ const serviceGroups = [
   {
     label: "VI BYGGER",
     items: [
-      { icon: Monitor, slug: "hemsidor", title: "Hemsidor", description: "Moderna, snabba hemsidor byggda för att besökare ska stanna – och välja dig." },
-      { icon: Network, slug: "intranat", title: "Intranät & interna portaler", description: "Interna portaler som samlar information, rutiner och verktyg på ett ställe." },
-      { icon: Code2, slug: "webbappar", title: "Webbappar & system", description: "Webbappar, system och skräddarsydd mjukvara byggd kring hur ni faktiskt jobbar." },
+      { icon: Monitor, slug: "hemsidor", title: "Hemsidor", description: "Snygga, blixtsnabba sajter byggda för att besökaren stannar, litar på dig – och hör av sig." },
+      { icon: Network, slug: "intranat", title: "Intranät & interna portaler", description: "Samla rutiner, dokument och verktyg på ett ställe – så hela teamet hittar rätt direkt." },
+      { icon: Code2, slug: "webbappar", title: "Webbappar & system", description: "System och webbappar byggda kring exakt hur ni jobbar – inte tvärtom." },
     ],
   },
   {
     label: "VI FÅR DET ATT SYNAS & ÖVERTYGA",
     items: [
-      { icon: TrendingUp, slug: "seo", title: "SEO & synlighet", description: "Vi ser till att du syns där dina kunder söker – och konkurrerar ut andra." },
-      { icon: Palette, slug: "branding", title: "Branding & design", description: "Ett tydligt, sammanhängande varumärke som känns självklart att välja." },
+      { icon: TrendingUp, slug: "seo", title: "SEO & synlighet", description: "Syns högt när kunderna söker – och ta platsen konkurrenterna annars tar." },
+      { icon: Palette, slug: "branding", title: "Branding & design", description: "Ett tydligt, enhetligt varumärke som känns genomtänkt och självklart att välja." },
     ],
   },
   {
     label: "VI HÅLLER DET IGÅNG",
     items: [
-      { icon: LifeBuoy, slug: "drift", title: "Drift, underhåll & support", description: "Vi håller lösningen uppdaterad, säker och igång – så du slipper tänka på det." },
+      { icon: LifeBuoy, slug: "drift", title: "Drift, underhåll & support", description: "Uppdaterad, säker och alltid igång – vi sköter driften så du slipper tänka på den." },
     ],
   },
 ];
@@ -49,7 +49,7 @@ const reveal = {
 };
 
 const IconBadge = ({ children }: { children: React.ReactNode }) => (
-  <div className="w-11 h-11 rounded-xl flex items-center justify-center border border-neon-cyan/20 bg-neon-cyan/[0.07] text-neon-cyan">
+  <div className="icon-chip w-12 h-12 rounded-2xl flex items-center justify-center">
     {children}
   </div>
 );
@@ -69,28 +69,39 @@ const ServicesSection = () => {
           />
 
           <div className="space-y-12">
-            {serviceGroups.map((group) => (
+            {serviceGroups.map((group, gi) => (
               <div key={group.label}>
                 <div className="flex items-center gap-4 mb-5">
                   <span className="data-label text-[0.55rem] text-neon-cyan/70 whitespace-nowrap">{group.label}</span>
                   <span className="h-px flex-1" style={{ background: "linear-gradient(90deg, hsl(var(--neon-cyan) / 0.25), transparent)" }} />
                 </div>
                 <div className="grid md:grid-cols-3 gap-4">
-                  {group.items.map((service, i) => (
+                  {group.items.map((service, i) => {
+                    // One dominant card per section: the flagship service (Hemsidor).
+                    const focus = gi === 0 && i === 0;
+                    return (
                     <motion.div
                       key={service.slug}
                       custom={i} variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }}
                     >
-                      <Link to={`/tjanster/${service.slug}`} className="card-surface p-7 group flex flex-col h-full">
-                        <IconBadge><service.icon className="w-5 h-5" /></IconBadge>
-                        <h3 className="font-display font-semibold text-lg mt-5 mb-2.5 tracking-[-0.02em]">{service.title}</h3>
-                        <p className="text-[0.875rem] text-muted-foreground/80 leading-[1.7]">{service.description}</p>
-                        <span className="data-label text-[0.5rem] text-neon-cyan/70 mt-5 inline-flex items-center gap-1.5 group-hover:gap-2.5 transition-all">
-                          Läs mer <ArrowRight className="w-3 h-3" />
+                      <Link to={`/tjanster/${service.slug}`} className={`card-surface p-7 group flex flex-col h-full ${focus ? "card-focus" : ""}`}>
+                        <div className="flex items-center justify-between">
+                          <IconBadge><service.icon className="w-6 h-6" /></IconBadge>
+                          {focus && (
+                            <span className="data-label text-[0.45rem] px-2.5 py-1 rounded-full text-white bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-purple">
+                              HUVUDTJÄNST
+                            </span>
+                          )}
+                        </div>
+                        <h3 className="font-display font-bold text-xl mt-5 mb-2.5 tracking-[-0.02em]">{service.title}</h3>
+                        <p className="text-[0.9rem] text-muted-foreground leading-[1.7] flex-1">{service.description}</p>
+                        <span className="data-label text-[0.5rem] text-neon-blue mt-6 inline-flex items-center gap-1.5">
+                          Läs mer <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-300" />
                         </span>
                       </Link>
                     </motion.div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             ))}
@@ -112,8 +123,8 @@ const ServicesSection = () => {
                 custom={i} variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }}
                 className="card-surface p-6 text-center flex flex-col items-center"
               >
-                <IconBadge><item.icon className="w-5 h-5" /></IconBadge>
-                <span className="font-display font-semibold text-[0.875rem] tracking-[-0.01em] mt-3">{item.text}</span>
+                <IconBadge><item.icon className="w-6 h-6" /></IconBadge>
+                <span className="font-display font-semibold text-[0.9375rem] tracking-[-0.01em] mt-3.5">{item.text}</span>
               </motion.div>
             ))}
           </div>
@@ -131,7 +142,7 @@ const ServicesSection = () => {
                 className="card-surface p-6 text-center relative"
               >
                 <div className="relative inline-flex">
-                  <IconBadge><step.icon className="w-5 h-5" /></IconBadge>
+                  <IconBadge><step.icon className="w-6 h-6" /></IconBadge>
                   <span className="absolute -top-2 -right-2 font-mono text-[0.6rem] font-semibold px-1.5 py-0.5 rounded-md bg-card border border-border text-neon-cyan">
                     {step.number}
                   </span>

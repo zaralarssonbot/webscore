@@ -55,11 +55,11 @@ const PricingSection = () => {
                   key={pkg.tier}
                   variants={fadeUp}
                   className={`relative card-surface p-6 sm:p-8 flex flex-col ${
-                    pkg.popular ? "border-neon-cyan/25 ring-1 ring-neon-cyan/20 shadow-glow-soft md:-translate-y-2" : ""
+                    pkg.popular ? "card-focus md:-mt-3 md:mb-3 z-10" : ""
                   }`}
                 >
                   {pkg.popular && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 data-label text-[0.55rem] px-4 py-1 rounded-full bg-neon-cyan text-background">
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 data-label text-[0.55rem] px-4 py-1 rounded-full text-white bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-purple shadow-md">
                       POPULÄRAST
                     </div>
                   )}
