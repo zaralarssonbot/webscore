@@ -78,7 +78,7 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
             ))}
             <button
               onClick={onAnalyze}
-              className="text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90 px-5 py-2 rounded-lg transition-all duration-300 hover:shadow-glow-mid"
+              className="text-sm font-medium text-primary-foreground bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-purple px-5 py-2 rounded-lg transition-all duration-300 hover:brightness-110 hover:shadow-glow-mid"
             >
               Analysera nu
             </button>
@@ -109,7 +109,7 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
             ))}
             <button
               onClick={() => { setOpen(false); onAnalyze?.(); }}
-              className="w-full text-sm font-medium text-primary-foreground bg-primary px-5 py-2.5 rounded-lg mt-2 hover:shadow-glow-mid transition-all"
+              className="w-full text-sm font-medium text-primary-foreground bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-purple px-5 py-2.5 rounded-lg mt-2 hover:brightness-110 hover:shadow-glow-mid transition-all"
             >
               Analysera nu
             </button>
