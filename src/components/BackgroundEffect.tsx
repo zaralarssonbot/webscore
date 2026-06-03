@@ -1,56 +1,26 @@
-import { Suspense, lazy, useEffect, useState } from "react";
-import CSSAuroraBackground from "@/components/background/CSSAuroraBackground";
-
-// Lazy so three.js never enters the bundle for users on the CSS fallback.
-const WebGLBackground = lazy(() => import("@/components/background/WebGLBackground"));
-
-/** Cheap one-off WebGL capability probe. */
-const detectWebGL = (): boolean => {
-  if (typeof window === "undefined") return false;
-  try {
-    const canvas = document.createElement("canvas");
-    return !!(
-      window.WebGLRenderingContext &&
-      (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
-    );
-  } catch {
-    return false;
-  }
-};
-
-type Mode = "probing" | "webgl" | "css-animated" | "css-static";
-
 /**
- * Site-wide generative background. Fixed full-screen, behind all content.
+ * Site-wide background — clean, light and SEAMLESS.
  *
- *  - WebGL available + motion allowed → Three.js aurora (WebGLBackground)
- *  - prefers-reduced-motion          → static CSS gradient
- *  - no WebGL                         → animated CSS aurora fallback
+ * A single fixed layer behind all content: a near-white page with one very
+ * subtle teal→blue→purple gradient wash that sits behind the hero and fades
+ * smoothly to nothing. Because it's one continuous fixed layer (and sections
+ * are transparent), the page reads as a single uninterrupted surface — no hard
+ * edges or bands where one section meets the next.
+ *
+ * The old dark WebGL aurora + heavy glow belonged to the dark theme and has
+ * been removed (this also keeps three.js out of the bundle entirely).
  */
 const BackgroundEffect = () => {
-  const [mode, setMode] = useState<Mode>("probing");
-
-  useEffect(() => {
-    const reduced =
-      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
-
-    if (reduced) {
-      setMode("css-static");
-      return;
-    }
-    setMode(detectWebGL() ? "webgl" : "css-animated");
-  }, []);
-
   return (
-    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      {mode === "webgl" ? (
-        // CSS aurora paints instantly underneath while the WebGL chunk loads.
-        <Suspense fallback={<CSSAuroraBackground animated />}>
-          <WebGLBackground animated />
-        </Suspense>
-      ) : (
-        <CSSAuroraBackground animated={mode !== "css-static"} />
-      )}
+    <div className="pointer-events-none fixed inset-0 -z-10 bg-background overflow-hidden">
+      {/* Soft brand wash behind the hero — fades out by ~70% height, no edge. */}
+      <div
+        className="absolute inset-x-0 top-0 h-[88vh]"
+        style={{
+          background:
+            "radial-gradient(120% 78% at 50% -8%, hsl(var(--neon-purple) / 0.10) 0%, hsl(var(--neon-blue) / 0.07) 32%, hsl(var(--neon-cyan) / 0.04) 52%, transparent 72%)",
+        }}
+      />
     </div>
   );
 };

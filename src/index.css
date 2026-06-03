@@ -6,81 +6,82 @@
 
 @layer base {
   :root {
-    /* Premium dark base — lifted clearly from near-black to an airier, lighter
-       dark slate (~#161A24) so the whole page reads brighter at first glance
-       while staying premium-dark, not washed out. */
-    --background: 223 22% 11%;
-    --foreground: 210 40% 99%;
+    /* Light premium base (Linear/Stripe) — near-white page, pure-white cards,
+       hairline borders, crisp near-black text. Clean and airy, no dark glow. */
+    --background: 240 20% 99%;       /* #FCFCFD page */
+    --foreground: 0 0% 4%;           /* #0A0A0A headings / near-black */
 
-    /* Cards sit clearly ABOVE the base (lighter + visible border) so each
-       section reads as a distinct surface, not a soup. */
-    --card: 222 20% 16%;
-    --card-foreground: 210 40% 99%;
+    /* Cards sit on white, separated by a hairline border + soft low shadow. */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 4%;
 
-    --popover: 222 21% 14%;
-    --popover-foreground: 210 40% 99%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 4%;
 
-    --primary: 200 85% 52%;
-    --primary-foreground: 220 25% 6%;
+    --primary: 199 89% 44%;          /* brand blue — readable, white text on it */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 221 17% 21%;
-    --secondary-foreground: 210 40% 97%;
+    --secondary: 220 16% 96%;        /* light gray fill */
+    --secondary-foreground: 220 22% 14%;
 
-    --muted: 221 16% 20%;
-    --muted-foreground: 214 19% 80%;
+    --muted: 220 16% 96%;
+    --muted-foreground: 218 11% 30%; /* ~#3C4149 body text */
 
-    --accent: 258 65% 60%;
-    --accent-foreground: 220 25% 6%;
+    --accent: 256 64% 56%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 219 16% 27%;
-    --input: 219 16% 27%;
-    --ring: 190 90% 55%;
+    --border: 220 16% 90%;           /* ~rgba(0,0,0,0.08) hairline */
+    --input: 220 16% 90%;
+    --ring: 199 89% 48%;
 
     --radius: 0.75rem;
 
-    /* Premium palette tokens */
-    --neon-cyan: 190 90% 55%;
-    --neon-blue: 215 90% 55%;
-    --neon-green: 160 90% 48%;
-    --neon-magenta: 258 65% 58%;
-    --neon-purple: 258 65% 58%;
-    --neon-orange: 25 95% 58%;
+    /* Brand palette — kept vivid for the teal→blue→purple gradient (CTAs, the
+       87 ring, key highlights) but deepened enough to stay legible on white. */
+    --neon-cyan: 187 78% 40%;
+    --neon-blue: 214 82% 50%;
+    --neon-green: 160 72% 38%;
+    --neon-magenta: 256 62% 56%;
+    --neon-purple: 256 62% 56%;
+    --neon-orange: 24 88% 50%;
 
-    --warning: 30 100% 50%;
-    --success: 160 85% 45%;
-    --score-low: 0 80% 58%;
-    --score-mid: 40 95% 55%;
-    --score-high: 160 85% 50%;
+    --warning: 32 92% 46%;
+    --success: 160 72% 38%;
+    --score-low: 0 72% 52%;
+    --score-mid: 38 92% 46%;
+    --score-high: 160 72% 40%;
 
-    --glass-bg: rgba(30, 37, 52, 0.62);
-    --glass-border: rgba(255, 255, 255, 0.13);
-    --glass-highlight: rgba(255, 255, 255, 0.08);
+    --glass-bg: rgba(255, 255, 255, 0.72);
+    --glass-border: rgba(15, 23, 42, 0.08);
+    --glass-highlight: rgba(255, 255, 255, 0.9);
 
-    --glow-cyan: 0 0 30px hsla(175, 85%, 48%, 0.25);
-    --glow-blue: 0 0 30px hsla(215, 90%, 62%, 0.2);
-    --glow-magenta: 0 0 30px hsla(320, 80%, 62%, 0.2);
-    --glow-purple: 0 0 30px hsla(260, 70%, 62%, 0.2);
+    /* Soft, neutral colored shadows — no neon halos. */
+    --glow-cyan: 0 6px 20px hsl(var(--neon-cyan) / 0.18);
+    --glow-blue: 0 6px 20px hsl(var(--neon-blue) / 0.16);
+    --glow-magenta: 0 6px 20px hsl(var(--neon-purple) / 0.16);
+    --glow-purple: 0 6px 20px hsl(var(--neon-purple) / 0.16);
 
-    /* Precision glow system — used ONLY on score + CTAs */
-    --glow-soft: 0 0 24px hsl(var(--neon-cyan) / 0.18);
-    --glow-mid: 0 0 40px hsl(var(--neon-cyan) / 0.28), 0 0 8px hsl(var(--neon-blue) / 0.25);
-    --glow-intense: 0 0 60px hsl(var(--neon-cyan) / 0.4), 0 0 24px hsl(var(--neon-blue) / 0.3), inset 0 0 24px hsl(var(--neon-cyan) / 0.08);
+    /* Precision elevation — used on score + CTAs. Soft light shadows with a
+       faint brand tint, never a glow flood. */
+    --glow-soft: 0 1px 2px rgba(16,24,40,0.04), 0 6px 16px rgba(16,24,40,0.06);
+    --glow-mid: 0 2px 8px hsl(var(--primary) / 0.16), 0 10px 28px rgba(16,24,40,0.10);
+    --glow-intense: 0 4px 14px hsl(var(--primary) / 0.20), 0 16px 40px rgba(16,24,40,0.12);
 
-    --shadow-depth-1: 0 2px 8px rgba(0,0,0,0.3);
-    --shadow-depth-2: 0 8px 32px rgba(0,0,0,0.45);
-    --shadow-depth-3: 0 24px 80px rgba(0,0,0,0.6);
+    --shadow-depth-1: 0 1px 2px rgba(16,24,40,0.05), 0 1px 3px rgba(16,24,40,0.06);
+    --shadow-depth-2: 0 6px 16px rgba(16,24,40,0.06), 0 12px 32px rgba(16,24,40,0.08);
+    --shadow-depth-3: 0 12px 32px rgba(16,24,40,0.08), 0 24px 64px rgba(16,24,40,0.10);
 
-    --sidebar-background: 224 24% 9%;
-    --sidebar-foreground: 210 40% 96%;
-    --sidebar-primary: 200 85% 52%;
-    --sidebar-primary-foreground: 220 25% 6%;
-    --sidebar-accent: 220 18% 24%;
-    --sidebar-accent-foreground: 210 40% 96%;
-    --sidebar-border: 219 16% 28%;
-    --sidebar-ring: 200 85% 50%;
+    --sidebar-background: 240 20% 99%;
+    --sidebar-foreground: 0 0% 12%;
+    --sidebar-primary: 199 89% 44%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 16% 95%;
+    --sidebar-accent-foreground: 0 0% 12%;
+    --sidebar-border: 220 16% 90%;
+    --sidebar-ring: 199 89% 48%;
   }
 }
 
@@ -141,7 +142,7 @@
 
   .glass-card-hero {
     @apply rounded-3xl border;
-    background: linear-gradient(135deg, rgba(34,42,60,0.82) 0%, rgba(42,52,76,0.72) 100%);
+    background: rgba(255, 255, 255, 0.85);
     border-color: var(--glass-border);
     box-shadow: var(--shadow-depth-3), inset 0 1px 0 var(--glass-highlight);
   }
@@ -159,21 +160,22 @@
   }
 
   .glow-border {
-    border-color: hsl(var(--neon-cyan) / 0.25);
-    box-shadow: 0 0 20px hsl(var(--neon-cyan) / 0.1), inset 0 0 20px hsl(var(--neon-cyan) / 0.03);
+    border-color: hsl(var(--neon-cyan) / 0.3);
+    box-shadow: var(--glow-soft);
   }
 
   .glow-border-magenta {
-    border-color: hsl(var(--neon-magenta) / 0.25);
-    box-shadow: 0 0 20px hsl(var(--neon-magenta) / 0.1), inset 0 0 20px hsl(var(--neon-magenta) / 0.03);
+    border-color: hsl(var(--neon-magenta) / 0.3);
+    box-shadow: var(--glow-soft);
   }
 
+  /* No text glow on a light theme — keep type crisp. */
   .text-glow {
-    text-shadow: 0 0 20px hsl(var(--neon-cyan) / 0.5);
+    text-shadow: none;
   }
 
   .text-glow-magenta {
-    text-shadow: 0 0 20px hsl(var(--neon-magenta) / 0.5);
+    text-shadow: none;
   }
 
   .border-glass {
@@ -182,16 +184,16 @@
 
   .bg-grid {
     background-image:
-      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      linear-gradient(rgba(15,23,42,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15,23,42,0.035) 1px, transparent 1px);
     background-size: 60px 60px;
   }
 
   /* Slowly drifting perspective grid — GPU-cheap (background-position only) */
   .bg-grid-live {
     background-image:
-      linear-gradient(hsl(var(--neon-cyan) / 0.035) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--neon-blue) / 0.035) 1px, transparent 1px);
+      linear-gradient(hsl(var(--neon-blue) / 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--neon-blue) / 0.05) 1px, transparent 1px);
     background-size: 54px 54px;
     animation: grid-pan 18s linear infinite;
   }
@@ -240,19 +242,19 @@
     @apply text-neon-cyan underline-offset-2 hover:underline;
   }
 
-  /* One cohesive card surface + restrained lift/glow on hover */
+  /* One cohesive card surface — white, hairline border, soft low shadow; a
+     restrained lift + faint brand-tinted border on hover. */
   .card-surface {
     @apply rounded-2xl border;
-    border-color: rgba(255, 255, 255, 0.12);
-    /* Lighter fill so cards read as a distinct surface above the base. */
-    background: hsl(222 20% 16% / 0.6);
-    box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 8px 30px rgba(0,0,0,0.28);
+    border-color: rgba(15, 23, 42, 0.08);
+    background: hsl(var(--card));
+    box-shadow: var(--shadow-depth-1);
     transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .card-surface:hover {
     transform: translateY(-3px);
-    border-color: hsl(var(--neon-cyan) / 0.22);
-    box-shadow: var(--glow-soft), 0 12px 36px rgba(0,0,0,0.34);
+    border-color: hsl(var(--neon-blue) / 0.32);
+    box-shadow: var(--shadow-depth-2);
   }
 
   .gradient-text {

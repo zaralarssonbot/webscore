@@ -49,7 +49,7 @@ const reveal = {
 };
 
 const IconBadge = ({ children }: { children: React.ReactNode }) => (
-  <div className="w-11 h-11 rounded-xl flex items-center justify-center border border-white/[0.08] bg-white/[0.03] text-neon-cyan">
+  <div className="w-11 h-11 rounded-xl flex items-center justify-center border border-neon-cyan/20 bg-neon-cyan/[0.07] text-neon-cyan">
     {children}
   </div>
 );
@@ -132,7 +132,7 @@ const ServicesSection = () => {
               >
                 <div className="relative inline-flex">
                   <IconBadge><step.icon className="w-5 h-5" /></IconBadge>
-                  <span className="absolute -top-2 -right-2 font-mono text-[0.6rem] font-semibold px-1.5 py-0.5 rounded-md bg-background border border-white/10 text-neon-cyan/80">
+                  <span className="absolute -top-2 -right-2 font-mono text-[0.6rem] font-semibold px-1.5 py-0.5 rounded-md bg-card border border-border text-neon-cyan">
                     {step.number}
                   </span>
                 </div>

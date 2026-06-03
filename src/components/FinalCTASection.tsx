@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { ArrowRight, Search, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { validateDomain } from "@/lib/domain";
-import LazyVideo from "@/components/LazyVideo";
 
 interface FinalCTASectionProps {
   onAnalyze: (domain: string) => void;
@@ -29,29 +28,16 @@ const FinalCTASection = ({ onAnalyze, onBookMeeting }: FinalCTASectionProps) => 
 
   return (
     <section id="webtest" className="relative z-10 py-28 sm:py-36 px-6 overflow-hidden">
-      {/* Ambient background video — graded into the palette */}
-      <div className="absolute inset-0 -z-10">
-        <LazyVideo
-          src="/cta-bg.mp4"
-          poster="/cta-bg-poster.webp"
-          className="absolute inset-0 w-full h-full object-cover opacity-30"
-          style={{ filter: "saturate(1.1) contrast(1.2) brightness(0.4)" }}
-        />
-        <div className="absolute inset-0 bg-background/80" />
-        <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 50%, hsl(var(--neon-cyan) / 0.1) 0%, transparent 60%)" }} />
-        <div className="absolute top-0 left-0 right-0 h-32" style={{ background: "linear-gradient(to bottom, hsl(var(--background)), transparent)" }} />
-        <div className="absolute bottom-0 left-0 right-0 h-32" style={{ background: "linear-gradient(to top, hsl(var(--background)), transparent)" }} />
-      </div>
-
       <div className="max-w-2xl mx-auto text-center relative">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="card-surface p-6 sm:p-14 relative overflow-hidden bg-background/70 backdrop-blur-md"
+          className="card-surface p-6 sm:p-14 relative overflow-hidden"
         >
-          <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, hsla(175,95%,50%,0.05) 0%, transparent 60%)" }} />
+          {/* Faint brand wash inside the card — accent, not flood. */}
+          <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 0%, hsl(var(--neon-blue) / 0.06) 0%, transparent 60%)" }} />
 
           <div className="relative">
             <span className="data-label text-[0.6rem] text-neon-cyan/70 mb-4 inline-block">KOSTNADSFRITT WEBBTEST</span>
@@ -76,9 +62,9 @@ const FinalCTASection = ({ onAnalyze, onBookMeeting }: FinalCTASectionProps) => 
             {/* Domain input — matches the hero analyzer */}
             <form onSubmit={handleSubmit} className="max-w-lg mx-auto mb-6">
               <div className="relative group">
-                <div className="absolute -inset-[2px] rounded-2xl bg-gradient-to-r from-neon-cyan/40 via-neon-blue/30 to-neon-purple/40 opacity-40 group-focus-within:opacity-100 blur-md transition-opacity duration-500" />
-                <div className="relative flex items-center rounded-2xl border border-white/10 bg-background/80 backdrop-blur-md p-2">
-                  <Search className="w-5 h-5 text-neon-cyan ml-3 shrink-0" style={{ filter: "drop-shadow(0 0 6px hsl(var(--neon-cyan)))" }} />
+                <div className="absolute -inset-[2px] rounded-2xl bg-gradient-to-r from-neon-cyan/40 via-neon-blue/35 to-neon-purple/40 opacity-0 group-focus-within:opacity-70 blur-md transition-opacity duration-500" />
+                <div className="relative flex items-center rounded-2xl border border-border bg-card shadow-sm p-2">
+                  <Search className="w-5 h-5 text-neon-blue ml-3 shrink-0" />
                   <input
                     type="text"
                     value={domain}
@@ -100,9 +86,9 @@ const FinalCTASection = ({ onAnalyze, onBookMeeting }: FinalCTASectionProps) => 
 
             {/* Divider */}
             <div className="flex items-center gap-4 max-w-sm mx-auto mb-6">
-              <div className="flex-1 h-px bg-white/[0.08]" />
+              <div className="flex-1 h-px bg-border" />
               <span className="data-label text-[0.55rem] text-muted-foreground/40">ELLER</span>
-              <div className="flex-1 h-px bg-white/[0.08]" />
+              <div className="flex-1 h-px bg-border" />
             </div>
 
             {/* Book meeting — soft secondary */}

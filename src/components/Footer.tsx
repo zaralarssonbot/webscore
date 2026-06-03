@@ -25,7 +25,7 @@ const columns = [
 
 const Footer = () => {
   return (
-    <footer className="relative z-10 border-t border-white/[0.06] mt-16">
+    <footer className="relative z-10 border-t border-border mt-16">
       <div className="max-w-5xl mx-auto px-6 py-14 sm:py-16">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           {/* Brand */}
@@ -59,7 +59,7 @@ const Footer = () => {
         </div>
 
         {/* Bottom */}
-        <div className="border-t border-white/[0.06] pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="border-t border-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="data-label text-[0.55rem] text-muted-foreground/40">
             © {new Date().getFullYear()} WEBSCORE · ALLA RÄTTIGHETER FÖRBEHÅLLNA
           </p>

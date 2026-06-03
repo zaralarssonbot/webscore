@@ -126,7 +126,7 @@ const filters: { label: string; value: Badge | "Alla" }[] = [
 ];
 
 // Restraint: category chips share one neutral style; colour is reserved for the accent.
-const CHIP = { bg: "rgba(255,255,255,0.03)", text: "hsl(215 16% 68%)", border: "rgba(255,255,255,0.1)" };
+const CHIP = { bg: "rgba(15,23,42,0.04)", text: "hsl(218 11% 40%)", border: "rgba(15,23,42,0.1)" };
 const badgeColors: Record<Badge, { bg: string; text: string; border: string }> = {
   "Webbdesign": CHIP,
   "SEO": CHIP,
@@ -181,8 +181,8 @@ const PortfolioSection = () => {
                 onClick={() => { setActiveFilter(f.value); setPage(0); }}
                 className={`data-label text-[0.58rem] px-4 min-h-[44px] inline-flex items-center rounded-full transition-all duration-300 border ${
                   activeFilter === f.value
-                    ? "bg-neon-cyan/10 border-neon-cyan/30 text-neon-cyan shadow-glow-soft"
-                    : "bg-white/[0.02] border-white/[0.06] text-muted-foreground/70 hover:text-foreground hover:border-white/12"
+                    ? "bg-neon-cyan/10 border-neon-cyan/35 text-neon-cyan shadow-glow-soft"
+                    : "bg-secondary border-border text-muted-foreground/80 hover:text-foreground hover:border-neon-blue/30"
                 }`}
               >
                 {f.label}
@@ -207,7 +207,7 @@ const PortfolioSection = () => {
                   className="group relative cursor-pointer"
                 >
                   {/* Card with glow + depth */}
-                  <div className="rounded-2xl overflow-hidden relative transition-all duration-500 hover:shadow-[0_12px_50px_hsla(175,90%,55%,0.12)] hover:translate-y-[-4px] bg-white/[0.02] border border-white/[0.06] hover:border-neon-cyan/25">
+                  <div className="rounded-2xl overflow-hidden relative transition-all duration-500 hover:shadow-[var(--shadow-depth-2)] hover:translate-y-[-4px] bg-card border border-border hover:border-neon-blue/30">
                     {/* Ambient glow behind card on hover */}
                     <div
                       className="absolute -inset-1 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-xl -z-10"
@@ -428,7 +428,7 @@ const PortfolioSection = () => {
                   {selectedProject.caseDescription}
                 </p>
 
-                <div className="rounded-xl p-5 space-y-3 bg-white/[0.02] border border-white/[0.06]">
+                <div className="rounded-xl p-5 space-y-3 bg-secondary border border-border">
                   <h4 className="text-[0.8125rem] font-semibold tracking-[0.1em] uppercase text-primary/80">
                     Vad som förbättrades
                   </h4>

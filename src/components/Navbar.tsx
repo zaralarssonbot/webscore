@@ -53,7 +53,7 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled ? "bg-background/70 backdrop-blur-xl border-b border-white/[0.06]" : "bg-transparent border-b border-transparent"
+        scrolled ? "bg-background/80 backdrop-blur-xl border-b border-border" : "bg-transparent border-b border-transparent"
       }`}
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -100,10 +100,10 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="md:hidden rounded-xl p-4 mb-4 space-y-1 border border-white/[0.08] bg-background/95 backdrop-blur-xl shadow-xl"
+            className="md:hidden rounded-xl p-4 mb-4 space-y-1 border border-border bg-card/95 backdrop-blur-xl shadow-lg"
           >
             {links.map((l) => (
-              <a key={l.href} href={l.href} onClick={(e) => handleNav(e, l.href)} className="flex items-center min-h-[44px] px-2 -mx-2 rounded-lg data-label text-[0.62rem] text-muted-foreground hover:text-foreground hover:bg-white/[0.03] transition-colors cursor-pointer">
+              <a key={l.href} href={l.href} onClick={(e) => handleNav(e, l.href)} className="flex items-center min-h-[44px] px-2 -mx-2 rounded-lg data-label text-[0.62rem] text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer">
                 {l.label}
               </a>
             ))}
