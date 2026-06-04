@@ -74,7 +74,7 @@ const GuideArticle = () => {
           />
           <h2 className="text-lg sm:text-xl font-bold font-display mb-2 relative">Var står din sida idag?</h2>
           <p className="text-sm text-muted-foreground/80 mb-6 max-w-md mx-auto relative leading-[1.7]">
-            Kör en gratis analys på 60 sekunder och se vad som kan förbättras – inga förpliktelser.
+            Kör en gratis analys på 30 sekunder och se vad som kan förbättras – inga förpliktelser.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center relative">
             <Button variant="glow-gradient" size="lg" className="group glow-precision" onClick={() => navigate("/")}>

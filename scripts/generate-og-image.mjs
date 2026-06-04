@@ -32,7 +32,7 @@ const svg = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http
 
   <text x="50%" y="438" text-anchor="middle"
         font-family="Helvetica, Arial, sans-serif" font-size="26" font-weight="400"
-        fill="#8b909c">Analysera din hemsida på 60 sekunder · webscore.se</text>
+        fill="#8b909c">Analysera din hemsida på 30 sekunder · webscore.se</text>
 </svg>`;
 
 await sharp(Buffer.from(svg)).png().toFile(new URL("../public/og-image.png", import.meta.url).pathname);

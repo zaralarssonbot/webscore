@@ -25,7 +25,7 @@ const Index = () => {
   useDocumentMeta({
     title: "Webscore – Få betyg på din hemsida",
     description:
-      "Analysera din hemsida på 60 sekunder. Få ett tydligt betyg, se vad som håller sidan tillbaka och upptäck var den kan förbättras — gratis och utan förpliktelser.",
+      "Analysera din hemsida på 30 sekunder. Få ett tydligt betyg, se vad som håller sidan tillbaka och upptäck var den kan förbättras — gratis och utan förpliktelser.",
     canonical: "https://webscore.se/",
   });
   const [state, setState] = useState<AppState>("hero");

@@ -41,7 +41,7 @@ const HowItWorksSection = () => {
             Tre steg till en <span className="gradient-text">bättre hemsida</span>
           </h2>
           <p className="text-muted-foreground max-w-lg mx-auto font-light leading-relaxed">
-            Det tar under 60 sekunder att förstå var din hemsida kan förbättras.
+            Det tar under 30 sekunder att förstå var din hemsida kan förbättras.
           </p>
         </motion.div>
 

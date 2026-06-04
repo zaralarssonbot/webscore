@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 const stats = [
   { value: "41", label: "Kontroller per analys" },
   { value: "5", label: "Kategorier som granskas" },
-  { value: "60s", label: "Genomsnittlig analystid" },
+  { value: "30s", label: "Genomsnittlig analystid" },
   { value: "0 kr", label: "Kostnadsfri analys" },
 ];
 

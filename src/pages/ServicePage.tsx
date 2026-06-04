@@ -348,7 +348,7 @@ const ServicePage = () => {
             <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, hsla(175,95%,50%,0.05) 0%, transparent 60%)" }} />
             <h2 className="text-xl sm:text-2xl font-bold mb-2 relative font-display">Börja med att se var du står</h2>
             <p className="text-muted-foreground mb-7 font-light relative max-w-lg mx-auto text-sm leading-[1.7]">
-              Kör en gratis analys av din hemsida på 60 sekunder – så ser du vad som kan förbättras. Vill du gå igenom det tillsammans bokar du en kostnadsfri genomgång.
+              Kör en gratis analys av din hemsida på 30 sekunder – så ser du vad som kan förbättras. Vill du gå igenom det tillsammans bokar du en kostnadsfri genomgång.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center relative">
               <Button variant="glow-gradient" size="xl" className="group glow-precision" onClick={() => navigate("/")}>

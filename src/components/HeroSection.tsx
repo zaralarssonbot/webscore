@@ -67,7 +67,7 @@ const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProp
 
           {/* Subhead */}
           <motion.p variants={item} className="text-muted-foreground text-base sm:text-lg max-w-md mx-auto lg:mx-0 mb-8 leading-[1.7]">
-            Skriv in din domän. På 60 sekunder ser du vad som håller sidan tillbaka — och var den kan vinna fler kunder.
+            Skriv in din domän. På 30 sekunder ser du vad som håller sidan tillbaka — och var den kan vinna fler kunder.
           </motion.p>
 
           {/* Analyzer — single clean input + gradient CTA */}
@@ -102,7 +102,7 @@ const HeroSection = ({ onAnalyze, onBookMeeting, errorMessage }: HeroSectionProp
 
           {/* ONE discreet trust row + booking link */}
           <motion.div variants={item} className="flex flex-col sm:flex-row items-center lg:items-start gap-2 sm:gap-4 mt-5">
-            <span className="data-label text-[0.74rem] text-muted-foreground/80">GRATIS · 60 SEKUNDER · INGEN REGISTRERING</span>
+            <span className="data-label text-[0.74rem] text-muted-foreground/80">GRATIS · 30 SEKUNDER · INGEN REGISTRERING</span>
             <button type="button" onClick={onBookMeeting} className="inline-flex items-center min-h-[44px] gap-1.5 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors group">
               eller boka videomöte
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-[180ms]" />

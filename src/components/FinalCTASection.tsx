@@ -98,7 +98,7 @@ const FinalCTASection = ({ onAnalyze, onBookMeeting }: FinalCTASectionProps) => 
             </button>
 
             <p className="mt-6 data-label text-[0.72rem] text-muted-foreground/80">
-              UNDER 60 SEKUNDER · SVAR INOM 24H
+              UNDER 30 SEKUNDER · SVAR INOM 24H
             </p>
           </div>
         </motion.div>
