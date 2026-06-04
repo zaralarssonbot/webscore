@@ -30,8 +30,8 @@ const StickyBookingBar = ({ onBook, score }: StickyBookingBarProps) => {
           className="fixed bottom-0 left-0 right-0 z-50"
         >
           <div
-            className="border-t border-border backdrop-blur-xl shadow-[0_-8px_24px_rgba(16,24,40,0.08)]"
-            style={{ background: "hsla(0,0%,100%,0.92)" }}
+            className="border-t border-border backdrop-blur-xl shadow-[0_-8px_24px_rgba(0,0,0,0.45)]"
+            style={{ background: "hsla(222,20%,9%,0.92)" }}
           >
             <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
               <div className="hidden sm:flex items-center gap-4 text-[12.5px] text-muted-foreground font-light">

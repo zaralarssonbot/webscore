@@ -6,91 +6,96 @@
 
 @layer base {
   :root {
-    /* Light premium base (Linear/Stripe) — subtle gray page so the pure-white
-       cards lift off it everywhere (token-level, every page). Hairline borders,
-       crisp near-black text. Clean and airy, no dark glow. */
-    --background: 225 18% 97%;       /* #F5F6F8 — subtle gray band */
-    --foreground: 0 0% 4%;           /* #0A0A0A headings / near-black */
+    /* Dark premium base (Linear dark mode) — a clean, slightly-raised dark page
+       so the elevated cards lift off it everywhere (token-level, every page).
+       Depth comes from a marginally lighter card surface + a subtle light edge +
+       a soft glow, NOT heavy drop-shadows. Near-white headings, light-gray body.
+       Clean and contained — no murky aurora, no neon flood. */
+    --background: 222 24% 6%;        /* ~#0B0D12 — deep, clean dark page */
+    --foreground: 220 30% 96%;       /* ~#F2F4F8 headings / near-white */
 
-    /* Cards sit on white, separated by a hairline border + soft low shadow. */
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 4%;
+    /* Cards sit a touch lighter than the page, with a subtle light hairline. */
+    --card: 222 19% 10%;             /* ~#13161D — raised surface */
+    --card-foreground: 220 30% 96%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 4%;
+    --popover: 222 20% 9%;
+    --popover-foreground: 220 30% 96%;
 
-    --primary: 199 89% 44%;          /* brand blue — readable, white text on it */
+    --primary: 199 89% 52%;          /* brand blue — pops on dark, white text on it */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 16% 96%;        /* light gray fill */
-    --secondary-foreground: 220 22% 14%;
+    --secondary: 220 16% 16%;        /* dark fill */
+    --secondary-foreground: 220 22% 92%;
 
-    --muted: 220 16% 96%;
-    --muted-foreground: 218 13% 26%; /* ~#3A3F47 — darkened so secondary text hits AA (≥4.5:1) even at /80 */
+    --muted: 220 16% 15%;
+    --muted-foreground: 218 16% 74%; /* ~#A9B1BE — light-gray body, hits AA (≥4.5:1) on dark even at /80 */
 
-    --accent: 256 64% 56%;
+    --accent: 262 78% 68%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 72% 50%;
+    --destructive: 0 74% 58%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 16% 90%;           /* ~rgba(0,0,0,0.08) hairline */
-    --input: 220 16% 90%;
-    --ring: 199 89% 48%;
+    --border: 220 14% 20%;           /* ~rgba(255,255,255,0.09) subtle light edge */
+    --input: 220 14% 22%;
+    --ring: 199 89% 58%;
 
     --radius: 0.75rem;
 
-    /* Brand palette — kept vivid for the teal→blue→purple gradient (CTAs, the
-       87 ring, key highlights) but deepened enough to stay legible on white. */
-    --neon-cyan: 187 78% 40%;
-    --neon-blue: 214 82% 46%; /* deep enough that small accent text/eyebrows pass AA on white & the gray band */
-    --neon-green: 160 72% 38%;
-    --neon-magenta: 256 62% 56%;
-    --neon-purple: 256 62% 56%;
-    --neon-orange: 24 88% 50%;
+    /* Brand palette — brightened so the teal→blue→purple gradient really pops
+       against the dark base (CTAs, the 87 ring, icon chips, highlights). The
+       dark base is what lets these glow. */
+    --neon-cyan: 187 85% 52%;
+    --neon-blue: 214 90% 60%;
+    --neon-green: 160 76% 48%;
+    --neon-magenta: 270 82% 70%;
+    --neon-purple: 262 80% 70%;
+    --neon-orange: 24 92% 60%;
 
-    --warning: 32 92% 46%;
-    --success: 160 72% 38%;
-    --score-low: 0 72% 52%;
-    --score-mid: 38 92% 46%;
-    --score-high: 160 72% 40%;
+    --warning: 38 95% 56%;
+    --success: 160 76% 48%;
+    --score-low: 0 82% 64%;
+    --score-mid: 40 95% 58%;
+    --score-high: 160 80% 50%;
 
-    --glass-bg: rgba(255, 255, 255, 0.72);
-    --glass-border: rgba(15, 23, 42, 0.08);
-    --glass-highlight: rgba(255, 255, 255, 0.9);
+    /* Dark translucent glass — a light top highlight gives the raised edge. */
+    --glass-bg: rgba(19, 22, 29, 0.72);
+    --glass-border: rgba(255, 255, 255, 0.09);
+    --glass-highlight: rgba(255, 255, 255, 0.06);
 
-    /* Soft, neutral colored shadows — no neon halos. */
-    --glow-cyan: 0 6px 20px hsl(var(--neon-cyan) / 0.18);
-    --glow-blue: 0 6px 20px hsl(var(--neon-blue) / 0.16);
-    --glow-magenta: 0 6px 20px hsl(var(--neon-purple) / 0.16);
-    --glow-purple: 0 6px 20px hsl(var(--neon-purple) / 0.16);
+    /* Colored glows — on dark these read as a soft brand halo, used sparingly. */
+    --glow-cyan: 0 6px 20px hsl(var(--neon-cyan) / 0.22);
+    --glow-blue: 0 6px 20px hsl(var(--neon-blue) / 0.20);
+    --glow-magenta: 0 6px 20px hsl(var(--neon-purple) / 0.20);
+    --glow-purple: 0 6px 20px hsl(var(--neon-purple) / 0.20);
 
-    /* Precision elevation — used on score + CTAs. Soft light shadows with a
-       faint brand tint, never a glow flood. */
-    --glow-soft: 0 1px 2px rgba(16,24,40,0.04), 0 6px 16px rgba(16,24,40,0.06);
-    --glow-mid: 0 2px 8px hsl(var(--primary) / 0.16), 0 10px 28px rgba(16,24,40,0.10);
-    --glow-intense: 0 4px 14px hsl(var(--primary) / 0.20), 0 16px 40px rgba(16,24,40,0.12);
+    /* Precision elevation — used on score + CTAs. A deep shadow for separation
+       on dark plus a faint brand glow, never a flood. */
+    --glow-soft: 0 1px 2px rgba(0,0,0,0.45), 0 6px 16px rgba(0,0,0,0.40);
+    --glow-mid: 0 2px 10px hsl(var(--primary) / 0.28), 0 10px 28px rgba(0,0,0,0.50);
+    --glow-intense: 0 4px 16px hsl(var(--primary) / 0.34), 0 16px 40px rgba(0,0,0,0.60);
 
-    --shadow-depth-1: 0 1px 2px rgba(16,24,40,0.05), 0 1px 3px rgba(16,24,40,0.06);
-    --shadow-depth-2: 0 6px 16px rgba(16,24,40,0.06), 0 12px 32px rgba(16,24,40,0.08);
-    --shadow-depth-3: 0 12px 32px rgba(16,24,40,0.08), 0 24px 64px rgba(16,24,40,0.10);
+    --shadow-depth-1: 0 1px 2px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.35);
+    --shadow-depth-2: 0 6px 16px rgba(0,0,0,0.45), 0 12px 32px rgba(0,0,0,0.55);
+    --shadow-depth-3: 0 12px 32px rgba(0,0,0,0.55), 0 24px 64px rgba(0,0,0,0.65);
 
-    /* Stacked, low-opacity card shadows (Stripe/Linear style) — real layered
-       depth at rest, deeper on hover. */
-    --card-shadow: 0 1px 2px rgba(16,24,40,0.05), 0 4px 12px rgba(16,24,40,0.05), 0 12px 28px rgba(16,24,40,0.06);
-    --card-shadow-hover: 0 2px 4px rgba(16,24,40,0.06), 0 10px 24px rgba(16,24,40,0.09), 0 28px 56px rgba(16,24,40,0.13);
+    /* Stacked card shadows — on dark, separation comes mostly from the lighter
+       surface + light hairline; the shadow deepens the lift, hover adds a faint
+       brand ring. */
+    --card-shadow: 0 1px 2px rgba(0,0,0,0.45), 0 4px 12px rgba(0,0,0,0.40), 0 12px 28px rgba(0,0,0,0.45);
+    --card-shadow-hover: 0 2px 4px rgba(0,0,0,0.50), 0 10px 24px rgba(0,0,0,0.55), 0 28px 56px rgba(0,0,0,0.62), 0 0 0 1px hsl(var(--neon-blue) / 0.18);
 
-    /* Subtle light-gray band the white cards sit on, so they lift off the page. */
-    --surface-band: 225 18% 97%;
+    /* The page tone the raised cards sit on — same as the page so it's seamless. */
+    --surface-band: 222 24% 6%;
 
-    --sidebar-background: 240 20% 99%;
-    --sidebar-foreground: 0 0% 12%;
-    --sidebar-primary: 199 89% 44%;
+    --sidebar-background: 222 22% 8%;
+    --sidebar-foreground: 220 24% 90%;
+    --sidebar-primary: 199 89% 52%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 16% 95%;
-    --sidebar-accent-foreground: 0 0% 12%;
-    --sidebar-border: 220 16% 90%;
-    --sidebar-ring: 199 89% 48%;
+    --sidebar-accent: 220 16% 16%;
+    --sidebar-accent-foreground: 220 24% 90%;
+    --sidebar-border: 220 14% 20%;
+    --sidebar-ring: 199 89% 58%;
   }
 }
 
@@ -114,6 +119,8 @@
        desktop). All rem-based sizes scale from here, so user zoom works too. */
     font-size: 17px;
     scroll-behavior: smooth;
+    /* Dark theme — render native form controls, scrollbars and the canvas dark. */
+    color-scheme: dark;
   }
 
   body {
@@ -161,7 +168,7 @@
 
   .glass-card-hero {
     @apply rounded-3xl border;
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(19, 22, 29, 0.85);
     border-color: var(--glass-border);
     box-shadow: var(--shadow-depth-3), inset 0 1px 0 var(--glass-highlight);
   }
@@ -203,8 +210,8 @@
 
   .bg-grid {
     background-image:
-      linear-gradient(rgba(15,23,42,0.035) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(15,23,42,0.035) 1px, transparent 1px);
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
     background-size: 60px 60px;
   }
 
@@ -271,7 +278,7 @@
      lifts with a deeper shadow + brand border + a gradient top-line on hover. */
   .card-surface {
     @apply rounded-2xl border relative;
-    border-color: rgba(15, 23, 42, 0.08);
+    border-color: rgba(255, 255, 255, 0.08);
     background: hsl(var(--card));
     box-shadow: var(--card-shadow);
     transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);

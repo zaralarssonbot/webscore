@@ -126,7 +126,7 @@ const filters: { label: string; value: Badge | "Alla" }[] = [
 ];
 
 // Restraint: category chips share one neutral style; colour is reserved for the accent.
-const CHIP = { bg: "rgba(15,23,42,0.04)", text: "hsl(218 11% 40%)", border: "rgba(15,23,42,0.1)" };
+const CHIP = { bg: "rgba(255,255,255,0.06)", text: "hsl(218 16% 74%)", border: "rgba(255,255,255,0.12)" };
 const badgeColors: Record<Badge, { bg: string; text: string; border: string }> = {
   "Webbdesign": CHIP,
   "SEO": CHIP,
@@ -252,7 +252,7 @@ const PortfolioSection = () => {
 
                         {/* Hover overlay */}
                         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-400">
-                          <div className="px-4 py-2 rounded-full bg-primary text-white text-[0.8125rem] font-semibold flex items-center gap-2 shadow-[0_4px_16px_hsla(214,82%,46%,0.35)]">
+                          <div className="px-4 py-2 rounded-full bg-[hsl(214_84%_44%)] text-white text-[0.8125rem] font-semibold flex items-center gap-2 shadow-[0_4px_16px_hsla(214,82%,46%,0.45)]">
                             <Search className="w-3.5 h-3.5" />
                             Visa projekt
                           </div>
