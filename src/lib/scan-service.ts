@@ -1,6 +1,53 @@
 import { supabase } from "@/integrations/supabase/client";
 import { normalizeDomain } from "./domain";
 
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+
+// Surface a misconfigured frontend loudly at startup (masked) rather than
+// letting it fail mysteriously deep inside a fetch.
+if (!SUPABASE_URL || !import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY) {
+  console.error(
+    "[scan-service] Saknar Supabase-env. VITE_SUPABASE_URL och " +
+      "VITE_SUPABASE_PUBLISHABLE_KEY måste finnas i .env — backend-anrop kommer att misslyckas."
+  );
+}
+
+/** True for browser-level network failures (no HTTP response: DNS down, host
+ * unreachable, CORS-preflight blocked). These surface as a bare TypeError and
+ * mean the request never reached the backend at all. */
+function isNetworkError(err: unknown): boolean {
+  const msg =
+    err && typeof err === "object" && "message" in err
+      ? String((err as { message: unknown }).message)
+      : String(err);
+  return /failed to fetch|networkerror|load failed|fetch failed|failed to send a request/i.test(msg);
+}
+
+/**
+ * Turn an opaque backend failure into an actionable, user-facing message and a
+ * precise console diagnostic. A bare "Failed to fetch" is NOT CORS or a 4xx —
+ * the browser never reached the host. Most often the Supabase project is
+ * paused/deleted or VITE_SUPABASE_URL points at the wrong project.
+ */
+function describeBackendError(context: string, err: unknown): Error {
+  const raw =
+    err && typeof err === "object" && "message" in err
+      ? String((err as { message: unknown }).message)
+      : String(err);
+  if (isNetworkError(err)) {
+    console.error(
+      `[scan-service] ${context}: kunde inte nå Supabase-backend.\n` +
+        `  URL: ${SUPABASE_URL ?? "(VITE_SUPABASE_URL saknas!)"}\n` +
+        `  Nätverks-/DNS-fel — ingen HTTP-status, ingen CORS. Projektet är ` +
+        `troligen pausat/raderat, eller så pekar URL:en på fel projekt.`,
+      err
+    );
+    return new Error("Kan inte nå analystjänsten just nu (backend svarar inte). Försök igen om en stund.");
+  }
+  console.error(`[scan-service] ${context}:`, err);
+  return new Error(`${context}: ${raw}`);
+}
+
 export interface NearbyCompetitor {
   name: string;
   domain: string;
@@ -93,13 +140,17 @@ export interface SummaryResult {
 
 export async function createScan(rawDomain: string): Promise<string> {
   const normalized = normalizeDomain(rawDomain);
-  const { data, error } = await supabase
-    .from("scans")
-    .insert({ domain: rawDomain, normalized_domain: normalized, status: "queued" })
-    .select("id")
-    .single();
-  if (error) throw new Error(`Failed to create scan: ${error.message}`);
-  return data.id;
+  try {
+    const { data, error } = await supabase
+      .from("scans")
+      .insert({ domain: rawDomain, normalized_domain: normalized, status: "queued" })
+      .select("id")
+      .single();
+    if (error) throw error;
+    return data.id;
+  } catch (err) {
+    throw describeBackendError("Kunde inte skapa analys", err);
+  }
 }
 
 /** Fetch a quick screenshot of the domain via Firecrawl scrape */
@@ -135,10 +186,15 @@ export async function fetchGoogleBusiness(domain: string): Promise<GoogleBusines
  * fetchRealCompetitors) and never block the score.
  */
 export async function runAnalysis(scanId: string, domain: string): Promise<ScanResult> {
-  const { data, error } = await supabase.functions.invoke("analyze-website", {
-    body: { scanId, domain },
-  });
-  if (error) throw new Error(error.message || "Analysis failed");
+  let data, error;
+  try {
+    ({ data, error } = await supabase.functions.invoke("analyze-website", {
+      body: { scanId, domain },
+    }));
+  } catch (err) {
+    throw describeBackendError("Analysen misslyckades", err);
+  }
+  if (error) throw describeBackendError("Analysen misslyckades", error);
   if (data?.error) throw new Error(data.error);
 
   return {
