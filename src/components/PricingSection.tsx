@@ -48,18 +48,18 @@ const PricingSection = () => {
               whileInView="show"
               viewport={{ once: true, amount: 0.1 }}
               variants={stagger}
-              className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start pt-5"
+              className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start pt-8"
             >
               {recurringTiers.map((pkg) => (
                 <motion.div
                   key={pkg.tier}
                   variants={fadeUp}
                   className={`relative card-surface p-6 sm:p-8 flex flex-col ${
-                    pkg.popular ? "card-focus md:-mt-3 md:mb-3 z-10 pt-8 sm:pt-10" : ""
+                    pkg.popular ? "card-focus z-10 pt-9 sm:pt-10" : ""
                   }`}
                 >
                   {pkg.popular && (
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 data-label text-[0.72rem] px-4 py-1.5 rounded-full text-white bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-purple shadow-[0_4px_14px_hsl(var(--neon-blue)/0.35)] whitespace-nowrap">
+                    <div className="absolute top-0 left-1/2 z-20 -translate-x-1/2 -translate-y-1/2 data-label text-[0.72rem] px-4 py-1.5 rounded-full text-white bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-purple shadow-[0_4px_14px_hsl(var(--neon-blue)/0.35)] whitespace-nowrap">
                       POPULÄRAST
                     </div>
                   )}
