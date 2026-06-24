@@ -1,44 +1,16 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowRight, Check, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, ArrowRight, Check, Search } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 import { Button } from "@/components/ui/button";
 
-import invito from "@/assets/portfolio/invito.webp";
-import midnightgrill from "@/assets/portfolio/midnightgrill.webp";
-import sakaitokyo from "@/assets/portfolio/sakaitokyo.webp";
-import wendtviks from "@/assets/portfolio/wendtviks.webp";
 import papajun from "@/assets/portfolio/papajun.webp";
-import nordstrom from "@/assets/portfolio/nordstrom.webp";
-import nordstrom1 from "@/assets/portfolio/nordstrom-1.webp";
-import nordstrom2 from "@/assets/portfolio/nordstrom-2.webp";
-import nordstrom3 from "@/assets/portfolio/nordstrom-3.webp";
-import nordstrom4 from "@/assets/portfolio/nordstrom-4.webp";
-import nordstrom5 from "@/assets/portfolio/nordstrom-5.webp";
-import nordstrom6 from "@/assets/portfolio/nordstrom-6.webp";
-import nordstrom7 from "@/assets/portfolio/nordstrom-7.webp";
-import nordstrom8 from "@/assets/portfolio/nordstrom-8.webp";
 import papajun1 from "@/assets/portfolio/papajun-1.webp";
 import papajun2 from "@/assets/portfolio/papajun-2.webp";
 import papajun3 from "@/assets/portfolio/papajun-3.webp";
 import papajun4 from "@/assets/portfolio/papajun-4.webp";
 import papajun5 from "@/assets/portfolio/papajun-5.webp";
 import papajun6 from "@/assets/portfolio/papajun-6.webp";
-import wendtviks1 from "@/assets/portfolio/wendtviks-1.webp";
-import wendtviks2 from "@/assets/portfolio/wendtviks-2.webp";
-import wendtviks3 from "@/assets/portfolio/wendtviks-3.webp";
-import wendtviks4 from "@/assets/portfolio/wendtviks-4.webp";
-import wendtviks5 from "@/assets/portfolio/wendtviks-5.webp";
-import wendtviks6 from "@/assets/portfolio/wendtviks-6.webp";
-import wendtviks7 from "@/assets/portfolio/wendtviks-7.webp";
-import invito1 from "@/assets/portfolio/invito-1.webp";
-import invito2 from "@/assets/portfolio/invito-2.webp";
-import invito3 from "@/assets/portfolio/invito-3.webp";
-import invito4 from "@/assets/portfolio/invito-4.webp";
-import invito5 from "@/assets/portfolio/invito-5.webp";
-import invito6 from "@/assets/portfolio/invito-6.webp";
-import midnightgrill1 from "@/assets/portfolio/midnightgrill-1.webp";
-import midnightgrill2 from "@/assets/portfolio/midnightgrill-2.webp";
 
 type Badge = "Webbdesign" | "SEO" | "Branding" | "Conversion" | "AI / Automation";
 
@@ -55,15 +27,6 @@ interface Project {
 
 const projects: Project[] = [
   {
-    name: "Wendt & Viks Bygg",
-    label: "Modern hemsida för fler leads",
-    image: wendtviks,
-    badges: ["Webbdesign", "SEO", "Conversion"],
-    caseDescription: "Ett etablerat byggföretag som behövde en digital närvaro som matchade deras professionalism. Vi byggde en tydlig, förtroendeskapande sajt optimerad för att generera förfrågningar.",
-    improvements: ["Lead-generering genom formulär", "SEO för bygg-relaterade sökord", "Tydlig tjänstestruktur och CTA:er"],
-    gallery: [wendtviks1, wendtviks2, wendtviks3, wendtviks4, wendtviks5, wendtviks6, wendtviks7],
-  },
-  {
     name: "Papa Jun",
     label: "Branding + konverteringsoptimering",
     image: papajun,
@@ -72,58 +35,6 @@ const projects: Project[] = [
     improvements: ["Visuell storytelling", "Integrerad meny och bokning", "Lokal SEO för Kvicksund-området"],
     gallery: [papajun1, papajun2, papajun3, papajun4, papajun5, papajun6],
   },
-  {
-    name: "Nordström & Partners",
-    label: "SEO-fokuserad redesign för advokatbyrå",
-    image: nordstrom,
-    badges: ["Webbdesign", "SEO", "Branding", "Conversion"],
-    caseDescription: "En prestigefull advokatbyrå som behövde en digital närvaro som utstrålade kompetens och förtroende. Vi levererade en elegant, mörk design med tydliga konverteringsvägar.",
-    improvements: ["Premiumkänsla i design", "SEO för juridiska söktermer", "Konverteringsoptimerade kontaktytor"],
-    gallery: [
-      nordstrom1,
-      nordstrom2,
-      nordstrom3,
-      nordstrom4,
-      nordstrom5,
-      nordstrom6,
-      nordstrom7,
-      nordstrom8,
-    ],
-  },
-  {
-    name: "Invito",
-    label: "Modern hemsida för eventbranschen",
-    image: invito,
-    badges: ["Webbdesign", "Branding", "Conversion"],
-    caseDescription: "En exklusiv eventplattform som behövde en digital närvaro i klass med sina fysiska upplevelser. Vi skapade en visuellt slående hemsida med fokus på konvertering och varumärkeskänsla.",
-    improvements: ["Helt ny visuell identitet online", "Konverteringsoptimerade landningssidor", "Premium känsla genom typografi och bildval"],
-    gallery: [invito1, invito2, invito3, invito4, invito5, invito6],
-  },
-  {
-    name: "Midnight Grill",
-    label: "SEO-fokuserad redesign för restaurang",
-    image: midnightgrill,
-    badges: ["Webbdesign", "SEO", "Conversion"],
-    caseDescription: "En populär burgarrestaurang i Stockholm förtjänade en hemsida som matchade smakupplevelsen. Vi byggde en mörk, stämningsfull sajt med fokus på lokal SEO och beställningar.",
-    improvements: ["Lokal SEO-strategi för Stockholm", "Online-beställning integrerat", "Mobiloptimerad menyupplevelse"],
-    gallery: [midnightgrill1, midnightgrill2],
-  },
-  {
-    name: "Sakai Tokyo",
-    label: "Branding + konverteringsoptimering",
-    image: sakaitokyo,
-    badges: ["Webbdesign", "Branding"],
-    caseDescription: "En premium japansk restaurang med omakase-upplevelser. Vi skapade en minimalistisk, elegant digital upplevelse som speglar restaurangens filosofi om hantverk och precision.",
-    improvements: ["Exklusiv varumärkeskänsla", "Bokningssystem integrerat", "Storytelling genom visuell design"],
-  },
-];
-
-const filters: { label: string; value: Badge | "Alla" }[] = [
-  { label: "Alla", value: "Alla" },
-  { label: "Hemsidor", value: "Webbdesign" },
-  { label: "SEO", value: "SEO" },
-  { label: "Branding", value: "Branding" },
-  { label: "AI / Automation", value: "AI / Automation" },
 ];
 
 // Restraint: category chips share one neutral style; colour is reserved for the accent.
@@ -138,18 +49,8 @@ const badgeColors: Record<Badge, { bg: string; text: string; border: string }> =
 const ACCENT = { bg: "hsla(175,90%,55%,0.1)", text: "hsl(175 90% 60%)", border: "hsla(175,90%,55%,0.2)" };
 
 const PortfolioSection = () => {
-  const [activeFilter, setActiveFilter] = useState<Badge | "Alla">("Alla");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [page, setPage] = useState(0);
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
-
-  const filtered = activeFilter === "Alla"
-    ? projects
-    : projects.filter((p) => p.badges.includes(activeFilter));
-
-  const perPage = 3;
-  const totalPages = Math.ceil(filtered.length / perPage);
-  const visible = filtered.slice(page * perPage, page * perPage + perPage);
 
   const scrollToContact = () => {
     setSelectedProject(null);
@@ -168,44 +69,19 @@ const PortfolioSection = () => {
             className="mb-14"
           />
 
-          {/* Filters */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-            className="flex flex-wrap justify-center gap-2 mb-10"
-          >
-            {filters.map((f) => (
-              <button
-                key={f.value}
-                onClick={() => { setActiveFilter(f.value); setPage(0); }}
-                className={`data-label text-[0.74rem] px-4 min-h-[44px] inline-flex items-center rounded-full transition-all duration-300 border ${
-                  activeFilter === f.value
-                    ? "bg-neon-blue/10 border-neon-blue/40 text-neon-blue shadow-glow-soft"
-                    : "bg-secondary border-border text-muted-foreground/80 hover:text-foreground hover:border-neon-blue/30"
-                }`}
-              >
-                {f.label}
-              </button>
-            ))}
-          </motion.div>
-
-          {/* Grid — 3 at a time */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-            <AnimatePresence mode="popLayout">
-              {visible.map((project, i) => {
+          {/* Single featured project — centered at a comfortable card width */}
+          <div className="flex justify-center">
+            {projects.map((project) => {
                 const accentColor = ACCENT;
                 return (
                 <motion.div
                   key={project.name}
-                  layout
                   initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                  transition={{ duration: 0.5, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] as const }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] as const }}
                   onClick={() => setSelectedProject(project)}
-                  className="group relative cursor-pointer"
+                  className="group relative cursor-pointer w-full max-w-sm"
                 >
                   {/* Card with layered depth + gradient top-line on hover */}
                   <div className="card-surface overflow-hidden">
@@ -289,51 +165,7 @@ const PortfolioSection = () => {
                 </motion.div>
                 );
               })}
-            </AnimatePresence>
           </div>
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              className="flex items-center justify-center gap-3 mt-10"
-            >
-              <button
-                onClick={() => setPage(Math.max(0, page - 1))}
-                disabled={page === 0}
-                className="w-11 h-11 rounded-full border border-border/30 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-              <div className="flex gap-1.5">
-                {Array.from({ length: totalPages }).map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setPage(idx)}
-                    aria-label={`Visa sida ${idx + 1}`}
-                    className="inline-flex items-center justify-center h-11 w-11 group/dot"
-                  >
-                    <span
-                      className={`h-2 rounded-full transition-all duration-300 ${
-                        idx === page
-                          ? "bg-primary w-6"
-                          : "bg-muted-foreground/30 group-hover/dot:bg-muted-foreground/50 w-2"
-                      }`}
-                    />
-                  </button>
-                ))}
-              </div>
-              <button
-                onClick={() => setPage(Math.min(totalPages - 1, page + 1))}
-                disabled={page === totalPages - 1}
-                className="w-11 h-11 rounded-full border border-border/30 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </motion.div>
-          )}
 
         </div>
       </section>
