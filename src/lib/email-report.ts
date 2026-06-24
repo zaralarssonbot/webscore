@@ -105,7 +105,7 @@ ${impactItems ? `
 <!-- CTA -->
 <tr><td style="padding:24px 40px 40px;text-align:center;">
   <p style="margin:0 0 16px;font-size:15px;color:#e0e0e0;">Vill du veta exakt hur du fixar det här?</p>
-  <a href="https://webscore.se" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#00dcc8,#a032dc);color:#ffffff;font-weight:700;font-size:14px;text-decoration:none;border-radius:12px;">Boka en gratis 20-minuters genomgång</a>
+  <a href="https://webscore.se" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#2DE2C8,#36A0F0,#8B5CF6);color:#ffffff;font-weight:700;font-size:14px;text-decoration:none;border-radius:12px;">Boka en gratis 20-minuters genomgång</a>
   <p style="margin:16px 0 0;font-size:12px;color:#707080;">Kostnadsfritt · Inga förpliktelser · Personlig rådgivning</p>
 </td></tr>
 

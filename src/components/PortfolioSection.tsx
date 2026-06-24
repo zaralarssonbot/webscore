@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, Check, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
+import { Button } from "@/components/ui/button";
 
 import invito from "@/assets/portfolio/invito.webp";
 import midnightgrill from "@/assets/portfolio/midnightgrill.webp";
@@ -442,13 +443,10 @@ const PortfolioSection = () => {
                   </ul>
                 </div>
 
-                <button
-                  onClick={scrollToContact}
-                  className="group/cta w-full flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-purple text-white font-semibold text-[0.9375rem] shadow-[0_2px_8px_hsl(var(--neon-blue)/0.28)] transition-[transform,box-shadow,filter] duration-[180ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:brightness-[1.06] hover:shadow-[0_10px_26px_hsl(var(--neon-blue)/0.36)] active:translate-y-0 active:brightness-100"
-                >
+                <Button onClick={scrollToContact} size="lg" className="group/cta w-full">
                   Vill du ha något liknande?
                   <ArrowRight className="w-4 h-4 transition-transform duration-[180ms] group-hover/cta:translate-x-1" />
-                </button>
+                </Button>
               </div>
             </motion.div>
           </motion.div>

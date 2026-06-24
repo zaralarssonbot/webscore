@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import BrandMark from "./BrandMark";
 import Wordmark from "./Wordmark";
+import { Button } from "@/components/ui/button";
 
 interface NavbarProps {
   onAnalyze?: () => void;
@@ -78,12 +79,9 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
                 <span className="absolute -bottom-1.5 left-0 right-0 h-px scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" style={{ background: "linear-gradient(90deg, hsl(var(--neon-cyan)), transparent)" }} />
               </a>
             ))}
-            <button
-              onClick={onAnalyze}
-              className="text-sm font-semibold text-white bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-purple px-5 py-2 rounded-lg shadow-[0_2px_8px_hsl(var(--neon-blue)/0.28)] transition-[transform,box-shadow,filter] duration-[180ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:brightness-[1.06] hover:shadow-[0_10px_26px_hsl(var(--neon-blue)/0.36)] active:translate-y-0 active:brightness-100"
-            >
+            <Button onClick={onAnalyze}>
               Analysera nu
-            </button>
+            </Button>
           </div>
 
           {/* Mobile toggle */}
@@ -109,12 +107,9 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
                 {l.label}
               </a>
             ))}
-            <button
-              onClick={() => { setOpen(false); onAnalyze?.(); }}
-              className="w-full min-h-[44px] text-sm font-semibold text-white bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-purple px-5 py-3 rounded-lg mt-2 shadow-[0_2px_8px_hsl(var(--neon-blue)/0.28)] transition-[transform,box-shadow,filter] duration-[180ms] ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:brightness-[1.06] active:translate-y-0"
-            >
+            <Button onClick={() => { setOpen(false); onAnalyze?.(); }} className="w-full mt-2">
               Analysera nu
-            </button>
+            </Button>
           </motion.div>
         )}
       </div>
