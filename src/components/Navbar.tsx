@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
-import webscoreLogo from "@/assets/webscore-logo.png";
 import BrandMark from "./BrandMark";
+import Wordmark from "./Wordmark";
 
 interface NavbarProps {
   onAnalyze?: () => void;
@@ -59,10 +59,10 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="flex items-center justify-between h-16 sm:h-20">
-          {/* Logo: score-ring mark + "webscore." wordmark, vertically centered */}
-          <a href="/" className="inline-flex items-center gap-2.5 min-h-[44px] -my-1 group">
-            <BrandMark className="h-8 w-8 sm:h-9 sm:w-9 shrink-0 transition-transform duration-300 group-hover:scale-105" title="" />
-            <img src={webscoreLogo} alt="Webscore" className="h-10 sm:h-12 w-auto transition-transform duration-300 group-hover:scale-105" />
+          {/* Logo: score-ring mark + geometric wordmark — one unified lockup */}
+          <a href="/" aria-label="Webscore – startsida" className="inline-flex items-center gap-2 sm:gap-2.5 min-h-[44px] -my-1 group">
+            <BrandMark className="h-7 w-7 sm:h-8 sm:w-8 shrink-0 transition-transform duration-300 group-hover:scale-105" title="" />
+            <Wordmark className="text-xl sm:text-2xl" />
           </a>
 
           {/* Desktop nav */}

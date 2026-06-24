@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import BrandMark from "./BrandMark";
+import Wordmark from "./Wordmark";
 
 // Every link points to a real route — no dead "#" placeholders.
 const columns = [
@@ -31,10 +32,8 @@ const Footer = () => {
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-2.5 mb-4">
-              <BrandMark className="w-7 h-7" />
-              <span className="font-display font-semibold text-base tracking-[-0.02em]">
-                Web<span className="gradient-text">score</span>
-              </span>
+              <BrandMark className="w-7 h-7" title="" />
+              <Wordmark className="text-base" />
             </div>
             <p className="text-[0.8125rem] text-muted-foreground/80 leading-[1.7] max-w-xs">
               Vi hjälper företag att synas, övertyga och växa online genom hemsida, SEO och branding.
