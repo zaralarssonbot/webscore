@@ -49,7 +49,8 @@ const Integritetspolicy = () => {
         >
           <h2>1. Personuppgiftsansvarig</h2>
           <p>
-            Webscore AB (under bildande) driver webscore.se. Frågor om dina personuppgifter:{" "}
+            Webscore Sverige AB, org.nr 559591-4408, driver webscore.se. Postadress: Södertäljevägen 27,
+            155 33 Nykvarn. Frågor om dina personuppgifter:{" "}
             <a href="mailto:info@webscore.se">info@webscore.se</a>.
           </p>
 
