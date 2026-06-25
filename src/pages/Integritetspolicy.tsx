@@ -36,7 +36,7 @@ const Integritetspolicy = () => {
             Integritetspolicy för webscore.se
           </h1>
           <p className="data-label text-[0.72rem] text-muted-foreground/80">
-            Senast uppdaterad: 1 juni 2026
+            Senast uppdaterad: 25 juni 2026
           </p>
         </motion.header>
 
@@ -77,12 +77,14 @@ const Integritetspolicy = () => {
 
           <h2>5. Tjänster vi använder (personuppgiftsbiträden)</h2>
           <ul>
-            <li>Supabase (databas, servrar inom EU/Irland) – lagrar dina uppgifter.</li>
+            <li>Supabase (databas och serverfunktioner, servrar inom EU/Irland) – lagrar dina uppgifter och kör analysen.</li>
             <li>
-              Google (PageSpeed, Gemini) och Firecrawl – analyserar den angivna webbplatsen. Dessa
-              kan behandla data utanför EU, med tillämpliga skyddsåtgärder.
+              Google – PageSpeed Insights och Gemini analyserar den angivna webbplatsen, Google Fonts
+              levererar typsnitt och skärmbilder lagras och levereras via Google Cloud.
             </li>
+            <li>Firecrawl – hämtar och analyserar den angivna webbplatsen, inklusive skärmbild.</li>
           </ul>
+          <p>Google och Firecrawl kan behandla data utanför EU, med tillämpliga skyddsåtgärder.</p>
 
           <h2>6. Dina rättigheter (GDPR)</h2>
           <p>
@@ -95,8 +97,15 @@ const Integritetspolicy = () => {
             .
           </p>
 
-          <h2>7. Cookies</h2>
-          <p>webscore.se använder endast nödvändiga/funktionella lagringar för att fungera.</p>
+          <h2>7. Cookies och spårning</h2>
+          <p>
+            webscore.se sätter inga cookies för dig som besökare och använder ingen analys- eller
+            annonsspårning (t.ex. Google Analytics eller Meta-pixel). Vi visar därför ingen
+            cookie-banner – det finns inget samtycke att inhämta. Vårt interna admingränssnitt använder
+            nödvändig, funktionell lagring (localStorage) för inloggning, vilket inte berör vanliga
+            besökare. Sajten laddar typsnitt via Google Fonts, vilket innebär att din IP-adress delas
+            med Google för att leverera typsnitten.
+          </p>
 
           <h2>8. Ändringar</h2>
           <p>
