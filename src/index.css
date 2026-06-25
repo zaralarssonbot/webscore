@@ -444,4 +444,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .bg-grid-live { animation: none; }
+  /* Neutralise modal/overlay enter+exit (tailwindcss-animate) for users who
+     ask for less motion — the dialog still opens/closes, just without the
+     fade+scale. */
+  .animate-in,
+  .animate-out { animation: none !important; }
 }

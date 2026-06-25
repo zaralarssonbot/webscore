@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Monitor, Network, Code2, TrendingUp, Palette, Award, LifeBuoy, Users, Shield, Search, BarChart3, Phone, Rocket, ArrowRight } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
+import InfoModal, { type InfoModalData, clickableCardClass, CardMoreIndicator } from "@/components/InfoModal";
 
 // The full offering, grouped by the arc: bygga → synas & övertyga → driva.
 // Exactly the six real services — nothing invented.
@@ -29,18 +31,54 @@ const serviceGroups = [
   },
 ];
 
-const results = [
-  { icon: Users, text: "Fler leads" },
-  { icon: Shield, text: "Högre förtroende" },
-  { icon: TrendingUp, text: "Bättre konvertering" },
-  { icon: Award, text: "Starkare varumärke" },
+const results: { icon: typeof Users; text: string; detail: string }[] = [
+  {
+    icon: Users,
+    text: "Fler leads",
+    detail:
+      "En hemsida som är byggd för att leda besökaren framåt skapar fler kontakt- och offertförfrågningar. Vi strukturerar innehåll, erbjudanden och tydliga uppmaningar så att rätt besökare faktiskt hör av sig – istället för att lämna sidan utan att göra något.",
+  },
+  {
+    icon: Shield,
+    text: "Högre förtroende",
+    detail:
+      "De flesta bestämmer sig på sekunder om de litar på ett företag. Med genomtänkt design, tydligt språk och rätt signaler – referenser, case och ett professionellt intryck – känns ni som ett tryggt val redan innan första samtalet.",
+  },
+  {
+    icon: TrendingUp,
+    text: "Bättre konvertering",
+    detail:
+      "Konvertering handlar om att fler av dem som redan besöker sidan tar nästa steg. Vi tar bort friktion, gör erbjudandet tydligt och guidar besökaren mot handling – så att trafiken ni redan har jobbar hårdare för er.",
+  },
+  {
+    icon: Award,
+    text: "Starkare varumärke",
+    detail:
+      "Ett enhetligt och genomtänkt varumärke gör att ni sticker ut och känns mer etablerade. När färg, form, ton och budskap hänger ihop bygger varje kontaktpunkt samma intryck – och ni blir lättare att känna igen och välja.",
+  },
 ];
 
 const steps = [
-  { number: "01", icon: Search, title: "Testa din hemsida", description: "Se direkt vad som saknas." },
-  { number: "02", icon: BarChart3, title: "Få en tydlig analys", description: "Vi visar vad som håller dig tillbaka." },
-  { number: "03", icon: Phone, title: "Boka strategi-call", description: "Vi går igenom lösningen." },
-  { number: "04", icon: Rocket, title: "Vi bygger & optimerar", description: "Du får en hemsida som presterar." },
+  {
+    number: "01", icon: Search, title: "Testa din hemsida", description: "Se direkt vad som saknas.",
+    detail:
+      "Allt börjar med en kostnadsfri analys av din nuvarande sida. På ett par minuter ser du ett tydligt betyg och vad som drar ner det – utan att du behöver lyfta ett finger eller prata med en säljare först.",
+  },
+  {
+    number: "02", icon: BarChart3, title: "Få en tydlig analys", description: "Vi visar vad som håller dig tillbaka.",
+    detail:
+      "Du får en konkret genomgång av vad som håller sidan tillbaka inom synlighet, förtroende och konvertering. Inga svepande omdömen – utan tydliga punkter du faktiskt kan agera på.",
+  },
+  {
+    number: "03", icon: Phone, title: "Boka strategi-call", description: "Vi går igenom lösningen.",
+    detail:
+      "Vill du gå vidare bokar vi ett kort samtal där vi går igenom resultatet och vad som ger störst effekt för just er. Det är rådgivning, inte en säljpresentation – du bestämmer själv nästa steg.",
+  },
+  {
+    number: "04", icon: Rocket, title: "Vi bygger & optimerar", description: "Du får en hemsida som presterar.",
+    detail:
+      "När ni är redo bygger vi om och optimerar sidan utifrån analysen – design, struktur, SEO och innehåll. Resultatet är en hemsida som inte bara ser bra ut, utan som faktiskt presterar.",
+  },
 ];
 
 const reveal = {
@@ -55,6 +93,8 @@ const IconBadge = ({ children }: { children: React.ReactNode }) => (
 );
 
 const ServicesSection = () => {
+  const [active, setActive] = useState<InfoModalData | null>(null);
+
   return (
     <section id="services" className="relative z-10 py-24 sm:py-32 px-6">
       <div className="max-w-5xl mx-auto space-y-28">
@@ -118,14 +158,18 @@ const ServicesSection = () => {
           />
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
             {results.map((item, i) => (
-              <motion.div
+              <motion.button
                 key={item.text}
+                type="button"
                 custom={i} variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }}
-                className="card-surface p-6 text-center flex flex-col items-center"
+                onClick={() => setActive({ eyebrow: "RESULTAT", title: item.text, description: item.detail, icon: item.icon })}
+                aria-label={`Läs mer: ${item.text}`}
+                className={`${clickableCardClass} card-surface p-6 text-center flex flex-col items-center`}
               >
+                <CardMoreIndicator />
                 <IconBadge><item.icon className="w-6 h-6" /></IconBadge>
                 <span className="font-display font-semibold text-[0.9375rem] tracking-[-0.01em] mt-3.5">{item.text}</span>
-              </motion.div>
+              </motion.button>
             ))}
           </div>
         </div>
@@ -136,11 +180,15 @@ const ServicesSection = () => {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 relative">
             <div className="hidden lg:block absolute top-[2.1rem] left-[12%] right-[12%] h-px" style={{ background: "linear-gradient(90deg, transparent, hsl(var(--neon-cyan) / 0.2), transparent)" }} />
             {steps.map((step, i) => (
-              <motion.div
+              <motion.button
                 key={step.number}
+                type="button"
                 custom={i} variants={reveal} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-50px" }}
-                className="card-surface p-6 text-center relative"
+                onClick={() => setActive({ eyebrow: `STEG ${step.number}`, title: step.title, description: step.detail, icon: step.icon })}
+                aria-label={`Läs mer: ${step.title}`}
+                className={`${clickableCardClass} card-surface p-6 text-center`}
               >
+                <CardMoreIndicator />
                 <div className="relative inline-flex">
                   <IconBadge><step.icon className="w-6 h-6" /></IconBadge>
                   <span className="absolute -top-2 -right-2 font-mono text-[0.74rem] font-semibold px-1.5 py-0.5 rounded-md bg-card border border-border text-neon-blue">
@@ -149,12 +197,14 @@ const ServicesSection = () => {
                 </div>
                 <h3 className="font-display font-semibold text-[0.9375rem] mt-4 mb-1.5 tracking-[-0.01em]">{step.title}</h3>
                 <p className="text-[0.8125rem] text-muted-foreground/80 leading-[1.6]">{step.description}</p>
-              </motion.div>
+              </motion.button>
             ))}
           </div>
         </div>
 
       </div>
+
+      <InfoModal data={active} onClose={() => setActive(null)} />
     </section>
   );
 };
