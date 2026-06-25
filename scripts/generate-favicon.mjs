@@ -2,7 +2,7 @@
  * Generate Webscore's own favicon (PNG + ICO) from public/favicon.svg.
  * Run: node scripts/generate-favicon.mjs
  * Uses the already-present Playwright/Chromium to rasterize the SVG (no extra
- * image dependency). Keeps the brand score-ring mark consistent across svg/.png/.ico.
+ * image dependency). Keeps the brand "Calibration" ring mark consistent across svg/.png/.ico.
  */
 import { chromium } from "@playwright/test";
 import { readFileSync, writeFileSync } from "node:fs";
