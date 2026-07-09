@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import ScoreBlock from "./ScoreBlock";
-import BiggestProblemCard from "./BiggestProblemCard";
 import BusinessImpactCard from "./BusinessImpactCard";
 import CustomerLossCard from "./CustomerLossCard";
 import InlineBookingCTA from "./InlineBookingCTA";
@@ -14,6 +13,9 @@ import {
   Clock, ShieldCheck, BarChart3, Users, Target, Search, MonitorSmartphone, ContactRound,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import DecisionCard, { type DecisionCardProps } from "@/components/DecisionCard";
+import RoadmapCard from "@/components/RoadmapCard";
+import { prioritize, planRoadmap } from "@/lib/recommendation-engine";
 import type { ScanResult, GoogleBusinessData } from "@/lib/scan-service";
 
 interface ResultsSectionProps {
@@ -53,6 +55,40 @@ const fadeUp = {
   show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] as const } },
 };
 
+/**
+ * Map the prioritised lead recommendation onto the Decision Card. All of the
+ * reasoning — impact, effort, confidence, why-this-first, and what to hold back —
+ * lives in the recommendation engine; this is just the adapter to the UI.
+ */
+const buildDecision = (data: ScanResult): Omit<DecisionCardProps, "action"> => {
+  const plan = prioritize(data);
+  if (plan) {
+    const { lead, priorityReason, confidenceReason } = plan;
+    return {
+      priorityRank: 1,
+      decision: lead.decision,
+      why: lead.why,
+      evidence: lead.evidence,
+      businessImpact: lead.businessImpact,
+      priorityReason,
+      confidence: lead.confidence,
+      confidenceReason,
+    };
+  }
+
+  // Defensive fallback if the engine has nothing to rank (no checks, no AI fields).
+  return {
+    priorityRank: 1,
+    decision: (data.quickFix || data.opportunity || data.biggestProblem || "Gör sidans erbjudande tydligt på första skärmen.").trim(),
+    why: (data.biggestProblem || data.summary || "").trim(),
+    evidence: (data.weaknesses ?? []).slice(0, 3),
+    businessImpact: data.businessImpact?.[0]?.trim() || "Det påverkar hur många av besökarna som tar kontakt.",
+    priorityReason: "Mest att vinna på just nu.",
+    confidence: "medium",
+    confidenceReason: "Sammanvägt från kontrollerna av sidan.",
+  };
+};
+
 const ResultsSection = ({ domain, data, scanId, onNewScan, aiLoading, competitorsLoading }: ResultsSectionProps) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
@@ -65,6 +101,9 @@ const ResultsSection = ({ domain, data, scanId, onNewScan, aiLoading, competitor
   };
 
   const handleBook = () => setRemediationOpen(true);
+
+  // The prioritised fixes as a short, phased execution plan (deterministic).
+  const roadmap = planRoadmap(data);
 
   return (
     <>
@@ -119,16 +158,25 @@ const ResultsSection = ({ domain, data, scanId, onNewScan, aiLoading, competitor
           <ScoreBlock score={data.score} screenshotUrl={data.pageInfo?.screenshotUrl} domain={domain} categoryScores={data.categoryScores} summary={data.summary} summaryLoading={aiLoading} />
         </motion.div>
 
-        {/* 2. Biggest Problem (Problem) — streams in with the AI summary */}
+        {/* THE DECISION — the single recommendation that leads everything below.
+            Owns the "biggest problem" (now its "why"), so there is no separate
+            problem card. Streams in with the AI content; dominant in the stack. */}
         {data.biggestProblem ? (
           <motion.div variants={fadeUp}>
-            <BiggestProblemCard problem={data.biggestProblem} />
+            <DecisionCard {...buildDecision(data)} action={{ label: "Boka 20 min genomgång", onClick: handleBook }} />
           </motion.div>
         ) : aiLoading ? (
-          <motion.div variants={fadeUp}><CardSkeleton lines={2} label="Största problemet" /></motion.div>
+          <motion.div variants={fadeUp}><CardSkeleton lines={4} label="Rekommendation" /></motion.div>
         ) : null}
 
-        {/* 3. Competitors (Konkurrentgap) */}
+        {/* THE PLAN — the prioritised fixes grouped into a calm, few-week roadmap. */}
+        {data.biggestProblem && roadmap.length > 0 && (
+          <motion.div variants={fadeUp}>
+            <RoadmapCard phases={roadmap} />
+          </motion.div>
+        )}
+
+        {/* 2. Competitors (Konkurrentgap) */}
         {data.nearbyCompetitors && data.nearbyCompetitors.length > 0 && (
           <motion.div variants={fadeUp}>
             <div className="card-surface p-6 sm:p-8 relative overflow-hidden">

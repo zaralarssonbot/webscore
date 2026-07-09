@@ -17,7 +17,7 @@ const WhyUsSection = () => {
         <SectionHeading
           eyebrow="VARFÖR OSS"
           title={<>Därför väljer företag <span className="gradient-text">Webscore</span></>}
-          className="mb-12"
+          className="mb-14 sm:mb-16"
         />
 
         <div className="space-y-3">

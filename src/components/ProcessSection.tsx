@@ -44,7 +44,7 @@ const ProcessSection = () => {
           eyebrow="VÅR PROCESS"
           title={<>Så jobbar vi – <span className="gradient-text">5 enkla steg</span></>}
           subtitle="Från analys till tillväxt. Hela processen tar 7–14 dagar."
-          className="mb-16 sm:mb-20"
+          className="mb-14 sm:mb-16"
         />
 
         <div className="relative">

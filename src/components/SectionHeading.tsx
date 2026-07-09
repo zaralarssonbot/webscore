@@ -21,11 +21,11 @@ const SectionHeading = ({ eyebrow, title, subtitle, className = "" }: SectionHea
     transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
     className={`text-center max-w-2xl mx-auto ${className}`}
   >
-    {eyebrow && <span className="data-label text-[0.74rem] text-neon-blue mb-4 inline-block">{eyebrow}</span>}
-    <h2 className="font-display font-semibold tracking-[-0.035em] leading-[1.06] text-3xl sm:text-4xl md:text-[2.75rem]">
+    {eyebrow && <span className="data-label text-[0.74rem] text-neon-blue mb-3.5 inline-block">{eyebrow}</span>}
+    <h2 className="font-display font-semibold tracking-[-0.035em] leading-[1.07] text-[2rem] sm:text-[2.5rem] md:text-[2.9rem]">
       {title}
     </h2>
-    {subtitle && <p className="text-muted-foreground/80 mt-4 leading-[1.7] text-[0.95rem] max-w-xl mx-auto">{subtitle}</p>}
+    {subtitle && <p className="text-muted-foreground/80 mt-5 leading-[1.65] text-base sm:text-[1.0625rem] max-w-xl mx-auto">{subtitle}</p>}
   </motion.div>
 );
 

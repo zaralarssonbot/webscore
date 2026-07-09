@@ -22,7 +22,7 @@ const VideoShowcaseSection = () => {
           eyebrow="KREATIVT INNEHÅLL"
           title={<>Vi skapar innehåll som{" "}<span className="gradient-text">fångar blicken</span></>}
           subtitle="Från filmiskt webbinnehåll till produktvideos — vi ger ditt varumärke visuell kraft."
-          className="mb-14"
+          className="mb-14 sm:mb-16"
         />
 
         {/* Bento Grid */}

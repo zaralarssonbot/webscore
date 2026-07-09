@@ -10,10 +10,6 @@ const CRF = process.argv[2] ?? "31";
 
 // Only the videos actually referenced in the source.
 const USED = [
-  "hero-bg.mp4",
-  "cta-bg.mp4",
-  "videos/process-bg.mp4",
-  "videos/whyus-bg.mp4",
   "videos/branding-1.mp4",
   "videos/branding-3.mp4",
   "videos/branding-4.mp4",

@@ -97,7 +97,7 @@ const ServicesSection = () => {
 
   return (
     <section id="services" className="relative z-10 py-24 sm:py-32 px-6">
-      <div className="max-w-5xl mx-auto space-y-28">
+      <div className="max-w-6xl mx-auto space-y-20 sm:space-y-24">
 
         {/* TJÄNSTER — din kompletta digitala partner */}
         <div>
@@ -105,7 +105,7 @@ const ServicesSection = () => {
             eyebrow="MER ÄN HEMSIDOR"
             title={<>Din kompletta <span className="gradient-text">digitala partner</span></>}
             subtitle="Vi bygger era digitala lösningar, får dem att synas och övertyga – och håller dem igång. Allt från ett och samma team."
-            className="mb-14"
+            className="mb-14 sm:mb-16"
           />
 
           <div className="space-y-12">
@@ -154,9 +154,9 @@ const ServicesSection = () => {
             eyebrow="RESULTAT"
             title={<>Det handlar inte om utseende<br className="hidden sm:block" /><span className="gradient-text"> – utan om resultat</span></>}
             subtitle="En snygg hemsida utan strategi säljer inte. Vi kombinerar design, struktur och psykologi."
-            className="mb-10"
+            className="mb-14 sm:mb-16"
           />
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {results.map((item, i) => (
               <motion.button
                 key={item.text}
@@ -176,7 +176,7 @@ const ServicesSection = () => {
 
         {/* SÅ FUNKAR DET */}
         <div id="process-steps">
-          <SectionHeading eyebrow="SÅ FUNKAR DET" title={<>Fyra steg till <span className="gradient-text">bättre resultat</span></>} className="mb-12" />
+          <SectionHeading eyebrow="SÅ FUNKAR DET" title={<>Fyra steg till <span className="gradient-text">bättre resultat</span></>} className="mb-14 sm:mb-16" />
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 relative">
             <div className="hidden lg:block absolute top-[2.1rem] left-[12%] right-[12%] h-px" style={{ background: "linear-gradient(90deg, transparent, hsl(var(--neon-cyan) / 0.2), transparent)" }} />
             {steps.map((step, i) => (

@@ -34,18 +34,18 @@ const FinalCTASection = ({ onAnalyze, onBookMeeting }: FinalCTASectionProps) => 
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="card-surface p-6 sm:p-14 relative overflow-hidden"
+          className="card-surface p-8 sm:p-14 relative overflow-hidden"
         >
           {/* Faint brand wash inside the card — accent, not flood. */}
           <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 0%, hsl(var(--neon-blue) / 0.06) 0%, transparent 60%)" }} />
 
           <div className="relative">
-            <span className="data-label text-[0.74rem] text-neon-blue mb-4 inline-block">KOSTNADSFRITT WEBBTEST</span>
-            <h2 className="font-display font-semibold text-2xl sm:text-3xl md:text-[2.25rem] mb-4 tracking-[-0.035em] leading-[1.1]">
+            <span className="data-label text-[0.74rem] text-neon-blue mb-3.5 inline-block">KOSTNADSFRITT WEBBTEST</span>
+            <h2 className="font-display font-semibold text-[1.75rem] sm:text-3xl md:text-[2.5rem] mb-4 tracking-[-0.035em] leading-[1.08]">
               Redo att ta din hemsida till{" "}
               <span className="gradient-text">nästa nivå?</span>
             </h2>
-            <p className="text-muted-foreground/80 max-w-md mx-auto mb-6 leading-[1.7] text-[0.95rem]">
+            <p className="text-muted-foreground/80 max-w-md mx-auto mb-6 leading-[1.65] text-base">
               Se vad analysen hittar på din sida — den visar:
             </p>
 

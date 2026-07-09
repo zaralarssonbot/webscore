@@ -19,6 +19,10 @@ interface LazyVideoProps {
  * `preload="none"` and the real `src` is only attached once the element nears
  * the viewport (IntersectionObserver). Decorative-only — always muted, looped,
  * inline. Pass a `poster` to show a still frame until the video is ready.
+ *
+ * The observer stays live for the element's lifetime: the clip plays while in
+ * view and PAUSES once it scrolls out, so off-screen videos don't keep decoding
+ * (saves CPU/battery/data — important when several share a page).
  */
 const LazyVideo = ({ src, poster, className, style, rootMargin = "300px" }: LazyVideoProps) => {
   const ref = useRef<HTMLVideoElement>(null);
@@ -26,7 +30,7 @@ const LazyVideo = ({ src, poster, className, style, rootMargin = "300px" }: Lazy
 
   useEffect(() => {
     const el = ref.current;
-    if (!el || load) return;
+    if (!el) return;
 
     if (typeof IntersectionObserver === "undefined") {
       setLoad(true);
@@ -36,15 +40,17 @@ const LazyVideo = ({ src, poster, className, style, rootMargin = "300px" }: Lazy
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setLoad(true);
-          observer.disconnect();
+          setLoad(true);          // attach src on first entry
+          el.play?.().catch(() => {});
+        } else {
+          el.pause?.();           // stop decoding once off-screen
         }
       },
       { rootMargin }
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, [load, rootMargin]);
+  }, [rootMargin]);
 
   useEffect(() => {
     if (load) ref.current?.load();

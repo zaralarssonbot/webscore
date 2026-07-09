@@ -27,12 +27,12 @@ const HomePricingSection = () => {
   return (
     <>
       <section id="pricing" className="relative z-10 py-24 sm:py-32 px-6">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <SectionHeading
             eyebrow="PRISER"
             title={<>Tydliga priser, <span className="gradient-text">inga överraskningar</span></>}
             subtitle={pricingExplainer}
-            className="mb-14"
+            className="mb-14 sm:mb-16"
           />
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
@@ -88,7 +88,7 @@ const HomePricingSection = () => {
           </div>
 
           {/* CTA row */}
-          <div className="flex flex-col sm:flex-row gap-3 justify-center mt-12">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center mt-14 sm:mt-16">
             <Button variant="glow" size="lg" className="group glow-precision" asChild>
               <Link to="/pricing">
                 Se alla priser & detaljer

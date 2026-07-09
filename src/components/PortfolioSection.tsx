@@ -66,7 +66,7 @@ const PortfolioSection = () => {
             eyebrow="PORTFOLIO"
             title={<>Projekt som visar vad rätt hemsida{" "}<span className="gradient-text">faktiskt kan göra</span></>}
             subtitle="Vi bygger inte bara snygga sidor — vi skapar hemsidor som stärker varumärket, ökar förtroendet och driver fler affärer."
-            className="mb-14"
+            className="mb-14 sm:mb-16"
           />
 
           {/* Single featured project — centered at a comfortable card width */}

@@ -26,8 +26,8 @@ const columns = [
 
 const Footer = () => {
   return (
-    <footer className="relative z-10 border-t border-border mt-16">
-      <div className="max-w-5xl mx-auto px-6 py-14 sm:py-16">
+    <footer className="relative z-10 border-t border-border mt-24 sm:mt-28">
+      <div className="max-w-6xl mx-auto px-6 py-14 sm:py-16">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
