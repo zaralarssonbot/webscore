@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Search, MousePointerClick, Shield, Zap, Lock, type LucideIcon } from "lucide-react";
+import { scoreColor, alpha } from "@/lib/score-color";
 
 interface CategoryScoreCardProps {
   label: string;
@@ -31,13 +32,11 @@ const CategoryScoreCard = ({ label, score, icon: Icon, weight, delay }: Category
     return () => clearTimeout(timeout);
   }, [score, delay]);
 
-  const getColor = () => {
-    if (score >= 75) return { ring: "hsl(var(--score-high))", bg: "hsla(160,85%,50%,0.06)", glow: "hsla(160,85%,50%,0.12)", border: "hsla(160,85%,50%,0.1)" };
-    if (score >= 55) return { ring: "hsl(var(--score-mid))", bg: "hsla(40,95%,55%,0.06)", glow: "hsla(40,95%,55%,0.12)", border: "hsla(40,95%,55%,0.1)" };
-    return { ring: "hsl(var(--score-low))", bg: "hsla(0,80%,58%,0.06)", glow: "hsla(0,80%,58%,0.12)", border: "hsla(0,80%,58%,0.1)" };
-  };
-
-  const { ring, bg, glow, border } = getColor();
+  const c = scoreColor(score);
+  const ring = c.hsl;
+  const bg = alpha(c, 0.06);
+  const glow = alpha(c, 0.12);
+  const border = alpha(c, 0.1);
   const circumference = 2 * Math.PI * 28;
   const strokeDashoffset = circumference - (displayScore / 100) * circumference;
 

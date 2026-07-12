@@ -15,44 +15,32 @@ import {
 import { Button } from "@/components/ui/button";
 import DecisionCard, { type DecisionCardProps } from "@/components/DecisionCard";
 import RoadmapCard from "@/components/RoadmapCard";
+import ScoreInfo from "@/components/ScoreInfo";
 import { prioritize, planRoadmap } from "@/lib/recommendation-engine";
-import type { ScanResult, GoogleBusinessData } from "@/lib/scan-service";
+import { scoreColor } from "@/lib/score-color";
+import type { ScanResult } from "@/lib/scan-service";
 
 interface ResultsSectionProps {
   domain: string;
+  /** Always the COMPLETE report — assembled fully before the results view mounts. */
   data: ScanResult;
   scanId?: string;
   onNewScan?: () => void;
-  googleBusiness?: GoogleBusinessData | null;
-  /** AI commentary still generating (summary/biggest problem/impact). */
-  aiLoading?: boolean;
-  /** Real competitors still being looked up. */
-  competitorsLoading?: boolean;
+  /** Deliberate fresh measurement (bypasses the backend cache, rate-limited). */
+  onRefresh?: () => void;
 }
 
-/** Shimmer placeholder for a deferred card while its data streams in. */
-const CardSkeleton = ({ lines = 3, label }: { lines?: number; label: string }) => (
-  <div className="card-surface p-6 sm:p-8" aria-busy="true" aria-label={`${label} laddas`}>
-    <div className="flex items-center gap-3 mb-5">
-      <div className="w-9 h-9 rounded-xl bg-foreground/10 animate-pulse" />
-      <div className="h-3.5 w-48 rounded bg-foreground/10 animate-pulse" />
-    </div>
-    <div className="space-y-2.5 animate-pulse">
-      {Array.from({ length: lines }).map((_, i) => (
-        <div key={i} className="h-3 rounded bg-foreground/10" style={{ width: `${90 - i * 12}%` }} />
-      ))}
-    </div>
-  </div>
-);
-
+// The whole result layout appears at once; a very short stagger (≈12ms/card,
+// the full cascade well under 300ms) adds a subtle ripple without making the
+// user wait card-by-card.
 const stagger = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.1 } },
+  show: { transition: { staggerChildren: 0.012 } },
 };
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] as const } },
+  hidden: { opacity: 0, y: 12 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] as const } },
 };
 
 /**
@@ -89,7 +77,7 @@ const buildDecision = (data: ScanResult): Omit<DecisionCardProps, "action"> => {
   };
 };
 
-const ResultsSection = ({ domain, data, scanId, onNewScan, aiLoading, competitorsLoading }: ResultsSectionProps) => {
+const ResultsSection = ({ domain, data, scanId, onNewScan, onRefresh }: ResultsSectionProps) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [remediationOpen, setRemediationOpen] = useState(false);
@@ -123,12 +111,37 @@ const ResultsSection = ({ domain, data, scanId, onNewScan, aiLoading, competitor
         )}
 
         {/* Domain tag */}
-        <motion.div variants={fadeUp} className="text-center">
+        <motion.div variants={fadeUp} className="flex items-center justify-center gap-2.5">
           <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm text-muted-foreground">
             <Globe className="w-3.5 h-3.5 text-neon-cyan" />
             Resultat för <span className="font-mono text-foreground">{domain}</span>
           </span>
+          <ScoreInfo label="Så fungerar analysrapporten" />
         </motion.div>
+
+        {/* Measurement freshness + a restrained way to re-measure. */}
+        {(data.measuredAt || onRefresh) && (
+          <motion.div variants={fadeUp} className="flex items-center justify-center gap-2 -mt-2 text-[0.72rem] text-muted-foreground/70">
+            {data.measuredAt && (
+              <span className="data-label">
+                Mätning uppdaterad:{" "}
+                {new Date(data.measuredAt).toLocaleTimeString("sv-SE", { hour: "2-digit", minute: "2-digit" })}
+              </span>
+            )}
+            {onRefresh && (
+              <>
+                <span aria-hidden="true">·</span>
+                <button
+                  type="button"
+                  onClick={onRefresh}
+                  className="data-label text-neon-cyan/80 hover:text-neon-cyan underline-offset-2 hover:underline transition-colors"
+                >
+                  Gör en ny mätning
+                </button>
+              </>
+            )}
+          </motion.div>
+        )}
 
         {/* Expert positioning */}
         <motion.div variants={fadeUp} className="text-center max-w-2xl mx-auto">
@@ -155,19 +168,17 @@ const ResultsSection = ({ domain, data, scanId, onNewScan, aiLoading, competitor
 
         {/* 1. Score + Summary (Insikt) */}
         <motion.div variants={fadeUp}>
-          <ScoreBlock score={data.score} screenshotUrl={data.pageInfo?.screenshotUrl} domain={domain} categoryScores={data.categoryScores} summary={data.summary} summaryLoading={aiLoading} />
+          <ScoreBlock score={data.score} screenshotUrl={data.pageInfo?.screenshotUrl} domain={domain} categoryScores={data.categoryScores} summary={data.summary} />
         </motion.div>
 
         {/* THE DECISION — the single recommendation that leads everything below.
             Owns the "biggest problem" (now its "why"), so there is no separate
             problem card. Streams in with the AI content; dominant in the stack. */}
-        {data.biggestProblem ? (
+        {data.biggestProblem && (
           <motion.div variants={fadeUp}>
-            <DecisionCard {...buildDecision(data)} action={{ label: "Boka 20 min genomgång", onClick: handleBook }} />
+            <DecisionCard {...buildDecision(data)} accentTier={scoreColor(data.score).tier} action={{ label: "Boka 20 min genomgång", onClick: handleBook }} />
           </motion.div>
-        ) : aiLoading ? (
-          <motion.div variants={fadeUp}><CardSkeleton lines={4} label="Rekommendation" /></motion.div>
-        ) : null}
+        )}
 
         {/* THE PLAN — the prioritised fixes grouped into a calm, few-week roadmap. */}
         {data.biggestProblem && roadmap.length > 0 && (
@@ -177,7 +188,16 @@ const ResultsSection = ({ domain, data, scanId, onNewScan, aiLoading, competitor
         )}
 
         {/* 2. Competitors (Konkurrentgap) */}
-        {data.nearbyCompetitors && data.nearbyCompetitors.length > 0 && (
+        {data.nearbyCompetitors && data.nearbyCompetitors.length > 0 && (() => {
+          // Only claim exact competitors when confidence is high (review-backed
+          // majority). Otherwise present them honestly as similar businesses.
+          const comps = data.nearbyCompetitors;
+          const highConfidence = comps.filter((c) => c.has_reviews).length >= Math.ceil(comps.length / 2);
+          const compTitle = highConfidence ? "Företag du konkurrerar med online" : "Liknande företag i samma område";
+          const compSub = highConfidence
+            ? "Företag i ditt område som presterar bra"
+            : "Företag med liknande profil i din bransch";
+          return (
           <motion.div variants={fadeUp}>
             <div className="card-surface p-6 sm:p-8 relative overflow-hidden">
               <div className="accent-line-top accent-line-cyan" />
@@ -187,14 +207,14 @@ const ResultsSection = ({ domain, data, scanId, onNewScan, aiLoading, competitor
                   <MapPin className="w-4 h-4 text-neon-cyan" />
                 </div>
                 <div>
-                  <h2 className="text-base font-semibold font-display">Företag du konkurrerar med online</h2>
-                  <p className="data-label text-[0.72rem] text-muted-foreground/80 mt-0.5">Företag i ditt område som presterar bra</p>
+                  <h2 className="text-base font-semibold font-display">{compTitle}</h2>
+                  <p className="data-label text-[0.72rem] text-muted-foreground/80 mt-0.5">{compSub}</p>
                 </div>
               </div>
 
               <div className="space-y-2.5 relative">
                {data.nearbyCompetitors.map((comp, i) => (
-                    <motion.div key={i} initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.1, ease: [0.16, 1, 0.3, 1] as const }} className="flex items-center gap-3 p-3.5 rounded-xl border border-neon-cyan/12 bg-secondary/8 hover:bg-secondary/15 transition-all duration-300 relative">
+                    <motion.div key={i} initial={{ opacity: 0, x: -15 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: Math.min(0.24, i * 0.03), duration: 0.3, ease: [0.16, 1, 0.3, 1] as const }} className="flex items-center gap-3 p-3.5 rounded-xl border border-neon-cyan/12 bg-secondary/8 hover:bg-secondary/15 transition-all duration-300 relative">
                       <img
                         src={`https://www.google.com/s2/favicons?domain=${comp.domain}&sz=32`}
                         alt=""
@@ -231,26 +251,20 @@ const ResultsSection = ({ domain, data, scanId, onNewScan, aiLoading, competitor
               </p>
             </div>
           </motion.div>
-        )}
-
-        {/* Competitors still being looked up (real, scraped — never fabricated) */}
-        {!(data.nearbyCompetitors && data.nearbyCompetitors.length > 0) && competitorsLoading && (
-          <motion.div variants={fadeUp}><CardSkeleton lines={3} label="Konkurrenter i ditt område" /></motion.div>
-        )}
+          );
+        })()}
 
         {/* Mid-page CTA – after competitors */}
         <motion.div variants={fadeUp}>
           <InlineBookingCTA onBook={handleBook} />
         </motion.div>
 
-        {/* 4. Business Impact (Affärseffekt) — streams in with the AI summary */}
-        {data.businessImpact && data.businessImpact.length > 0 ? (
+        {/* 4. Business Impact (Affärseffekt) — hidden entirely if not generated */}
+        {data.businessImpact && data.businessImpact.length > 0 && (
           <motion.div variants={fadeUp}>
             <BusinessImpactCard impacts={data.businessImpact} />
           </motion.div>
-        ) : aiLoading ? (
-          <motion.div variants={fadeUp}><CardSkeleton lines={3} label="Affärseffekt" /></motion.div>
-        ) : null}
+        )}
 
         {/* 5. Customer Loss Risk */}
         <motion.div variants={fadeUp}>
@@ -300,7 +314,7 @@ const ResultsSection = ({ domain, data, scanId, onNewScan, aiLoading, competitor
                 key={i}
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 + i * 0.08 }}
+                transition={{ delay: Math.min(0.24, i * 0.03), duration: 0.3 }}
                 className="flex items-center gap-3 p-3 rounded-xl border border-neon-cyan/8 bg-neon-cyan/[0.03]"
               >
                 <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border border-neon-cyan/12" style={{ background: "hsla(175,95%,50%,0.06)" }}>

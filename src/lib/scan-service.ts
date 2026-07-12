@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { normalizeDomain } from "./domain";
+import { computeScore, deriveFindings, type ScoreBreakdown } from "./scoring-engine";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 
@@ -121,6 +122,18 @@ export interface ScanResult {
   auditChecks?: AuditCheck[];
   pageInfo?: PageInfo;
   pageSpeed?: PageSpeedData | null;
+  /** Full deterministic score breakdown (category scores, checks, points). */
+  scoreBreakdown?: ScoreBreakdown;
+  /** True when this result reused the cached per-domain measurement (stable score). */
+  cached?: boolean;
+  /** ISO time the underlying measurement was taken (backend cache). */
+  measuredAt?: string;
+  /** ISO time the cached measurement expires. */
+  expiresAt?: string | null;
+  analysisVersion?: string;
+  scoringVersion?: string;
+  /** True when a forced refresh was denied by the backend rate limit. */
+  refreshRateLimited?: boolean;
   /** Compact signal context handed back to the deferred summary step (internal). */
   promptContext?: Record<string, unknown>;
 }
@@ -185,32 +198,99 @@ export async function fetchGoogleBusiness(domain: string): Promise<GoogleBusines
  * competitors are fetched separately afterwards (see generateSummary /
  * fetchRealCompetitors) and never block the score.
  */
-export async function runAnalysis(scanId: string, domain: string): Promise<ScanResult> {
-  let data, error;
-  try {
-    ({ data, error } = await supabase.functions.invoke("analyze-website", {
-      body: { scanId, domain },
-    }));
-  } catch (err) {
-    throw describeBackendError("Analysen misslyckades", err);
-  }
-  if (error) throw describeBackendError("Analysen misslyckades", error);
-  if (data?.error) throw new Error(data.error);
+/** Raw measurement payload the backend returns (crawled checks + PSI + cache meta). */
+interface RawAnalysis {
+  scanId: string;
+  auditChecks?: AuditCheck[];
+  pageInfo?: PageInfo;
+  pageSpeed?: PageSpeedData | null;
+  promptContext?: Record<string, unknown>;
+  cached?: boolean;
+  measuredAt?: string;
+  expiresAt?: string | null;
+  analysisVersion?: string;
+  scoringVersion?: string;
+  refreshRateLimited?: boolean;
+  error?: string;
+}
 
-  return {
-    scanId: data.scanId,
-    score: data.score,
-    summary: "",
-    categoryScores: data.categoryScores || { seo: 60, conversion: 60, trust: 60, performance: 60, security: 60 },
-    weaknesses: [],
-    strengths: [],
-    opportunity: "",
-    nearbyCompetitors: undefined,
-    auditChecks: data.auditChecks,
-    pageInfo: data.pageInfo,
-    pageSpeed: data.pageSpeed || null,
-    promptContext: data.promptContext,
-  };
+/**
+ * The authoritative per-domain measurement cache now lives in the BACKEND
+ * (Supabase `analysis_cache`), so every browser/session sees the same
+ * measurement and score. This tiny client map only collapses *duplicate clicks*
+ * within the same session — if a request for the same domain is already in
+ * flight, the second click reuses it. It is NOT a source of truth and holds no
+ * data past the in-flight promise.
+ */
+const inFlight = new Map<string, Promise<ScanResult>>();
+
+/** Drop any in-flight dedup entries (e.g. on reset). */
+export function clearAnalysisCache() {
+  inFlight.clear();
+}
+
+export async function runAnalysis(
+  scanId: string,
+  domain: string,
+  opts?: { forceRefresh?: boolean },
+): Promise<ScanResult> {
+  const key = normalizeDomain(domain);
+  // Duplicate-click dedup (session-only); never applied to a forced refresh.
+  if (!opts?.forceRefresh) {
+    const pending = inFlight.get(key);
+    if (pending) return pending;
+  }
+
+  const run = (async (): Promise<ScanResult> => {
+    let data: RawAnalysis;
+    let error;
+    try {
+      ({ data, error } = await supabase.functions.invoke("analyze-website", {
+        body: { scanId, domain, forceRefresh: opts?.forceRefresh || undefined },
+      }));
+    } catch (err) {
+      throw describeBackendError("Analysen misslyckades", err);
+    }
+    if (error) throw describeBackendError("Analysen misslyckades", error);
+    if (data?.error) throw new Error(data.error);
+
+    // The score is computed here by the deterministic engine from the measured
+    // checks + PageSpeed — never the backend's blended number, never AI.
+    const checks: AuditCheck[] = data.auditChecks ?? [];
+    const breakdown = computeScore({ checks, pageSpeed: data.pageSpeed ?? null });
+    const findings = deriveFindings(breakdown);
+
+    return {
+      scanId: data.scanId,
+      score: breakdown.total,
+      summary: "",
+      categoryScores: breakdown.categoryScores,
+      scoreBreakdown: breakdown,
+      cached: data.cached ?? false,
+      measuredAt: data.measuredAt,
+      expiresAt: data.expiresAt ?? null,
+      analysisVersion: data.analysisVersion,
+      scoringVersion: data.scoringVersion,
+      refreshRateLimited: data.refreshRateLimited ?? false,
+      // Deterministic, measurement-based findings — the facts the AI later phrases.
+      weaknesses: findings.weaknesses,
+      strengths: findings.strengths,
+      opportunity: findings.opportunity,
+      nearbyCompetitors: undefined,
+      auditChecks: data.auditChecks,
+      pageInfo: data.pageInfo,
+      pageSpeed: data.pageSpeed || null,
+      promptContext: data.promptContext,
+    };
+  })();
+
+  if (!opts?.forceRefresh) {
+    inFlight.set(key, run);
+    run.finally(() => {
+      if (inFlight.get(key) === run) inFlight.delete(key);
+    });
+  }
+  return run;
 }
 
 /**

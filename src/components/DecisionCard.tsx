@@ -2,6 +2,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Target, Check, ArrowRight, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { tierColor, alpha, type ScoreTier } from "@/lib/score-color";
 
 /**
  * DecisionCard — the foundation of every recommendation Webscore gives.
@@ -78,6 +79,9 @@ export interface DecisionCardProps {
   priorityLabel?: string;
   /** Optional icon override; defaults to a calm focus mark. */
   icon?: LucideIcon;
+  /** Semantic priority accent — ties the lead recommendation to the score's
+   *  urgency tier (defaults to the brand cyan "good" tier). */
+  accentTier?: ScoreTier;
   className?: string;
 }
 
@@ -127,10 +131,14 @@ const DecisionCard = ({
   action,
   priorityLabel,
   icon: Icon = Target,
+  accentTier = "good",
   className,
 }: DecisionCardProps) => {
   const reduce = useReducedMotion();
   const eyebrow = priorityLabel ?? (priorityRank === 1 ? "BÖRJA HÄR" : "NÄSTA STEG");
+  // Semantic priority accent — the lead recommendation carries the score's
+  // urgency colour so the highest priority reads instantly.
+  const accent = tierColor(accentTier);
 
   return (
     <motion.article
@@ -145,17 +153,18 @@ const DecisionCard = ({
       )}
       aria-label="Rekommendation"
     >
-      {/* Priority — the rank, read in an instant. */}
+      {/* Priority — the rank, read in an instant, in the urgency colour. */}
       <div className="flex items-center gap-2.5">
-        <span className="data-label text-[0.64rem] text-neon-cyan/85">PRIORITET {priorityRank}</span>
+        <span className="inline-flex h-1.5 w-1.5 rounded-full" style={{ background: accent.hsl, boxShadow: `0 0 8px ${accent.glow}` }} aria-hidden="true" />
+        <span className="data-label text-[0.64rem]" style={{ color: alpha(accent, 0.9) }}>PRIORITET {priorityRank}</span>
         <span className="h-1 w-1 rounded-full bg-muted-foreground/30" aria-hidden="true" />
         <span className="data-label text-[0.64rem] text-muted-foreground/55">{eyebrow}</span>
       </div>
 
       {/* Decision + Why — the 5-second payload. */}
       <div className="mt-5 flex items-start gap-4">
-        <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-neon-cyan/20 bg-neon-cyan/[0.08]">
-          <Icon className="h-[18px] w-[18px] text-neon-cyan" strokeWidth={2} />
+        <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border" style={{ borderColor: alpha(accent, 0.25), background: alpha(accent, 0.09) }}>
+          <Icon className="h-[18px] w-[18px]" strokeWidth={2} style={{ color: accent.hsl }} />
         </div>
         <div className="space-y-2.5">
           <h3 className="font-display text-xl sm:text-2xl font-semibold tracking-[-0.02em] leading-[1.25] text-foreground">

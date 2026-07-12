@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { scoreColor } from "@/lib/score-color";
 
 interface ScoreGaugeProps {
   /** Target score 0–100 */
@@ -30,14 +31,21 @@ interface ScoreGaugeProps {
    * eye the instant the page opens. Off elsewhere (real result/scanning).
    */
   pop?: boolean;
+  /**
+   * Live analysis progress 0–100. When provided together with `scanning`, the
+   * gauge becomes a determinate progress bar: the centre shows the percentage
+   * (instead of the indeterminate dots) and the arc fills to it. The caller
+   * owns the value so it only ever climbs and only hits 100 when the real
+   * analysis is done.
+   */
+  progress?: number;
   className?: string;
 }
 
+// Semantic score tiers (green/cyan/yellow/orange/red) — see lib/score-color.
 const colorFor = (v: number) => {
-  if (v >= 80) return { c: "hsl(160 85% 52%)", glow: "hsla(160,85%,52%,0.45)" };
-  if (v >= 60) return { c: "hsl(175 90% 55%)", glow: "hsla(175,90%,55%,0.45)" };
-  if (v >= 40) return { c: "hsl(40 95% 58%)", glow: "hsla(40,95%,58%,0.45)" };
-  return { c: "hsl(0 80% 60%)", glow: "hsla(0,80%,60%,0.45)" };
+  const c = scoreColor(v);
+  return { c: c.hsl, glow: c.glow };
 };
 
 const BRAND = { c: "hsl(190 90% 55%)", glow: "hsla(190,90%,52%,0.45)" };
@@ -47,7 +55,7 @@ const BRAND = { c: "hsl(190 90% 55%)", glow: "hsla(190,90%,52%,0.45)" };
  * count-up, a slow rotating scan-ring and a breathing glow. Reusable for the
  * real result score (value-coloured) and the hero example (brand-coloured).
  */
-const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, accent = "score", scanning = false, pop = false, className }: ScoreGaugeProps) => {
+const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, accent = "score", scanning = false, pop = false, progress, className }: ScoreGaugeProps) => {
   const [display, setDisplay] = useState(0);
   const [armed, setArmed] = useState(false);
   const raf = useRef<number>();
@@ -58,7 +66,13 @@ const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, 
 
   const r = 42;
   const circ = 2 * Math.PI * r;
-  const progress = armed ? circ - (display / 100) * circ : circ;
+  const scoreOffset = armed ? circ - (display / 100) * circ : circ;
+  // Determinate scanning: a live percentage drives the arc + centre readout.
+  const determinateScan = scanning && typeof progress === "number";
+  const scanVal = determinateScan ? Math.max(0, Math.min(100, Math.round(progress as number))) : 0;
+  const scanOffset = circ - (scanVal / 100) * circ;
+  // Whichever value is currently governing the arc (for the tick highlights).
+  const arcVal = determinateScan ? scanVal : display;
   // A ~100° sweeping segment for the indeterminate scanning arc.
   const scanArc = circ * 0.28;
 
@@ -88,6 +102,12 @@ const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, 
     <motion.div
       className={`relative flex flex-col items-center ${className ?? ""}`}
       style={{ width: size }}
+      role={determinateScan ? "progressbar" : undefined}
+      aria-label={determinateScan ? "Analysförlopp" : undefined}
+      aria-valuemin={determinateScan ? 0 : undefined}
+      aria-valuemax={determinateScan ? 100 : undefined}
+      aria-valuenow={determinateScan ? scanVal : undefined}
+      aria-valuetext={determinateScan ? `${scanVal}%` : undefined}
       initial={pop ? { scale: 0.55, opacity: 0 } : false}
       animate={pop ? { scale: 1, opacity: 1 } : undefined}
       transition={pop ? {
@@ -143,13 +163,14 @@ const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, 
               x1={50 + inner * Math.cos(a)} y1={50 + inner * Math.sin(a)}
               x2={50 + outer * Math.cos(a)} y2={50 + outer * Math.sin(a)}
               stroke={c} strokeWidth={i % 5 === 0 ? 0.6 : 0.3}
-              opacity={display / 100 > i / 60 ? 0.7 : 0.12}
+              opacity={arcVal / 100 > i / 60 ? 0.7 : 0.12}
               style={{ transition: "opacity 0.4s" }}
             />
           );
         })}
-        {/* Progress arc — fills to the real value; or sweeps while scanning */}
-        {scanning ? (
+        {/* Progress arc — determinate for a real value OR live scan %; sweeps
+            only for the legacy indeterminate scanning state. */}
+        {scanning && !determinateScan ? (
           <circle
             cx="50" cy="50" r={r} fill="none"
             stroke={stroke} strokeWidth="4.5" strokeLinecap="round"
@@ -162,8 +183,13 @@ const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, 
             cx="50" cy="50" r={r} fill="none"
             stroke={stroke} strokeWidth="4.5" strokeLinecap="round"
             strokeDasharray={circ}
-            strokeDashoffset={progress}
-            style={{ transition: "stroke-dashoffset 1.6s cubic-bezier(0.16,1,0.3,1)", filter: `drop-shadow(0 0 6px ${glow})` }}
+            strokeDashoffset={determinateScan ? scanOffset : scoreOffset}
+            style={{
+              transition: determinateScan
+                ? "stroke-dashoffset 0.2s linear"
+                : "stroke-dashoffset 1.6s cubic-bezier(0.16,1,0.3,1)",
+              filter: `drop-shadow(0 0 6px ${glow})`,
+            }}
           />
         )}
       </svg>
@@ -171,7 +197,19 @@ const ScoreGauge = ({ value, size = 280, label = "BETYG", caption, delay = 0.3, 
       {/* Center readout */}
       <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ paddingTop: size * 0.02 }}>
         {label && <span className="data-label text-[0.74rem] text-muted-foreground/80 mb-1">{label}</span>}
-        {scanning ? (
+        {scanning && determinateScan ? (
+          // Live percentage — climbs one point at a time, synced to the arc.
+          <span
+            className="font-mono font-bold tabular-nums leading-none gradient-text"
+            style={{
+              fontSize: size * 0.3,
+              filter: `drop-shadow(0 0 26px ${glow}) drop-shadow(0 0 60px ${glow.replace("0.45", "0.22")})`,
+            }}
+          >
+            {scanVal}
+            <span className="font-mono align-top" style={{ fontSize: size * 0.14 }}>%</span>
+          </span>
+        ) : scanning ? (
           // Indeterminate readout — no fabricated number until the result lands.
           <span className="flex items-center gap-1.5" style={{ height: size * 0.28 }} aria-label="Analyserar">
             {[0, 1, 2].map((i) => (

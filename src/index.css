@@ -58,6 +58,15 @@
     --score-mid: 40 95% 58%;
     --score-high: 160 80% 50%;
 
+    /* Semantic score/priority tiers — the single accent system for results.
+       Colour only communicates meaning; the CTA cyan→purple gradient is
+       separate and reserved for main conversion actions. See lib/score-color.ts. */
+    --tier-excellent: 150 72% 46%;   /* 90–100  green  */
+    --tier-good: 190 90% 55%;        /* 80–89   cyan   */
+    --tier-attention: 45 95% 55%;    /* 70–79   yellow */
+    --tier-high: 28 95% 56%;         /* 50–69   orange */
+    --tier-critical: 0 78% 60%;      /* 0–49    red    */
+
     /* Dark translucent glass — a light top highlight gives the raised edge. */
     --glass-bg: rgba(19, 22, 29, 0.72);
     --glass-border: rgba(255, 255, 255, 0.09);

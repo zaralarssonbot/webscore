@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
 import { categoryConfig } from "./CategoryScoreCard";
+import { scoreColor, alpha } from "@/lib/score-color";
 import { BarChart3 } from "lucide-react";
 import ScoreGauge from "./ScoreGauge";
+import ScoreInfo from "./ScoreInfo";
 
 interface ScoreBlockProps {
   score: number;
@@ -9,15 +11,12 @@ interface ScoreBlockProps {
   domain?: string;
   categoryScores?: { seo: number; conversion: number; trust: number; performance: number; security: number };
   summary?: string;
-  /** AI summary is still being generated — show a skeleton in its place. */
-  summaryLoading?: boolean;
 }
 
-const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary, summaryLoading }: ScoreBlockProps) => {
+const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary }: ScoreBlockProps) => {
   const getScoreColor = () => {
-    if (score >= 80) return { color: "hsl(var(--score-high))", glow: "hsla(160,85%,50%,0.3)", hue: 160 };
-    if (score >= 65) return { color: "hsl(var(--score-mid))", glow: "hsla(40,95%,55%,0.3)", hue: 40 };
-    return { color: "hsl(var(--score-low))", glow: "hsla(0,80%,58%,0.3)", hue: 0 };
+    const c = scoreColor(score);
+    return { color: c.hsl, glow: alpha(c, 0.3), hue: c.h };
   };
 
   const getLabel = () => {
@@ -42,9 +41,12 @@ const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary, sum
       <div className="relative flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
         {/* Score gauge */}
         <div className="flex flex-col items-center flex-shrink-0">
-          <p className="data-label text-[0.74rem] text-muted-foreground/80 mb-5">
-            Helhetsbedömning
-          </p>
+          <div className="flex items-center gap-2 mb-5">
+            <p className="data-label text-[0.74rem] text-muted-foreground/80">
+              Helhetsbedömning
+            </p>
+            <ScoreInfo label="Så beräknas ditt betyg" />
+          </div>
 
           <ScoreGauge value={score} size={216} label="BETYG" delay={0.2} />
 
@@ -112,7 +114,7 @@ const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary, sum
       </div>
 
       {/* AI Summary — fills in after the score (skeleton while generating) */}
-      {summary ? (
+      {summary && (
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -130,26 +132,7 @@ const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary, sum
             </div>
           </div>
         </motion.div>
-      ) : summaryLoading ? (
-        <div className="relative mt-8 p-5 rounded-2xl border border-border bg-secondary" aria-busy="true" aria-label="Sammanfattning genereras">
-          <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border border-neon-cyan/15 mt-0.5" style={{ background: "hsla(175,95%,50%,0.08)" }}>
-              <BarChart3 className="w-4 h-4 text-neon-cyan animate-pulse" />
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-3">
-                <p className="data-label text-[0.74rem] text-neon-blue">Sammanfattning</p>
-                <span className="data-label text-[0.74rem] text-muted-foreground/80">genereras…</span>
-              </div>
-              <div className="space-y-2 animate-pulse">
-                <div className="h-3 rounded bg-foreground/10 w-[92%]" />
-                <div className="h-3 rounded bg-foreground/10 w-[80%]" />
-                <div className="h-3 rounded bg-foreground/10 w-[64%]" />
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
+      )}
 
       {/* Category Scores */}
       {categoryScores && (
@@ -164,11 +147,8 @@ const ScoreBlock = ({ score, screenshotUrl, domain, categoryScores, summary, sum
           <div className="grid grid-cols-5 gap-2 sm:gap-4">
             {categoryConfig.map((cat, i) => {
               const s = categoryScores[cat.key];
-              const catColor = s >= 75
-                ? { ring: "hsl(var(--score-high))", glow: "hsla(160,85%,50%,0.3)", bg: "hsla(160,85%,50%,0.06)" }
-                : s >= 55
-                ? { ring: "hsl(var(--score-mid))", glow: "hsla(40,95%,55%,0.3)", bg: "hsla(40,95%,55%,0.06)" }
-                : { ring: "hsl(var(--score-low))", glow: "hsla(0,80%,58%,0.3)", bg: "hsla(0,80%,58%,0.06)" };
+              const cc = scoreColor(s);
+              const catColor = { ring: cc.hsl, glow: alpha(cc, 0.3), bg: alpha(cc, 0.06) };
               const circ = 2 * Math.PI * 22;
               const offset = circ - (s / 100) * circ;
               return (

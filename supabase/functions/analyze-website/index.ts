@@ -8,6 +8,25 @@ const GEMINI_MODEL = "gemini-2.5-flash";
 // chat/completions + function-calling (website_audit) request shape.
 const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai";
 
+// ── Server-side measurement cache config ───────────────────────────
+// Bump either version when the crawl/checks pipeline or scoring rules change:
+// cache rows with a different version are ignored (auto-invalidated on deploy).
+const ANALYSIS_VERSION = "2026-07-12";
+const SCORING_VERSION = "engine-1";
+const CACHE_TTL_MS = 30 * 60 * 1000;              // 30 minutes
+const FORCED_REFRESH_COOLDOWN_MS = 5 * 60 * 1000; // per-domain forced-refresh limit
+
+/** One canonical domain so hemfrid.se / www.hemfrid.se / https://…/ all match. */
+function canonicalDomain(input: string): string {
+  return input
+    .trim()
+    .toLowerCase()
+    .replace(/^https?:\/\//, "")
+    .replace(/^www\./, "")
+    .replace(/[/?#].*$/, "")
+    .replace(/:\d+$/, "");
+}
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -678,7 +697,7 @@ serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { scanId, domain, phase } = body;
+    const { scanId, domain, phase, forceRefresh } = body;
     if (!domain) {
       return new Response(JSON.stringify({ error: "domain is required" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
@@ -745,6 +764,48 @@ serve(async (req) => {
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
+    // ── Cache read ──────────────────────────────────────────────────
+    // Every browser/session analyzing the same canonical domain during the TTL
+    // gets the same stored measurement — and therefore the same score.
+    const canonical = canonicalDomain(domain);
+    const nowMs = Date.now();
+    // deno-lint-ignore no-explicit-any
+    let cacheRow: any = null;
+    try {
+      const { data } = await supabase.from("analysis_cache").select("*").eq("domain", canonical).maybeSingle();
+      cacheRow = data;
+    } catch (e) { console.error("cache read failed (non-fatal):", e); }
+
+    const versionOk = !!cacheRow && cacheRow.analysis_version === ANALYSIS_VERSION && cacheRow.scoring_version === SCORING_VERSION;
+    const cacheFresh = versionOk && new Date(cacheRow.expires_at).getTime() > nowMs;
+
+    // deno-lint-ignore no-explicit-any
+    const respondCached = (row: any, extra: Record<string, unknown> = {}) =>
+      new Response(JSON.stringify({
+        ...row.measurement,
+        scanId, // reflect the caller's scan id
+        cached: true,
+        measuredAt: row.measured_at,
+        expiresAt: row.expires_at,
+        analysisVersion: row.analysis_version,
+        scoringVersion: row.scoring_version,
+        ...extra,
+      }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+    if (forceRefresh) {
+      // Rate-limit forced refreshes so they can't exhaust PageSpeed/Firecrawl quota.
+      const recentlyForced = versionOk && cacheRow.last_forced_at &&
+        (nowMs - new Date(cacheRow.last_forced_at).getTime() < FORCED_REFRESH_COOLDOWN_MS);
+      if (recentlyForced && cacheRow.measurement) {
+        await supabase.from("scans").update({ status: "complete" }).eq("id", scanId);
+        return respondCached(cacheRow, { refreshRateLimited: true });
+      }
+      // otherwise fall through and run a fresh measurement (records last_forced_at below)
+    } else if (cacheFresh) {
+      await supabase.from("scans").update({ status: "complete" }).eq("id", scanId);
+      return respondCached(cacheRow);
+    }
+
     const t0 = Date.now();
     await supabase.from("scans").update({ status: "crawling" }).eq("id", scanId);
 
@@ -752,6 +813,7 @@ serve(async (req) => {
     let screenshotUrl: string | undefined;
     let fetchTimeMs = 0;
     let metadata: Record<string, unknown> | undefined;
+    let usedFirecrawl = false;
 
     // Firecrawl + PageSpeed + SSL probe run in parallel (the long pole is PSI).
     const tParallel = Date.now();
@@ -777,6 +839,7 @@ serve(async (req) => {
       screenshotUrl = firecrawlResult.screenshotUrl;
       fetchTimeMs = firecrawlResult.fetchTimeMs;
       metadata = firecrawlResult.metadata;
+      usedFirecrawl = true;
       console.log("Used Firecrawl successfully");
     } else {
       const fallbackResult = await fallbackCrawl(domain);
@@ -849,7 +912,8 @@ serve(async (req) => {
       textContentPreview: signals.textContentPreview,
     };
 
-    return new Response(JSON.stringify({
+    // The cacheable measurement (crawled checks + PageSpeed). No AI, no timings.
+    const measurement = {
       scanId,
       score: scores.total,
       categoryScores: { seo: scores.seo, conversion: scores.conversion, trust: scores.trust, performance: scores.performance, security: scores.security },
@@ -878,6 +942,35 @@ serve(async (req) => {
       // Handed straight back to the summary phase (no re-crawl).
       promptContext,
       scores: { seo: scores.seo, conversion: scores.conversion, trust: scores.trust, performance: scores.performance, security: scores.security, total: scores.total },
+    };
+
+    // Cache ONLY a complete, successful measurement: real Firecrawl HTML (never a
+    // fallback), a real PageSpeed score, and a full check set. A partial/failed
+    // measurement is returned to the caller but never becomes the cached truth.
+    const measurementComplete = usedFirecrawl && !!html && psiData.performanceScore != null && checks.length >= 20;
+    const measuredAt = new Date().toISOString();
+    const expiresAt = measurementComplete ? new Date(Date.now() + CACHE_TTL_MS).toISOString() : null;
+    if (measurementComplete) {
+      try {
+        await supabase.from("analysis_cache").upsert({
+          domain: canonical,
+          measurement,
+          analysis_version: ANALYSIS_VERSION,
+          scoring_version: SCORING_VERSION,
+          measured_at: measuredAt,
+          expires_at: expiresAt,
+          last_forced_at: forceRefresh ? measuredAt : (cacheRow?.last_forced_at ?? null),
+        });
+      } catch (e) { console.error("cache write failed (non-fatal):", e); }
+    }
+
+    return new Response(JSON.stringify({
+      ...measurement,
+      cached: false,
+      measuredAt,
+      expiresAt,
+      analysisVersion: ANALYSIS_VERSION,
+      scoringVersion: SCORING_VERSION,
       // Step timings (ms) — per-step measurement.
       _timings: {
         firecrawlMs,                       // Firecrawl scrape (ran in parallel)

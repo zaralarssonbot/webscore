@@ -1,7 +1,47 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Lock, Globe, Check } from "lucide-react";
 import ScoreGauge from "./ScoreGauge";
+
+/**
+ * Progress phases (percentage band + expected duration in ms). The percentage
+ * climbs through these on a calm schedule and eases toward each band's cap, so
+ * it never slams into a boundary. It holds at 99% until the backend confirms
+ * completion — the real result is never pre-empted by a fabricated 100%.
+ *
+ *   0–15   connection & initialisation
+ *   15–35  screenshot & page retrieval
+ *   35–55  content & structure analysis
+ *   55–70  SEO analysis
+ *   70–82  performance analysis
+ *   82–92  mobile, accessibility & trust checks
+ *   92–99  final processing & result preparation
+ */
+const PROGRESS_PHASES = [
+  { cap: 15, dur: 1800 },
+  { cap: 35, dur: 3000 },
+  { cap: 55, dur: 3200 },
+  { cap: 70, dur: 2600 },
+  { cap: 82, dur: 2400 },
+  { cap: 92, dur: 2200 },
+  { cap: 99, dur: 3400 },
+];
+
+/** The instantaneous ceiling the displayed percentage is allowed to reach. */
+const ceilingAt = (elapsed: number) => {
+  let t0 = 0;
+  let prev = 0;
+  for (const ph of PROGRESS_PHASES) {
+    if (elapsed < t0 + ph.dur) {
+      const f = (elapsed - t0) / ph.dur;
+      const eased = 1 - Math.pow(1 - f, 2); // ease-out — slows toward the cap
+      return prev + (ph.cap - prev) * eased;
+    }
+    t0 += ph.dur;
+    prev = ph.cap;
+  }
+  return 99; // overran the schedule — hold at 99 until completion
+};
 
 /**
  * Diagnostic phases. These mirror what the analysis ACTUALLY does:
@@ -26,15 +66,64 @@ const steps = [
 ];
 
 interface LoadingStateProps {
-  /** Kept for API compatibility; the parent controls completion via real data. */
+  /** Fires once the percentage has finished animating to 100% (after `complete`). */
   onComplete?: () => void;
+  /** Flips true when the real analysis result has arrived — releases 99% → 100%. */
+  complete?: boolean;
   screenshotUrl?: string | null;
   domain?: string;
 }
 
-const LoadingState = ({ screenshotUrl, domain }: LoadingStateProps) => {
+const LoadingState = ({ screenshotUrl, domain, complete = false, onComplete }: LoadingStateProps) => {
   const [stepIndex, setStepIndex] = useState(0);
   const [scanLineY, setScanLineY] = useState(0);
+
+  // Live analysis percentage — starts at 0, climbs strictly one point at a
+  // time, never moves backwards, and only reaches 100 once `complete` is set.
+  const [pct, setPct] = useState(0);
+  const pctRef = useRef(0);
+  const startRef = useRef(0);
+  const lastIncRef = useRef(0);
+  const completeRef = useRef(false);
+  const doneRef = useRef(false);
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
+
+  useEffect(() => {
+    if (complete) completeRef.current = true;
+  }, [complete]);
+
+  useEffect(() => {
+    let raf = 0;
+    const loop = (now: number) => {
+      if (startRef.current === 0) {
+        startRef.current = now;
+        lastIncRef.current = now;
+      }
+      const elapsed = now - startRef.current;
+      // Ceiling caps at 99 until the backend confirms; then it opens to 100.
+      const ceiling = completeRef.current ? 100 : Math.min(99, Math.floor(ceilingAt(elapsed)));
+      const cur = pctRef.current;
+      if (cur < ceiling) {
+        const gap = ceiling - cur;
+        // Fast, even fill on completion; a gentle, slowing creep near a cap.
+        const interval = completeRef.current ? 16 : Math.min(300, Math.max(34, 260 / (gap + 0.5)));
+        if (now - lastIncRef.current >= interval) {
+          lastIncRef.current = now;
+          const next = cur + 1; // exactly one percentage point
+          pctRef.current = next;
+          setPct(next);
+          if (next >= 100 && !doneRef.current) {
+            doneRef.current = true;
+            onCompleteRef.current?.();
+          }
+        }
+      }
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   // Advance through phases on a calm cadence, then hold on the final step.
   useEffect(() => {
@@ -151,7 +240,7 @@ const LoadingState = ({ screenshotUrl, domain }: LoadingStateProps) => {
           transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-1 flex-col items-center gap-9 lg:items-start"
         >
-          <ScoreGauge value={0} scanning size={208} label="ANALYSERAR" />
+          <ScoreGauge value={0} scanning progress={pct} size={208} label="ANALYSERAR" />
 
           <div className="w-full max-w-xs">
             <p className="data-label mb-4 text-[0.72rem] text-muted-foreground/80">Diagnostik</p>

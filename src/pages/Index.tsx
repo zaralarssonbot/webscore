@@ -16,7 +16,7 @@ import Footer from "@/components/Footer";
 import LoadingState from "@/components/LoadingState";
 import ResultsSection from "@/components/ResultsSection";
 import LeadCaptureModal from "@/components/LeadCaptureModal";
-import { createScan, fetchScreenshot, fetchGoogleBusiness, runAnalysis, generateSummary, fetchRealCompetitors, type ScanResult, type GoogleBusinessData } from "@/lib/scan-service";
+import { createScan, fetchScreenshot, runAnalysis, generateSummary, fetchRealCompetitors, type ScanResult } from "@/lib/scan-service";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 
 type AppState = "hero" | "loading" | "results";
@@ -34,58 +34,63 @@ const Index = () => {
   const [analysisData, setAnalysisData] = useState<ScanResult | null>(null);
   const [screenshotUrl, setScreenshotUrl] = useState<string | null>(null);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
-  const [googleBusiness, setGoogleBusiness] = useState<GoogleBusinessData | null>(null);
-  // Deferred-enrichment flags: the score shows immediately; the AI summary and
-  // competitors stream in afterwards (skeletons shown while these are true).
-  const [aiLoading, setAiLoading] = useState(false);
-  const [competitorsLoading, setCompetitorsLoading] = useState(false);
+  // True once the COMPLETE report is assembled — releases the gauge 99→100 and
+  // reveals the fully-populated report (no streaming, no skeletons).
+  const [scanComplete, setScanComplete] = useState(false);
   const [bookingOpen, setBookingOpen] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
   const webTestRef = useRef<HTMLDivElement>(null);
 
-  const handleAnalyze = async (inputDomain: string) => {
+  const handleAnalyze = async (inputDomain: string, forceRefresh = false) => {
     setDomain(inputDomain);
     setState("loading");
+    setScanComplete(false);
     setScreenshotUrl(null);
     setAnalysisError(null);
-    setGoogleBusiness(null);
     window.scrollTo({ top: 0, behavior: "smooth" });
 
     try {
-      const [id, screenshot, gbp] = await Promise.all([
-        createScan(inputDomain),
-        fetchScreenshot(inputDomain),
-        fetchGoogleBusiness(inputDomain),
-      ]);
+      // The screenshot only enriches the LOADING preview — fire-and-forget so it
+      // never blocks or delays the report.
+      fetchScreenshot(inputDomain)
+        .then((s) => { if (s) setScreenshotUrl(s); })
+        .catch(() => {});
+
+      // Critical path — the score cannot exist without these.
+      const id = await createScan(inputDomain);
       setScanId(id);
-      if (screenshot) setScreenshotUrl(screenshot);
-      if (gbp?.found) setGoogleBusiness(gbp);
+      const result = await runAnalysis(id, inputDomain, { forceRefresh });
 
-      // Score phase — fast. Show the BETYG + checks as soon as it returns.
-      const result = await runAnalysis(id, inputDomain);
-      setAnalysisData(result);
-      setState("results");
+      // Enrichment — the report is revealed ONLY after ALL of this finishes, so
+      // the page opens fully populated: no streaming, no skeletons, no empty
+      // cards. A failure degrades gracefully (the section is simply hidden) and
+      // never blocks or aborts the core report.
+      const summary = await generateSummary(result, inputDomain).catch(() => null);
+      const competitors = summary
+        ? await fetchRealCompetitors(inputDomain, summary.industry, result.score).catch(() => null)
+        : null;
 
-      // Deferred enrichment — never blocks the score. Summary first (it yields
-      // the industry), then real competitors. Each fills in when ready.
-      setAiLoading(true);
-      setCompetitorsLoading(true);
-      generateSummary(result, inputDomain)
-        .then((text) => {
-          setAnalysisData((prev) => (prev ? { ...prev, ...text } : prev));
-          setAiLoading(false);
-          return fetchRealCompetitors(inputDomain, text.industry, result.score);
-        })
-        .then((comps) => {
-          if (comps && comps.length > 0) {
-            setAnalysisData((prev) => (prev ? { ...prev, nearbyCompetitors: comps } : prev));
-          }
-        })
-        .catch((e) => console.log("Deferred enrichment failed (score unaffected):", e))
-        .finally(() => {
-          setAiLoading(false);
-          setCompetitorsLoading(false);
-        });
+      // Assemble the COMPLETE report. The AI only fills prose fields; the
+      // deterministic engine's strengths/weaknesses/opportunity stay authoritative.
+      const complete: ScanResult = {
+        ...result,
+        ...(summary
+          ? {
+              summary: summary.summary,
+              biggestProblem: summary.biggestProblem,
+              businessImpact: summary.businessImpact,
+              quickFix: summary.quickFix,
+              industry: summary.industry,
+              businessSummary: summary.businessSummary,
+            }
+          : {}),
+        nearbyCompetitors: competitors && competitors.length > 0 ? competitors : undefined,
+      };
+      setAnalysisData(complete);
+
+      // Everything is ready — release the loader to 100 %, then reveal at once.
+      setScanComplete(true);
+      window.setTimeout(() => setState("results"), 1600);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Något gick fel.";
       setAnalysisError(message);
@@ -93,16 +98,19 @@ const Index = () => {
     }
   };
 
+  // Deliberate fresh measurement — bypasses the backend cache (rate-limited there).
+  const handleRefresh = () => {
+    if (domain && state !== "loading") handleAnalyze(domain, true);
+  };
+
   const handleReset = () => {
     setState("hero");
+    setScanComplete(false);
     setDomain("");
     setScanId(undefined);
     setAnalysisData(null);
     setScreenshotUrl(null);
     setAnalysisError(null);
-    setGoogleBusiness(null);
-    setAiLoading(false);
-    setCompetitorsLoading(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -149,7 +157,7 @@ const Index = () => {
 
         {state === "loading" && (
           <motion.div key="loading" exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-            <LoadingState onComplete={() => {}} screenshotUrl={screenshotUrl} domain={domain} />
+            <LoadingState complete={scanComplete} onComplete={() => setState("results")} screenshotUrl={screenshotUrl} domain={domain} />
           </motion.div>
         )}
 
@@ -161,7 +169,7 @@ const Index = () => {
             transition={{ duration: 0.5 }}
             className="pt-24"
           >
-            <ResultsSection domain={domain} data={analysisData} scanId={scanId} onNewScan={handleReset} googleBusiness={googleBusiness} aiLoading={aiLoading} competitorsLoading={competitorsLoading} />
+            <ResultsSection domain={domain} data={analysisData} scanId={scanId} onNewScan={handleReset} onRefresh={handleRefresh} />
             <Footer />
           </motion.div>
         )}
