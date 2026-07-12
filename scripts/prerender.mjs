@@ -46,7 +46,19 @@ async function run() {
   });
   const base = server.resolvedUrls.local[0].replace(/\/$/, "");
 
-  const browser = await chromium.launch();
+  // Launching Chromium is the one step that fails on hosts missing system libs
+  // (e.g. libnspr4.so). If it can't launch, warn and exit successfully — the
+  // built SPA is already complete and the deployment must not fail here.
+  let browser;
+  try {
+    browser = await chromium.launch();
+  } catch (launchErr) {
+    console.warn("⚠ Prerender: Chromium could not launch — skipping SEO prerender (SPA fallback used).");
+    console.warn("  Reason:", launchErr?.message ?? String(launchErr));
+    await new Promise((resolve) => server.httpServer.close(resolve));
+    process.exit(0);
+  }
+
   const snapshots = {};
 
   try {
@@ -91,10 +103,22 @@ async function run() {
   console.log(`\nPrerendered ${ROUTES.length} routes.`);
 }
 
+// Prerender is an OPTIONAL, build-time SEO enhancement. The SPA (dist/index.html
+// from `vite build`) is the production fallback and works fully without it, so a
+// prerender problem must NEVER fail the deployment. On Vercel the runtime lacks
+// the system libraries headless Chromium needs (e.g. libnspr4.so), so we skip it
+// there rather than crash — only the actual `vite build` may fail the build.
+if (process.env.VERCEL) {
+  console.warn("⚠ Prerender skipped on Vercel — the SPA build is used as-is (deployment unaffected).");
+  process.exit(0);
+}
+
 run().then(
   () => process.exit(0),
   (err) => {
-    console.error("Prerender failed:", err);
-    process.exit(1);
+    // Never fail the build here — `vite build` already succeeded; prerender is optional.
+    console.warn("⚠ Prerender step failed — continuing without prerendered snapshots (SPA build is intact).");
+    console.warn("  Reason:", err?.message ?? String(err));
+    process.exit(0);
   },
 );
