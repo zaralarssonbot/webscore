@@ -96,6 +96,7 @@ export async function fetchReport(reportId: string): Promise<ReportResult> {
       pageInfo: rd.pageInfo ?? undefined,
       pageSpeed: rd.pageSpeed ?? null,
       scoreBreakdown: rd.scoreBreakdown ?? undefined,
+      aiInsight: rd.aiInsight ?? undefined,
       measuredAt: data.measured_at ?? undefined,
       analysisVersion: data.analysis_version,
       scoringVersion: data.scoring_version,

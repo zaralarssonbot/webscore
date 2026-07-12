@@ -87,6 +87,7 @@ const Index = () => {
               quickFix: summary.quickFix,
               industry: summary.industry,
               businessSummary: summary.businessSummary,
+              aiInsight: summary.aiInsight,
             }
           : {}),
         nearbyCompetitors: competitors && competitors.length > 0 ? competitors : undefined,

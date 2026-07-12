@@ -1,6 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { buildFallbackAudit } from "./fallback.ts";
 import {
   extractSignals,
   runAuditChecks,
@@ -13,6 +12,15 @@ import {
   type PageSpeedLite,
   type CategoryScores,
 } from "./measurement.ts";
+import {
+  buildGroundedPrompt,
+  assembleInsight,
+  toFlatSummary,
+  AI_REPORT_VERSION,
+  PROMPT_VERSION,
+  type InsightContext,
+  type RawAi,
+} from "./ai-insight.ts";
 
 // AI model used for the text commentary. Change here to swap models later.
 const GEMINI_MODEL = "gemini-2.5-flash";
@@ -212,105 +220,43 @@ async function probeSSL(domain: string): Promise<boolean> {
 // ── AI prompt (text commentary ONLY — never touches the score) ─────
 // The score, category scores, pass/fail checks and recommendation order are all
 // computed deterministically BEFORE this runs. The AI only phrases the findings.
+// Only the short, structured signals the AI needs for industry framing — never
+// raw page body text (grounding: the prompt is built from checks, not HTML).
 type PromptSignals = {
-  title: string; metaDesc: string; h1: string; h2s: string[]; wordCount: number;
-  imgCount: number; imgAltCount: number; ctaCount: number; sectionCount: number;
-  trustSignalCount: number; lcpMs: number | null; textContentPreview: string;
+  title: string; metaDesc: string; h1: string; h2s: string[];
 };
 
-function buildPrompt(domain: string, signals: PromptSignals, scores: CategoryScores & { total: number }, checks: AuditCheck[]) {
-  const passedChecks = checks.filter((c) => c.passed).map((c) => `✅ ${c.label}: ${c.detail}`);
-  const failedChecks = checks.filter((c) => !c.passed).map((c) => `❌ ${c.label}: ${c.detail}`);
-
-  const system = `Du är en AI som analyserar företagshemsidor och förklarar prestanda i enkelt affärsspråk.
-
-Ditt mål är att hjälpa en företagare förstå:
-- Hur bra deras hemsida presterar
-- Vad som håller den tillbaka
-- Hur det påverkar deras förmåga att få kunder
-- Hur den kan förbättras
-
-Du får INTE använda teknisk jargong.
-Allt måste vara lätt att förstå inom sekunder.
-
-BETYGEN ÄR REDAN BERÄKNADE OCH FASTA – du får ALDRIG ändra, ifrågasätta eller räkna om dem:
-- SEO & Synlighet: ${scores.seo}/100
-- Konvertering: ${scores.conversion}/100
-- Förtroende: ${scores.trust}/100
-- Prestanda: ${scores.performance}/100
-- Säkerhet: ${scores.security}/100
-- Totalbetyg: ${scores.total}/100
-
-Du får ENDAST referera till de faktiska kontrollerna nedan. Hitta ALDRIG på siffror,
-mätvärden, konkurrenter eller fakta som inte finns i underlaget.
-
-TONREGLER:
-- Tydlig, modern, professionell, affärsfokuserad. Direkt men aldrig hård.
-
-VIKTIGT – Anpassa tonen baserat på betyg:
-${scores.total >= 85 ? "Betyget är HÖGT (85–100): Var mest positiv, nämn små förbättringar." : scores.total >= 55 ? "Betyget är MEDEL (55–84): Var balanserad men lyft verkliga problem." : "Betyget är LÅGT (0–54): Förklara tydligt problemen, visa att det begränsar kundtillväxten."}
-
-SPRÅKEXEMPEL:
-Istället för: "SEO-problem upptäckta" → Säg: "Du är svårare att hitta på Google än du borde vara"
-Istället för: "Låg konverteringsgrad" → Säg: "Besökare är mindre benägna att kontakta dig"
-Istället för: "Saknar meta-beskrivning" → Säg: "Google vet inte hur det ska beskriva din sida för sökare"
-
-MÅL: Få användaren att förstå att en bättre hemsida = mer synlighet, mer förtroende och fler kunder.`;
-
-  const user = `Analysera: ${domain}
-
-Sidtitel: "${signals.title}"
-Meta-beskrivning: "${signals.metaDesc}"
-H1: "${signals.h1}"
-H2:er: ${signals.h2s.join(", ") || "Inga"}
-Antal ord: ${signals.wordCount}
-Antal bilder: ${signals.imgCount} (${signals.imgAltCount} med alt-text)
-Antal CTA:er: ${signals.ctaCount}
-Antal sektioner: ${signals.sectionCount}
-Förtroendesignaler: ${signals.trustSignalCount}
-${signals.lcpMs != null ? `Laddtid (LCP, uppmätt av Google): ${(signals.lcpMs / 1000).toFixed(1)}s` : "Laddtid: kunde inte mätas"}
-
-GODKÄNDA kontroller:
-${passedChecks.join("\n")}
-
-UNDERKÄNDA kontroller:
-${failedChecks.join("\n")}
-
-Textutdrag: "${signals.textContentPreview.slice(0, 1500)}"
-
-Baserat på dessa verkliga fynd, skriv en analys som förklarar vad detta betyder för företaget i affärstermer. Anropa "website_audit". Alla textfält på svenska.`;
-
-  return { system, user };
-}
-
-// AI writes prose ONLY. No competitors, no scores, no measured numbers here —
-// those are all produced deterministically outside the model.
-const auditTool = {
+// AI writes PROSE ONLY, grounded in the measured checks. It never returns scores,
+// evidence ids (those are computed deterministically) or competitors.
+const insightTool = {
   type: "function" as const,
   function: {
-    name: "website_audit",
-    description: "Return plain-language business commentary for an already-scored website audit",
+    name: "website_insight",
+    description: "Return grounded, plain-language business commentary for an already-scored website analysis",
     parameters: {
       type: "object",
       properties: {
-        industry: { type: "string", description: "Identifierad bransch. På svenska." },
+        industry: { type: "string", description: "Identifierad bransch utifrån signalerna. På svenska." },
         business_summary: { type: "string", description: "Vad företaget gör, kort och tydligt. På svenska." },
-        overall_summary: { type: "string", description: "2-3 meningar som förklarar totalbetyget baserat på de konkreta fynden. Affärsspråk. På svenska." },
-        biggest_problem: { type: "string", description: "Det STÖRSTA enskilda problemet, förklarat i affärstermer. På svenska." },
-        weaknesses: { type: "array", items: { type: "string" }, description: "3-5 svagheter – referera till specifika underkända kontroller. På svenska." },
-        strengths: { type: "array", items: { type: "string" }, description: "2-4 styrkor – referera till specifika godkända kontroller. På svenska." },
-        business_impact: { type: "array", items: { type: "string" }, description: "3 korta meningar om hur bristerna påverkar företagets förmåga att få kunder. På svenska." },
-        biggest_opportunity: { type: "string", description: "Viktigaste förbättringen baserat på de underkända kontrollerna med högst impact. På svenska." },
-        quick_fix: { type: "string", description: "ETT konkret, enkelt åtgärdsförslag att göra direkt. På svenska." },
+        executive_summary: { type: "string", description: "2-3 meningar som förklarar totalbetyget utifrån de konkreta kontrollerna. På svenska." },
+        biggest_problem: { type: "string", description: "Det STÖRSTA enskilda problemet, förklarat i affärstermer, kopplat till en underkänd kontroll. På svenska." },
+        business_impact: { type: "array", items: { type: "string" }, description: "3 korta meningar om hur bristerna påverkar förmågan att få kunder. Ingen påhittad trafik/ranking/intäkt. På svenska." },
+        quick_fix: { type: "string", description: "ETT konkret, enkelt åtgärdsförslag kopplat till en underkänd kontroll. På svenska." },
+        strengths: { type: "array", items: { type: "string" }, description: "2-4 styrkor – referera till specifika GODKÄNDA kontroller. Ingen generisk beröm. På svenska." },
+        weaknesses: { type: "array", items: { type: "string" }, description: "3-5 svagheter – referera till specifika UNDERKÄNDA kontroller. På svenska." },
+        opportunity: { type: "string", description: "Viktigaste förbättringen utifrån de underkända kontrollerna med högst påverkan. På svenska." },
       },
-      required: ["industry", "business_summary", "overall_summary", "biggest_problem", "weaknesses", "strengths", "business_impact", "biggest_opportunity", "quick_fix"],
+      required: ["industry", "business_summary", "executive_summary", "biggest_problem", "business_impact", "quick_fix", "strengths", "weaknesses", "opportunity"],
       additionalProperties: false,
     },
   },
 };
 
-// Throws on any failure so the caller falls back to a templated summary.
-async function generateGeminiAudit(system: string, user: string): Promise<Record<string, unknown>> {
+type ToolDef = { type: "function"; function: { name: string; parameters: Record<string, unknown>; description?: string } };
+
+// Throws on any failure (timeout / non-2xx / malformed) so the caller can fall
+// back to a deterministic template. Parametrised by the tool to call.
+async function callGeminiTool(system: string, user: string, tool: ToolDef): Promise<Record<string, unknown>> {
   const apiKey = Deno.env.get("GEMINI_API_KEY");
   if (!apiKey) throw new Error("GEMINI_API_KEY is not configured");
 
@@ -328,8 +274,8 @@ async function generateGeminiAudit(system: string, user: string): Promise<Record
         body: JSON.stringify({
           model: GEMINI_MODEL,
           messages: [{ role: "system", content: system }, { role: "user", content: user }],
-          tools: [auditTool],
-          tool_choice: { type: "function", function: { name: "website_audit" } },
+          tools: [tool],
+          tool_choice: { type: "function", function: { name: tool.function.name } },
         }),
       });
     } catch (e) {
@@ -382,31 +328,64 @@ serve(async (req) => {
       if (!promptContext || !scores) return json({ error: "promptContext and scores are required for summary" }, 400);
 
       const safeChecks = Array.isArray(checks) ? checks : [];
-      const { system, user } = buildPrompt(domain, promptContext, scores, safeChecks);
 
-      let audit: Record<string, unknown>;
-      let aiGenerated = true;
+      // Sanitized analysis JSON only — checks + scores + short signals. No page
+      // body text, no secrets, no internal prompts.
+      const ctx: InsightContext = {
+        domain,
+        checks: safeChecks.map((c) => ({ id: c.id, label: c.label, category: c.category, passed: c.passed, detail: c.detail, impact: c.impact })),
+        categoryScores: { seo: scores.seo, conversion: scores.conversion, trust: scores.trust, performance: scores.performance, security: scores.security },
+        total: scores.total,
+        signals: { title: promptContext.title, metaDesc: promptContext.metaDesc, h1: promptContext.h1, h2s: promptContext.h2s },
+      };
+      const { system, user } = buildGroundedPrompt(ctx);
+
+      // Call Gemini; on ANY failure (timeout / non-2xx / malformed) raw stays null
+      // and assembleInsight produces a complete deterministic report instead.
+      let raw: RawAi | null = null;
+      let failureReason: string | undefined;
       const geminiStatus: SourceStatus = { ok: true };
       try {
-        audit = await generateGeminiAudit(system, user);
+        raw = (await callGeminiTool(system, user, insightTool)) as RawAi;
       } catch (aiErr) {
-        console.error("AI commentary failed — returning templated summary:", aiErr);
-        audit = buildFallbackAudit(domain, scores, safeChecks) as unknown as Record<string, unknown>;
-        aiGenerated = false;
+        const msg = aiErr instanceof Error ? aiErr.message : "unknown";
+        failureReason = /abort/i.test(msg) ? "gemini_timeout" : /JSON|Unexpected token|parse/i.test(msg) ? "malformed_json" : "gemini_error";
+        console.error("AI insight failed — using deterministic fallback:", msg);
         geminiStatus.ok = false;
-        geminiStatus.error = aiErr instanceof Error ? aiErr.message.slice(0, 160) : "unknown";
+        geminiStatus.error = msg.slice(0, 160);
       }
 
+      const baseMeta = {
+        aiReportVersion: AI_REPORT_VERSION, promptVersion: PROMPT_VERSION, model: GEMINI_MODEL,
+        analysisVersion: ANALYSIS_VERSION, scoringVersion: SCORING_VERSION,
+        reportId: (body.reportId as string | undefined) ?? null, createdAt: new Date().toISOString(),
+      };
+      const insight = assembleInsight(raw, ctx, baseMeta, failureReason);
+      const flat = toFlatSummary(insight);
+
+      // Append-only, VERSIONED persistence — never overwrite historical AI output.
       const dbStatus: SourceStatus = { ok: true };
       try {
         await supabase.from("ai_reports").insert({
-          scan_id: scanId,
-          industry: audit.industry,
-          // Honest: we cannot measure AI confidence. null when AI ran, 0 for the template.
-          industry_confidence: aiGenerated ? null : 0,
-          business_summary: audit.business_summary, overall_summary: audit.overall_summary,
-          final_score: scores.total, weaknesses_json: audit.weaknesses, strengths_json: audit.strengths,
-          biggest_opportunity: audit.biggest_opportunity,
+          scan_id: scanId ?? null,
+          industry: insight.industry,
+          industry_confidence: insight.meta.aiGenerated ? null : 0,
+          business_summary: insight.businessSummary,
+          overall_summary: insight.executiveSummary.text,
+          final_score: scores.total,
+          weaknesses_json: insight.weaknesses.items,
+          strengths_json: insight.strengths.items,
+          biggest_opportunity: insight.opportunity.text,
+          ai_report_version: insight.meta.aiReportVersion,
+          prompt_version: insight.meta.promptVersion,
+          model: insight.meta.model,
+          analysis_version: insight.meta.analysisVersion,
+          scoring_version: insight.meta.scoringVersion,
+          report_id: insight.meta.reportId,
+          ai_generated: insight.meta.aiGenerated,
+          fallback_reason: insight.meta.fallbackReason ?? null,
+          validation_errors: insight.meta.validationErrors,
+          insight,
         });
         if (scanId) await supabase.from("scans").update({ status: "complete" }).eq("id", scanId);
       } catch (e) {
@@ -417,16 +396,11 @@ serve(async (req) => {
 
       return json({
         scanId,
-        aiGenerated,
-        summary: audit.overall_summary,
-        biggestProblem: audit.biggest_problem,
-        weaknesses: audit.weaknesses,
-        strengths: audit.strengths,
-        opportunity: audit.biggest_opportunity,
-        businessImpact: audit.business_impact || [],
-        quickFix: audit.quick_fix,
-        industry: audit.industry,
-        businessSummary: audit.business_summary,
+        aiGenerated: insight.meta.aiGenerated,
+        ...flat,
+        aiInsight: insight,
+        validationErrors: insight.meta.validationErrors,
+        fallbackReason: insight.meta.fallbackReason ?? null,
         dataSources: { gemini: geminiStatus, db: dbStatus },
       });
     }
@@ -549,14 +523,10 @@ serve(async (req) => {
 
     await supabase.from("scans").update({ status: "ai_analysis" }).eq("id", scanId);
 
-    // Compact context the deferred summary phase needs (so it never re-crawls).
+    // Short structured signals the deferred AI step needs for industry framing —
+    // deliberately NO page body text (grounding: the prompt is built from checks).
     const promptContext: PromptSignals = {
       title: signals.title, metaDesc: signals.metaDesc, h1: signals.h1, h2s: signals.h2s,
-      wordCount: signals.wordCount, imgCount: signals.imgCount, imgAltCount: signals.imgAltCount,
-      ctaCount: signals.ctaCount, sectionCount: signals.sectionCount,
-      trustSignalCount: signals.trustSignalCount,
-      lcpMs: psiOk ? psi.lcp : null, // real measured LCP or null — never a guess
-      textContentPreview: signals.textContentPreview,
     };
 
     // The cacheable measurement. estimatedLoadTimeMs is the REAL LCP or null —

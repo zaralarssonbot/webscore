@@ -105,6 +105,38 @@ export interface PageInfo {
   estimatedLoadTimeMs?: number;
 }
 
+/** A grounded AI section: prose + the measured checks it is evidenced by. */
+export interface AiEvidenceText { text: string; evidenceCheckIds: string[] }
+export interface AiEvidenceList { items: string[]; evidenceCheckIds: string[] }
+
+export interface AiInsightMeta {
+  aiReportVersion: string;
+  promptVersion: string;
+  model: string;
+  analysisVersion: string;
+  scoringVersion: string;
+  reportId?: string | null;
+  aiGenerated: boolean;
+  fallbackReason?: string;
+  validationErrors: string[];
+  repairedSections?: string[];
+  createdAt?: string;
+}
+
+/** Structured, grounded AI insight — every section carries evidenceCheckIds. */
+export interface AiInsight {
+  industry: string;
+  businessSummary: string;
+  executiveSummary: AiEvidenceText;
+  biggestProblem: AiEvidenceText;
+  businessImpact: AiEvidenceList;
+  quickFix: AiEvidenceText;
+  strengths: AiEvidenceList;
+  weaknesses: AiEvidenceList;
+  opportunity: AiEvidenceText;
+  meta: AiInsightMeta;
+}
+
 export interface ScanResult {
   scanId: string;
   score: number;
@@ -136,6 +168,8 @@ export interface ScanResult {
   refreshRateLimited?: boolean;
   /** Compact signal context handed back to the deferred summary step (internal). */
   promptContext?: Record<string, unknown>;
+  /** Structured, grounded AI insight with per-section evidence (M3). */
+  aiInsight?: AiInsight;
 }
 
 /** The AI-generated text fields, filled in AFTER the score is shown. */
@@ -149,6 +183,8 @@ export interface SummaryResult {
   quickFix?: string;
   industry?: string;
   businessSummary?: string;
+  /** Structured grounded insight with evidence (M3). */
+  aiInsight?: AiInsight;
 }
 
 export async function createScan(rawDomain: string): Promise<string> {
@@ -321,6 +357,7 @@ export async function generateSummary(result: ScanResult, domain: string): Promi
     quickFix: data.quickFix,
     industry: data.industry,
     businessSummary: data.businessSummary,
+    aiInsight: data.aiInsight,
   };
 }
 

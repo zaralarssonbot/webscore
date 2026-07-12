@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import DecisionCard, { type DecisionCardProps } from "@/components/DecisionCard";
 import RoadmapCard from "@/components/RoadmapCard";
 import ScoreInfo from "@/components/ScoreInfo";
+import EvidenceDisclosure from "@/components/EvidenceDisclosure";
 import { prioritize, planRoadmap } from "@/lib/recommendation-engine";
 import { scoreColor } from "@/lib/score-color";
 import type { ScanResult } from "@/lib/scan-service";
@@ -203,6 +204,11 @@ const ResultsSection = ({ domain, data, scanId, onNewScan, onRefresh, shareUrl }
         {/* 1. Score + Summary (Insikt) */}
         <motion.div variants={fadeUp}>
           <ScoreBlock score={data.score} screenshotUrl={data.pageInfo?.screenshotUrl} domain={domain} categoryScores={data.categoryScores} summary={data.summary} />
+          {data.aiInsight?.executiveSummary?.evidenceCheckIds && (
+            <div className="mt-3 px-1">
+              <EvidenceDisclosure evidenceCheckIds={data.aiInsight.executiveSummary.evidenceCheckIds} checks={data.auditChecks} />
+            </div>
+          )}
         </motion.div>
 
         {/* THE DECISION — the single recommendation that leads everything below.
@@ -211,6 +217,11 @@ const ResultsSection = ({ domain, data, scanId, onNewScan, onRefresh, shareUrl }
         {data.biggestProblem && (
           <motion.div variants={fadeUp}>
             <DecisionCard {...buildDecision(data)} accentTier={scoreColor(data.score).tier} action={{ label: "Boka 20 min genomgång", onClick: handleBook }} />
+            {data.aiInsight?.biggestProblem?.evidenceCheckIds && (
+              <div className="mt-3 px-1">
+                <EvidenceDisclosure evidenceCheckIds={data.aiInsight.biggestProblem.evidenceCheckIds} checks={data.auditChecks} />
+              </div>
+            )}
           </motion.div>
         )}
 

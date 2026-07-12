@@ -105,6 +105,7 @@ serve(async (req) => {
       pageInfo: sanitizePageInfo(report.pageInfo as Record<string, unknown> | undefined | null),
       pageSpeed,
       scoreBreakdown: report.scoreBreakdown ?? null,
+      aiInsight: report.aiInsight ?? null,
       recommendations: report.recommendations ?? null,
       roadmap: report.roadmap ?? null,
       status,
