@@ -11,6 +11,7 @@ import RemediationFlow from "./RemediationFlow";
 import {
   ArrowRight, ArrowLeft, Globe, MapPin, Star, Mail,
   Clock, ShieldCheck, BarChart3, Users, Target, Search, MonitorSmartphone, ContactRound,
+  Link2, Check,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DecisionCard, { type DecisionCardProps } from "@/components/DecisionCard";
@@ -28,6 +29,8 @@ interface ResultsSectionProps {
   onNewScan?: () => void;
   /** Deliberate fresh measurement (bypasses the backend cache, rate-limited). */
   onRefresh?: () => void;
+  /** Permanent, shareable report URL. When present, shows "Kopiera rapportlänk". */
+  shareUrl?: string;
 }
 
 // The whole result layout appears at once; a very short stagger (≈12ms/card,
@@ -77,11 +80,31 @@ const buildDecision = (data: ScanResult): Omit<DecisionCardProps, "action"> => {
   };
 };
 
-const ResultsSection = ({ domain, data, scanId, onNewScan, onRefresh }: ResultsSectionProps) => {
+const ResultsSection = ({ domain, data, scanId, onNewScan, onRefresh, shareUrl }: ResultsSectionProps) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [remediationOpen, setRemediationOpen] = useState(false);
   const [emailModalOpen, setEmailModalOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyLink = async () => {
+    if (!shareUrl) return;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+    } catch {
+      // Clipboard API unavailable (old/insecure context) — select-free fallback.
+      const ta = document.createElement("textarea");
+      ta.value = shareUrl;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand("copy"); } catch { /* give up silently */ }
+      document.body.removeChild(ta);
+    }
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 2000);
+  };
 
   const openModal = (title: string) => {
     setModalTitle(title);
@@ -117,6 +140,17 @@ const ResultsSection = ({ domain, data, scanId, onNewScan, onRefresh }: ResultsS
             Resultat för <span className="font-mono text-foreground">{domain}</span>
           </span>
           <ScoreInfo label="Så fungerar analysrapporten" />
+          {shareUrl && (
+            <button
+              type="button"
+              onClick={handleCopyLink}
+              aria-label="Kopiera rapportlänk"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3.5 py-2 text-[0.72rem] text-muted-foreground hover:text-foreground hover:border-neon-cyan/30 transition-colors"
+            >
+              {copied ? <Check className="w-3.5 h-3.5 text-neon-cyan" /> : <Link2 className="w-3.5 h-3.5" />}
+              {copied ? "Kopierad!" : "Kopiera rapportlänk"}
+            </button>
+          )}
         </motion.div>
 
         {/* Measurement freshness + a restrained way to re-measure. */}

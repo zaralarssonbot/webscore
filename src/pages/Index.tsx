@@ -17,6 +17,7 @@ import LoadingState from "@/components/LoadingState";
 import ResultsSection from "@/components/ResultsSection";
 import LeadCaptureModal from "@/components/LeadCaptureModal";
 import { createScan, fetchScreenshot, runAnalysis, generateSummary, fetchRealCompetitors, type ScanResult } from "@/lib/scan-service";
+import { saveReport } from "@/lib/report-service";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 
 type AppState = "hero" | "loading" | "results";
@@ -38,8 +39,11 @@ const Index = () => {
   // reveals the fully-populated report (no streaming, no skeletons).
   const [scanComplete, setScanComplete] = useState(false);
   const [bookingOpen, setBookingOpen] = useState(false);
+  const [reportId, setReportId] = useState<string | null>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const webTestRef = useRef<HTMLDivElement>(null);
+
+  const shareUrl = reportId ? `${window.location.origin}/analys/${reportId}` : undefined;
 
   const handleAnalyze = async (inputDomain: string, forceRefresh = false) => {
     setDomain(inputDomain);
@@ -47,6 +51,7 @@ const Index = () => {
     setScanComplete(false);
     setScreenshotUrl(null);
     setAnalysisError(null);
+    setReportId(null);
     window.scrollTo({ top: 0, behavior: "smooth" });
 
     try {
@@ -88,6 +93,17 @@ const Index = () => {
       };
       setAnalysisData(complete);
 
+      // Persist the complete report → permanent shareable URL. Best-effort and
+      // non-blocking: the results still show even if saving fails. On success we
+      // update the browser URL to the report route (no navigation / re-run), so
+      // refreshing or sharing reopens the exact saved report.
+      saveReport(inputDomain, complete).then((id) => {
+        if (id) {
+          setReportId(id);
+          window.history.replaceState(null, "", `/analys/${id}`);
+        }
+      });
+
       // Everything is ready — release the loader to 100 %, then reveal at once.
       setScanComplete(true);
       window.setTimeout(() => setState("results"), 1600);
@@ -111,6 +127,11 @@ const Index = () => {
     setAnalysisData(null);
     setScreenshotUrl(null);
     setAnalysisError(null);
+    setReportId(null);
+    // Restore the home URL (the analysis updated it to /analys/:id).
+    if (window.location.pathname.startsWith("/analys/")) {
+      window.history.replaceState(null, "", "/");
+    }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -169,7 +190,7 @@ const Index = () => {
             transition={{ duration: 0.5 }}
             className="pt-24"
           >
-            <ResultsSection domain={domain} data={analysisData} scanId={scanId} onNewScan={handleReset} onRefresh={handleRefresh} />
+            <ResultsSection domain={domain} data={analysisData} scanId={scanId} onNewScan={handleReset} onRefresh={handleRefresh} shareUrl={shareUrl} />
             <Footer />
           </motion.div>
         )}
