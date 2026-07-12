@@ -16,27 +16,37 @@ const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
 /**
- * Render the branded report HTML to a PDF via a remote headless-Chromium
- * endpoint (Browserless-compatible `/pdf`, which runs page.pdf() server-side).
- * Supabase Edge Functions can't launch Chromium locally, so a browser-render
- * endpoint is configured via secrets. Returns the PDF bytes.
+ * Render the branded report HTML to a PDF using Cloudflare Browser Rendering
+ * (self-hosted within the Cloudflare/Supabase stack — no third-party service).
+ * Cloudflare runs headless Chromium page.pdf() server-side and returns the PDF
+ * bytes. Configured via CF_ACCOUNT_ID + CF_API_TOKEN function secrets.
  */
 async function renderPdfViaChromium(html: string, options: Record<string, unknown>): Promise<Uint8Array> {
-  const base = Deno.env.get("PDF_RENDER_URL");        // e.g. https://production-sfo.browserless.io/pdf
-  const token = Deno.env.get("PDF_RENDER_TOKEN") ?? "";
-  if (!base) throw new Error("pdf_renderer_not_configured");
-  const url = token ? `${base}${base.includes("?") ? "&" : "?"}token=${encodeURIComponent(token)}` : base;
+  const account = Deno.env.get("CF_ACCOUNT_ID");
+  const token = Deno.env.get("CF_API_TOKEN");
+  if (!account || !token) throw new Error("pdf_renderer_not_configured");
+
+  // Cloudflare's /pdf expects PDF options under `pdfOptions` and lowercase format.
+  const pdfOptions = { ...options, format: String(options.format ?? "a4").toLowerCase() };
+  const url = `https://api.cloudflare.com/client/v4/accounts/${account}/browser-rendering/pdf`;
 
   const resp = await fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ html, options }),
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ html, pdfOptions, gotoOptions: { waitUntil: "networkidle0" } }),
   });
-  if (!resp.ok) {
-    const detail = (await resp.text()).slice(0, 300);
+
+  // Success → application/pdf binary. Failure → non-2xx (or a JSON error body).
+  const ct = resp.headers.get("content-type") ?? "";
+  if (!resp.ok || ct.includes("application/json")) {
+    const detail = (await resp.text()).slice(0, 400);
     throw new Error(`render_failed_http_${resp.status}: ${detail}`);
   }
-  return new Uint8Array(await resp.arrayBuffer());
+  const bytes = new Uint8Array(await resp.arrayBuffer());
+  if (bytes.length < 5 || bytes[0] !== 0x25 /* % */) {
+    throw new Error("render_failed_not_pdf");
+  }
+  return bytes;
 }
 
 interface ReportRow {
@@ -129,7 +139,7 @@ serve(async (req) => {
     } catch (e) {
       const msg = e instanceof Error ? e.message : "render_error";
       if (msg === "pdf_renderer_not_configured") {
-        return json({ error: "pdf_renderer_not_configured", detail: "Set PDF_RENDER_URL (+ PDF_RENDER_TOKEN) to a Browserless-compatible /pdf endpoint." }, 503);
+        return json({ error: "pdf_renderer_not_configured", detail: "Set CF_ACCOUNT_ID + CF_API_TOKEN (Cloudflare Browser Rendering) as function secrets." }, 503);
       }
       return json({ error: "render_failed", detail: msg }, 502);
     }
