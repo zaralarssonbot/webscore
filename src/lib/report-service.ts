@@ -39,6 +39,23 @@ export async function saveReport(domain: string, result: ScanResult): Promise<st
   }
 }
 
+/**
+ * Request the branded PDF for a report. The render-pdf function renders the
+ * stored snapshot server-side and returns a short-lived signed URL. If a PDF
+ * already exists it is returned instantly without regeneration.
+ */
+export async function requestReportPdf(reportId: string): Promise<{ url: string } | { error: string }> {
+  try {
+    const { data, error } = await supabase.functions.invoke("render-pdf", { body: { reportId } });
+    if (error) return { error: error.message || "render_failed" };
+    if (data?.error) return { error: data.error as string };
+    if (data?.signedUrl) return { url: data.signedUrl as string };
+    return { error: "no_url" };
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "failed" };
+  }
+}
+
 export interface LoadedReport {
   report: ScanResult;
   domain: string;

@@ -7,8 +7,8 @@ import Footer from "@/components/Footer";
 import ResultsSection from "@/components/ResultsSection";
 import LeadCaptureModal from "@/components/LeadCaptureModal";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, ArrowLeft, Info } from "lucide-react";
-import { fetchReport, type ReportResult } from "@/lib/report-service";
+import { AlertTriangle, ArrowLeft, Info, FileDown, Loader2 } from "lucide-react";
+import { fetchReport, requestReportPdf, type ReportResult } from "@/lib/report-service";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 
 const SITE_ORIGIN = "https://webscore.se";
@@ -24,6 +24,26 @@ const ReportPage = () => {
   const navigate = useNavigate();
   const [result, setResult] = useState<ReportResult | "loading">("loading");
   const [bookingOpen, setBookingOpen] = useState(false);
+  const [pdfState, setPdfState] = useState<"idle" | "loading" | "error">("idle");
+  const [pdfError, setPdfError] = useState<string | null>(null);
+
+  const handleDownloadPdf = async () => {
+    if (!reportId || pdfState === "loading") return;
+    setPdfState("loading");
+    setPdfError(null);
+    const res = await requestReportPdf(reportId);
+    if ("url" in res) {
+      setPdfState("idle");
+      window.open(res.url, "_blank", "noopener");
+    } else {
+      setPdfState("error");
+      setPdfError(
+        res.error === "pdf_renderer_not_configured"
+          ? "PDF-tjänsten är inte aktiverad ännu. Försök igen senare."
+          : "Kunde inte skapa PDF just nu. Försök igen om en stund.",
+      );
+    }
+  };
 
   useEffect(() => {
     let active = true;
@@ -89,6 +109,13 @@ const ReportPage = () => {
 
         {found && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}>
+            <div className="max-w-5xl mx-auto px-4 mb-4 flex items-center justify-end gap-3">
+              {pdfError && <span className="text-[0.75rem] text-score-mid">{pdfError}</span>}
+              <Button variant="glow-outline" size="sm" onClick={handleDownloadPdf} disabled={pdfState === "loading"} className="gap-2">
+                {pdfState === "loading" ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileDown className="w-4 h-4" />}
+                {pdfState === "loading" ? "Skapar PDF…" : "Ladda ner PDF"}
+              </Button>
+            </div>
             {found.status === "partial" && (
               <div className="max-w-5xl mx-auto px-4 mb-4">
                 <div className="flex items-start gap-2.5 rounded-xl border border-score-mid/25 bg-score-mid/[0.06] px-4 py-3 text-[0.8rem] text-muted-foreground">
