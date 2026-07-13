@@ -6,13 +6,7 @@ import { Input } from "@/components/ui/input";
 import BackgroundEffect from "@/components/BackgroundEffect";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 import { useAuth } from "@/context/AuthContext";
-
-/** Only same-origin app paths are accepted as `next` (open-redirect guard). */
-function safeNext(raw: string | null): string {
-  if (!raw) return "/app";
-  if (!raw.startsWith("/") || raw.startsWith("//")) return "/app";
-  return raw;
-}
+import { safeNext } from "@/lib/account/redirect";
 
 export default function LoginPage() {
   useDocumentMeta({

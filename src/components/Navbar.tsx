@@ -5,6 +5,8 @@ import { Menu, X } from "lucide-react";
 import BrandMark from "./BrandMark";
 import Wordmark from "./Wordmark";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthContext";
+import { accountsEnabled } from "@/lib/account/limits";
 
 interface NavbarProps {
   onAnalyze?: () => void;
@@ -23,6 +25,8 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
+  const showAccounts = accountsEnabled();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -79,6 +83,15 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
                 <span className="absolute -bottom-1.5 left-0 right-0 h-px scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" style={{ background: "linear-gradient(90deg, hsl(var(--neon-cyan)), transparent)" }} />
               </a>
             ))}
+            {showAccounts && (
+              <a
+                href={user ? "/app" : "/login"}
+                onClick={(e) => { e.preventDefault(); navigate(user ? "/app" : "/login"); }}
+                className="data-label text-[0.74rem] text-muted-foreground/80 hover:text-foreground transition-colors cursor-pointer"
+              >
+                {user ? "Mitt konto" : "Logga in"}
+              </a>
+            )}
             <Button onClick={onAnalyze}>
               Analysera nu
             </Button>

@@ -7,9 +7,13 @@ import Footer from "@/components/Footer";
 import ResultsSection from "@/components/ResultsSection";
 import LeadCaptureModal from "@/components/LeadCaptureModal";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, ArrowLeft, Info, FileDown, Loader2 } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Info, FileDown, Loader2, Save } from "lucide-react";
+import { toast } from "sonner";
 import { fetchReport, requestReportPdf, type ReportResult } from "@/lib/report-service";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
+import { useAuth } from "@/context/AuthContext";
+import { accountsEnabled } from "@/lib/account/limits";
+import { claimReport } from "@/lib/account/claim";
 
 const SITE_ORIGIN = "https://webscore.se";
 
@@ -26,6 +30,19 @@ const ReportPage = () => {
   const [bookingOpen, setBookingOpen] = useState(false);
   const [pdfState, setPdfState] = useState<"idle" | "loading" | "error">("idle");
   const [pdfError, setPdfError] = useState<string | null>(null);
+  const { user } = useAuth();
+  const [claiming, setClaiming] = useState(false);
+
+  // M5 (flag-gated): save this anonymous report into the user's account.
+  const handleClaim = async () => {
+    if (!reportId) return;
+    if (!user) { navigate(`/login?claim=${reportId}&next=/app`); return; }
+    setClaiming(true);
+    const r = await claimReport(reportId);
+    setClaiming(false);
+    if (r.ok) { toast.success("Sparad i ditt konto"); navigate("/app"); }
+    else toast.error(r.error === "owned_by_other" ? "Rapporten tillhör redan ett annat konto." : "Kunde inte spara rapporten.");
+  };
 
   const handleDownloadPdf = async () => {
     if (!reportId || pdfState === "loading") return;
@@ -111,6 +128,12 @@ const ReportPage = () => {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}>
             <div className="max-w-5xl mx-auto px-4 mb-4 flex items-center justify-end gap-3">
               {pdfError && <span className="text-[0.75rem] text-score-mid">{pdfError}</span>}
+              {accountsEnabled() && (
+                <Button variant="glow-outline" size="sm" onClick={handleClaim} disabled={claiming} className="gap-2">
+                  {claiming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                  Spara i mitt konto
+                </Button>
+              )}
               <Button variant="glow-outline" size="sm" onClick={handleDownloadPdf} disabled={pdfState === "loading"} className="gap-2">
                 {pdfState === "loading" ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileDown className="w-4 h-4" />}
                 {pdfState === "loading" ? "Skapar PDF…" : "Ladda ner PDF"}

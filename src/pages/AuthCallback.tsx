@@ -3,14 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { claimReport } from "@/lib/account/claim";
+import { safeNext } from "@/lib/account/redirect";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
-
-/** Same-origin app path guard (mirrors LoginPage.safeNext). */
-function safeNext(raw: string | null): string {
-  if (!raw) return "/app";
-  if (!raw.startsWith("/") || raw.startsWith("//")) return "/app";
-  return raw;
-}
 
 /**
  * Handles the return from a magic link (implicit tokens in the URL hash, parsed
