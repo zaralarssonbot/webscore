@@ -9,7 +9,7 @@ create table if not exists public.plan_entitlements (
   history_days    integer,
   ai_level        text not null default 'fallback' check (ai_level in ('fallback','grounded')),
   monitoring      text not null default 'none' check (monitoring in ('none','weekly','daily')),
-  competitors_per_domain integer not null default 0,
+  competitors_per_domain integer,   -- null = unlimited (Enterprise); 0 = none (Free)
   support         text not null default 'community',
   pdf_watermark   boolean not null default true,
   seats           integer not null default 1,
