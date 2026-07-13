@@ -8,6 +8,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { json, preflight } from "../_shared/http.ts";
 import { serviceClient } from "../_shared/auth.ts";
 import { notify, scoreChangeThreshold } from "../_shared/notify.ts";
+import { resolveEntitlements } from "../_shared/entitlements.ts";
 import { canonicalDomain } from "../_shared/canonical-domain.ts";
 import {
   computeDeterministicScore, MIN_CHECKS,
@@ -38,6 +39,10 @@ serve(async (req) => {
     if (!domain) return json({ error: "not_found" }, 404);
     if (!domain.verified || !domain.monitoring_enabled) {
       return json({ error: "not_eligible" }, 409);
+    }
+    // M6: defensive plan gate (covers a downgrade after monitoring was enabled).
+    if ((await resolveEntitlements(svc, domain.user_id)).limits.monitoring === "none") {
+      return json({ error: "not_in_plan" }, 402);
     }
 
     const canonical = canonicalDomain(domain.normalized_domain);

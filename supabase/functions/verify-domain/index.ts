@@ -13,6 +13,8 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { json, preflight } from "../_shared/http.ts";
 import { serviceClient, getUserId, rateLimit, audit, hashIp } from "../_shared/auth.ts";
 import { notify } from "../_shared/notify.ts";
+// M6 additive: monitoring is a paid capability (Free plan monitoring='none').
+import { resolveEntitlements } from "../_shared/entitlements.ts";
 
 const METHODS = ["dns_txt", "meta_tag", "file"] as const;
 type Method = (typeof METHODS)[number];
@@ -84,7 +86,12 @@ serve(async (req) => {
       const { data: dom } = await svc.from("domains")
         .select("id, verified").eq("id", domainId).eq("user_id", uid).maybeSingle();
       if (!dom) return json({ error: "not_found" }, 404);
-      if (setMonitoring && !dom.verified) return json({ error: "not_verified" }, 409);
+      if (setMonitoring) {
+        if (!dom.verified) return json({ error: "not_verified" }, 409);
+        // M6: only plans with monitoring !== 'none' may enable it.
+        const ent = await resolveEntitlements(svc, uid);
+        if (ent.limits.monitoring === "none") return json({ error: "not_in_plan", metric: "monitoring" }, 402);
+      }
       await svc.from("domains").update({ monitoring_enabled: setMonitoring })
         .eq("id", domainId).eq("user_id", uid);
       return json({ ok: true, monitoring_enabled: setMonitoring });

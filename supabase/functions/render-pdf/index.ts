@@ -2,6 +2,9 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import QRCode from "https://esm.sh/qrcode@1.5.4";
 import { buildReportHtml, pdfRenderOptions, type ReportForPdf } from "./pdf-template.ts";
+// M6 additive: PDF monthly quota + Free-tier watermark (owner-based).
+import { getUserId } from "../_shared/auth.ts";
+import { resolveEntitlements, checkAndBumpUsage } from "../_shared/entitlements.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -105,7 +108,7 @@ serve(async (req) => {
     // Load ONLY the stored, immutable snapshot. Never trust client data.
     const { data: row, error } = await supabase
       .from("reports")
-      .select("id, normalized_domain, final_score, category_scores, status, analysis_version, scoring_version, report_data, measured_at, created_at, pdf_path, is_public, expires_at")
+      .select("id, normalized_domain, final_score, category_scores, status, analysis_version, scoring_version, report_data, measured_at, created_at, pdf_path, is_public, expires_at, user_id")
       .eq("id", reportId)
       .maybeSingle();
     if (error) return json({ error: "lookup_failed" }, 500);
@@ -122,6 +125,22 @@ serve(async (req) => {
       // If the object vanished, fall through and regenerate.
     }
 
+    // ── M6 additive: a NEW render is imminent (dedup returned above otherwise).
+    // For OWNED reports, apply the owner's watermark and enforce the caller's
+    // monthly PDF quota when the caller is the owner. Anonymous public reports
+    // (user_id=null) keep the frozen M4 behavior (no quota, no watermark).
+    const ownerId = (row as { user_id?: string | null }).user_id ?? null;
+    let watermark = false;
+    if (ownerId) {
+      const ownerEnt = await resolveEntitlements(supabase, ownerId);
+      watermark = !!ownerEnt.limits.pdf_watermark;
+      const callerId = await getUserId(req);
+      if (callerId && callerId === ownerId) {
+        const gate = await checkAndBumpUsage(supabase, callerId, "pdf_month", ownerEnt.limits.pdf_month);
+        if (!gate.allowed) return json({ error: "quota_exceeded", metric: "pdf_month", limit: gate.limit, used: gate.count }, 402);
+      }
+    }
+
     // Build the QR (points at the public report URL) + the branded HTML.
     const reportUrl = `https://webscore.se/analys/${reportId}`;
     const qrSvg: string = await QRCode.toString(reportUrl, {
@@ -129,7 +148,7 @@ serve(async (req) => {
     });
     const report = toReportForPdf(row as unknown as ReportRow);
     const dateStr = String(row.created_at ?? row.measured_at ?? "").slice(0, 10);
-    const html = buildReportHtml(report, { qrSvg });
+    const html = buildReportHtml(report, { qrSvg, watermark });
     const options = pdfRenderOptions(reportId, dateStr);
 
     // Render via headless Chromium.

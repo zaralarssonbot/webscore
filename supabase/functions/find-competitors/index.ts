@@ -1,4 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+// M6 additive: per-plan competitor cap for authenticated callers.
+import { getUserId, serviceClient } from "../_shared/auth.ts";
+import { resolveEntitlements } from "../_shared/entitlements.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -321,7 +324,18 @@ serve(async (req) => {
 
     // Rank by the internal quick score, then return only real signals.
     ranked.sort((a, b) => b.score - a.score);
-    const topCompetitors = ranked.slice(0, 3).map((r) => r.comp);
+    let topCompetitors = ranked.slice(0, 3).map((r) => r.comp);
+
+    // ── M6 additive: for AUTHENTICATED callers, cap competitors by plan
+    // (Free=0). Anonymous callers keep the frozen free public-report teaser.
+    const uid = await getUserId(req);
+    if (uid) {
+      try {
+        const cap = (await resolveEntitlements(serviceClient(), uid)).limits.competitors_per_domain;
+        if (cap === 0) topCompetitors = [];
+        else if (typeof cap === "number") topCompetitors = topCompetitors.slice(0, cap);
+      } catch { /* keep default on error */ }
+    }
 
     console.log(`Returning ${topCompetitors.length} verified competitors:`, topCompetitors.map(c => c.domain));
     return new Response(

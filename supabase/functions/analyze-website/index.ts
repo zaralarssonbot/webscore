@@ -1,5 +1,9 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+// M6 additive: gate grounded AI to paid plans (Free accounts get the
+// deterministic insight). Anonymous callers are unaffected.
+import { getUserId } from "../_shared/auth.ts";
+import { resolveEntitlements } from "../_shared/entitlements.ts";
 import {
   extractSignals,
   runAuditChecks,
@@ -340,13 +344,22 @@ serve(async (req) => {
       };
       const { system, user } = buildGroundedPrompt(ctx);
 
+      // M6: authenticated Free accounts get the deterministic insight (no Gemini).
+      // Anonymous callers and paid plans keep the full grounded AI.
+      let aiAllowed = true;
+      const suid = await getUserId(req);
+      if (suid) {
+        try { aiAllowed = (await resolveEntitlements(supabase, suid)).limits.ai_level === "grounded"; }
+        catch { aiAllowed = true; }
+      }
+
       // Call Gemini; on ANY failure (timeout / non-2xx / malformed) raw stays null
       // and assembleInsight produces a complete deterministic report instead.
       let raw: RawAi | null = null;
-      let failureReason: string | undefined;
+      let failureReason: string | undefined = aiAllowed ? undefined : "plan_fallback";
       const geminiStatus: SourceStatus = { ok: true };
       try {
-        raw = (await callGeminiTool(system, user, insightTool)) as RawAi;
+        if (aiAllowed) raw = (await callGeminiTool(system, user, insightTool)) as RawAi;
       } catch (aiErr) {
         const msg = aiErr instanceof Error ? aiErr.message : "unknown";
         failureReason = /abort/i.test(msg) ? "gemini_timeout" : /JSON|Unexpected token|parse/i.test(msg) ? "malformed_json" : "gemini_error";

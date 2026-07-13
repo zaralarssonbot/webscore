@@ -372,12 +372,18 @@ const STYLE = `
 `;
 
 /** Build the full premium report HTML from the immutable snapshot. */
-export function buildReportHtml(r: ReportForPdf, opts: { qrSvg: string }): string {
+// M6 additive: optional faint watermark for Free-tier PDFs. Default off → the
+// frozen M4 output is byte-identical when `watermark` is not passed.
+const WATERMARK = `<div style="position:fixed;inset:0;z-index:9999;pointer-events:none;display:flex;align-items:center;justify-content:center;">
+<div style="transform:rotate(-32deg);font:700 64px -apple-system,Segoe UI,Arial,sans-serif;color:rgba(255,255,255,0.06);letter-spacing:8px;white-space:nowrap;">WEBSCORE · FREE</div></div>`;
+
+export function buildReportHtml(r: ReportForPdf, opts: { qrSvg: string; watermark?: boolean }): string {
   return `<!DOCTYPE html><html lang="sv"><head><meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Webscore – ${esc(r.domain)} (${r.score}/100)</title>
 <style>${STYLE}</style></head>
 <body>
+${opts.watermark ? WATERMARK : ""}
 ${coverPage(r)}
 ${execSummaryPage(r)}
 ${breakdownPage(r)}

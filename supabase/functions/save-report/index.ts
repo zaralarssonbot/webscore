@@ -10,6 +10,8 @@ import {
 // present. Anonymous callers never touch this path — the M2 behavior is intact.
 import { getUserId } from "../_shared/auth.ts";
 import { notify, scoreChangeThreshold } from "../_shared/notify.ts";
+// M6 additive: monthly analysis quota for authenticated owners (anon unaffected).
+import { resolveEntitlements, checkAndBumpUsage } from "../_shared/entitlements.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -124,6 +126,17 @@ serve(async (req) => {
     // The user id comes ONLY from a verified JWT — never the request body.
     // Anonymous callers get ownerId=null and the original M2 path, unchanged.
     const ownerId = await getUserId(req);
+
+    // ── M6 additive: enforce the owner's monthly analysis quota. Anonymous
+    // callers (ownerId=null) never reach this — the M2 free flow is unchanged.
+    if (ownerId) {
+      const ent = await resolveEntitlements(supabase, ownerId);
+      const gate = await checkAndBumpUsage(supabase, ownerId, "analyses_month", ent.limits.analyses_month);
+      if (!gate.allowed) {
+        return json({ error: "quota_exceeded", metric: "analyses_month", limit: gate.limit, used: gate.count }, 402);
+      }
+    }
+
     let domainId: string | null = null;
     let prevScore: number | null = null;
     if (ownerId) {
