@@ -16,8 +16,15 @@ const GuideArticle = lazy(() => import("./pages/GuideArticle.tsx"));
 const Integritetspolicy = lazy(() => import("./pages/Integritetspolicy.tsx"));
 const ReportPage = lazy(() => import("./pages/ReportPage.tsx"));
 // M5 accounts (additive; ship dark behind VITE_ACCOUNTS_ENABLED).
+import ProtectedRoute from "./components/auth/ProtectedRoute.tsx";
 const LoginPage = lazy(() => import("./pages/LoginPage.tsx"));
 const AuthCallback = lazy(() => import("./pages/AuthCallback.tsx"));
+const AppLayout = lazy(() => import("./components/app/AppLayout.tsx"));
+const DashboardPage = lazy(() => import("./pages/app/DashboardPage.tsx"));
+const DomainsPage = lazy(() => import("./pages/app/DomainsPage.tsx"));
+const DomainDetailPage = lazy(() => import("./pages/app/DomainDetailPage.tsx"));
+const HistoryPage = lazy(() => import("./pages/app/HistoryPage.tsx"));
+const SettingsPage = lazy(() => import("./pages/app/SettingsPage.tsx"));
 
 const queryClient = new QueryClient();
 
@@ -41,6 +48,20 @@ const App = () => (
               {/* M5 accounts (additive) */}
               <Route path="/login" element={<LoginPage />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
+              <Route
+                path="/app"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<DashboardPage />} />
+                <Route path="domains" element={<DomainsPage />} />
+                <Route path="domains/:id" element={<DomainDetailPage />} />
+                <Route path="history" element={<HistoryPage />} />
+                <Route path="settings" element={<SettingsPage />} />
+              </Route>
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

@@ -25,7 +25,11 @@ export default defineConfig(() => ({
           if (!id.includes("node_modules")) return;
           if (id.includes("/three/") || id.includes("three/build")) return "vendor-three";
           if (id.includes("framer-motion") || id.includes("motion-dom") || id.includes("motion-utils")) return "vendor-motion";
-          if (id.includes("recharts") || id.includes("d3-")) return "vendor-charts";
+          // NOTE: recharts/d3 are intentionally NOT force-chunked. They are only
+          // used by lazy /app routes; letting them bundle into that async chunk
+          // (rather than a shared eager vendor chunk) avoids a cross-chunk React
+          // TDZ — recharts runs React.createContext at module load, which must
+          // not execute before the react vendor chunk initializes. See M5 notes.
           if (id.includes("@radix-ui")) return "vendor-radix";
           if (id.includes("react-router") || id.includes("react-dom") || id.includes("/react/") || id.includes("@tanstack")) return "vendor-react";
         },

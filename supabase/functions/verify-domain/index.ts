@@ -71,13 +71,28 @@ serve(async (req) => {
     const uid = await getUserId(req);
     if (!uid) return json({ error: "unauthorized" }, 401);
 
-    const { domainId, method, check } = (await req.json()) as
-      { domainId?: string; method?: Method; check?: boolean };
-    if (!domainId || !method || !METHODS.includes(method)) {
-      return json({ error: "domainId and a valid method are required" }, 400);
-    }
+    const { domainId, method, check, setMonitoring } = (await req.json()) as
+      { domainId?: string; method?: Method; check?: boolean; setMonitoring?: boolean };
+    if (!domainId) return json({ error: "domainId is required" }, 400);
 
     const svc = serviceClient();
+
+    // ── Monitoring toggle (the "result gate"). monitoring_enabled is a
+    // server-owned column; only this service-role path may set it, and only for
+    // an already-verified domain. §7.2, §15.6.
+    if (typeof setMonitoring === "boolean") {
+      const { data: dom } = await svc.from("domains")
+        .select("id, verified").eq("id", domainId).eq("user_id", uid).maybeSingle();
+      if (!dom) return json({ error: "not_found" }, 404);
+      if (setMonitoring && !dom.verified) return json({ error: "not_verified" }, 409);
+      await svc.from("domains").update({ monitoring_enabled: setMonitoring })
+        .eq("id", domainId).eq("user_id", uid);
+      return json({ ok: true, monitoring_enabled: setMonitoring });
+    }
+
+    if (!method || !METHODS.includes(method)) {
+      return json({ error: "a valid method is required" }, 400);
+    }
 
     if (!(await rateLimit(svc, `user:${uid}`, "verify", 10, 3_600_000))) {
       return json({ error: "rate_limited" }, 429);
