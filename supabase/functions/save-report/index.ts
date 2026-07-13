@@ -6,6 +6,10 @@ import {
   type AuditCheck,
   type PageSpeedLite,
 } from "../analyze-website/measurement.ts";
+// M5 additive: ownership + notifications. Used ONLY when a verified user JWT is
+// present. Anonymous callers never touch this path — the M2 behavior is intact.
+import { getUserId } from "../_shared/auth.ts";
+import { notify, scoreChangeThreshold } from "../_shared/notify.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -116,7 +120,32 @@ serve(async (req) => {
       fromCache,
     };
 
-    const { data: inserted, error } = await supabase.from("reports").insert({
+    // ── M5 additive: attach ownership when the caller is authenticated ──
+    // The user id comes ONLY from a verified JWT — never the request body.
+    // Anonymous callers get ownerId=null and the original M2 path, unchanged.
+    const ownerId = await getUserId(req);
+    let domainId: string | null = null;
+    let prevScore: number | null = null;
+    if (ownerId) {
+      try {
+        let dom = (await supabase.from("domains").select("id, latest_score")
+          .eq("user_id", ownerId).eq("normalized_domain", canonical).maybeSingle()).data as
+          { id: string; latest_score: number | null } | null;
+        if (!dom) {
+          // First analysis of this domain by this user → create the domain row.
+          // May be rejected by the 25-domain cap; if so we still save an owned
+          // report (linked by user_id, just without a domain_id).
+          const ins = await supabase.from("domains")
+            .insert({ user_id: ownerId, normalized_domain: canonical, display_name: canonical })
+            .select("id, latest_score").maybeSingle();
+          dom = (ins.data as typeof dom) ?? (await supabase.from("domains").select("id, latest_score")
+            .eq("user_id", ownerId).eq("normalized_domain", canonical).maybeSingle()).data as typeof dom;
+        }
+        if (dom) { domainId = dom.id; prevScore = dom.latest_score ?? null; }
+      } catch (e) { console.error("ownership resolve (non-fatal):", e); }
+    }
+
+    const insertRow: Record<string, unknown> = {
       normalized_domain: canonical,
       final_score: sr.total,
       category_scores: sr.categoryScores,
@@ -127,9 +156,39 @@ serve(async (req) => {
       report_data,
       is_public: true,
       measured_at: report.measuredAt ?? null,
-    }).select("id").single();
+    };
+    if (ownerId) { insertRow.user_id = ownerId; insertRow.domain_id = domainId; }
+
+    const { data: inserted, error } = await supabase.from("reports").insert(insertRow).select("id").single();
 
     if (error) throw error;
+
+    // ── M5 additive: denormalized domain fast-path + notifications ──
+    if (ownerId && domainId) {
+      try {
+        await supabase.from("domains").update({
+          latest_report_id: inserted.id,
+          latest_score: sr.total,
+          last_analyzed_at: new Date().toISOString(),
+        }).eq("id", domainId).eq("user_id", ownerId);
+
+        await notify(supabase, ownerId, "analysis_complete",
+          `Analys klar för ${canonical}`, `Ny poäng: ${sr.total}.`,
+          { report_id: inserted.id, domain_id: domainId, score: sr.total });
+
+        if (typeof prevScore === "number") {
+          const delta = sr.total - prevScore;
+          const threshold = await scoreChangeThreshold(supabase, ownerId);
+          if (Math.abs(delta) >= threshold) {
+            await notify(supabase, ownerId, "score_changed",
+              `Poängen ${delta > 0 ? "ökade" : "minskade"} för ${canonical}`,
+              `${prevScore} → ${sr.total} (${delta > 0 ? "+" : ""}${delta}).`,
+              { report_id: inserted.id, domain_id: domainId, prev: prevScore, next: sr.total, delta });
+          }
+        }
+      } catch (e) { console.error("ownership post-insert (non-fatal):", e); }
+    }
+
     return json({ reportId: inserted.id, status, score: sr.total });
   } catch (e) {
     console.error("save-report error:", e);
