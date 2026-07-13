@@ -10,15 +10,9 @@ import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 import { useAuth } from "@/context/AuthContext";
 import { useEntitlements } from "@/hooks/useEntitlements";
 import { billingEnabled } from "@/lib/account/limits";
-import { PLANS, type PlanId, type PlanDef } from "@/lib/billing/plans";
+import { PLANS, type PlanId } from "@/lib/billing/plans";
 import { startCheckout } from "@/lib/billing/billing-service";
-
-function priceLabel(p: PlanDef, interval: "month" | "year"): { big: string; sub: string } {
-  if (p.monthly === null) return { big: "Offert", sub: "kontakta oss" };
-  if (p.monthly === 0) return { big: "0 kr", sub: "för alltid" };
-  if (interval === "year" && p.annual) return { big: `${Math.round(p.annual / 12)} kr`, sub: "/mån · faktureras årsvis" };
-  return { big: `${p.monthly} kr`, sub: "/mån · exkl. moms" };
-}
+import { formatPrice } from "@/lib/billing/billing-utils";
 
 export default function Plans() {
   useDocumentMeta({
@@ -63,7 +57,7 @@ export default function Plans() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           {PLANS.map((p) => {
-            const price = priceLabel(p, interval);
+            const price = formatPrice(p, interval);
             const current = ent?.plan === p.id;
             return (
               <div key={p.id}

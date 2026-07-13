@@ -42,8 +42,5 @@ export async function getEntitlements(): Promise<Entitlements | null> {
   }
 }
 
-/** ISO lower bound for history/trend visibility given a plan's retention (null = unlimited). */
-export function retentionSince(historyDays: number | null | undefined): string | null {
-  if (historyDays == null) return null;
-  return new Date(Date.now() - historyDays * 86_400_000).toISOString();
-}
+// Re-exported from the pure (testable) helpers module.
+export { retentionSince } from "./billing-utils";
