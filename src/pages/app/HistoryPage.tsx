@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 import { useAuth } from "@/context/AuthContext";
+import { useEntitlements } from "@/hooks/useEntitlements";
+import { retentionSince } from "@/lib/billing/entitlements-service";
 import { listDomains } from "@/lib/account/domain-service";
 import type { HistoryFilters } from "@/lib/account/history-service";
 import ReportTimeline from "@/components/app/ReportTimeline";
@@ -20,11 +22,14 @@ export default function HistoryPage() {
     queryFn: () => listDomains(true),
     enabled: !!user,
   });
+  const { data: ent } = useEntitlements();
 
   const filters: HistoryFilters = {
     domainId: domainId || undefined,
     status: status === "all" ? undefined : status,
     hasPdf: hasPdf || undefined,
+    // M6: history retention — Free sees the last 30 days; higher plans unlimited.
+    from: retentionSince(ent?.limits.history_days) ?? undefined,
   };
 
   const selectCls = "h-9 rounded-lg border border-border bg-white/5 px-3 text-sm";

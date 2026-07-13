@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { NavLink, Outlet, useNavigate, Link } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
-import { LayoutDashboard, Globe, History, Settings, LogOut, Menu, X } from "lucide-react";
+import { LayoutDashboard, Globe, History, Settings, LogOut, Menu, X, CreditCard } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,13 +11,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/context/AuthContext";
+import { billingEnabled } from "@/lib/account/limits";
 import GlobalSearch from "./GlobalSearch";
 import NotificationsBell from "./NotificationsBell";
+import SubscriptionBanner from "./SubscriptionBanner";
 
 const NAV = [
   { to: "/app", label: "Översikt", icon: LayoutDashboard, end: true },
   { to: "/app/domains", label: "Domäner", icon: Globe, end: false },
   { to: "/app/history", label: "Historik", icon: History, end: false },
+  ...(billingEnabled() ? [{ to: "/app/billing", label: "Fakturering", icon: CreditCard, end: false }] : []),
   { to: "/app/settings", label: "Inställningar", icon: Settings, end: false },
 ];
 
@@ -126,7 +129,8 @@ export default function AppLayout() {
           </div>
         </header>
 
-        <main className="flex-1 min-w-0 p-4 md:p-8 max-w-6xl w-full mx-auto">
+        <main className="flex-1 min-w-0 p-4 md:p-8 max-w-6xl w-full mx-auto space-y-4">
+          <SubscriptionBanner />
           <Outlet />
         </main>
       </div>

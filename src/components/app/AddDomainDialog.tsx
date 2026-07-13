@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { addDomain } from "@/lib/account/domain-service";
 import { analyzeAndSave } from "@/lib/account/analyze";
+import { billingEnabled } from "@/lib/account/limits";
+import UpgradeDialog from "./UpgradeDialog";
 
 export default function AddDomainDialog({
   open,
@@ -23,14 +25,20 @@ export default function AddDomainDialog({
   const [value, setValue] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
 
   const submit = async (analyzeNow: boolean) => {
     if (!user) return;
     setError("");
     setBusy(true);
-    const { domain, error: addErr } = await addDomain(user.id, value);
+    const { domain, error: addErr, limitReached } = await addDomain(user.id, value);
     if (addErr || !domain) {
       setBusy(false);
+      if (limitReached && billingEnabled()) {
+        onOpenChange(false);
+        setUpgradeOpen(true);
+        return;
+      }
       setError(addErr ?? "Kunde inte lägga till domänen.");
       return;
     }
@@ -55,6 +63,7 @@ export default function AddDomainDialog({
   };
 
   return (
+    <>
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
@@ -87,5 +96,7 @@ export default function AddDomainDialog({
         </form>
       </DialogContent>
     </Dialog>
+    <UpgradeDialog open={upgradeOpen} onOpenChange={setUpgradeOpen} metric="domains_active" />
+    </>
   );
 }

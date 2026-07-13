@@ -25,6 +25,9 @@ const DomainsPage = lazy(() => import("./pages/app/DomainsPage.tsx"));
 const DomainDetailPage = lazy(() => import("./pages/app/DomainDetailPage.tsx"));
 const HistoryPage = lazy(() => import("./pages/app/HistoryPage.tsx"));
 const SettingsPage = lazy(() => import("./pages/app/SettingsPage.tsx"));
+// M6 billing (additive; ships dark behind VITE_BILLING_ENABLED).
+const Plans = lazy(() => import("./pages/Plans.tsx"));
+const BillingPage = lazy(() => import("./pages/app/BillingPage.tsx"));
 
 const queryClient = new QueryClient();
 
@@ -48,6 +51,7 @@ const App = () => (
               {/* M5 accounts (additive) */}
               <Route path="/login" element={<LoginPage />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
+              <Route path="/plans" element={<Plans />} />
               <Route
                 path="/app"
                 element={
@@ -60,6 +64,7 @@ const App = () => (
                 <Route path="domains" element={<DomainsPage />} />
                 <Route path="domains/:id" element={<DomainDetailPage />} />
                 <Route path="history" element={<HistoryPage />} />
+                <Route path="billing" element={<BillingPage />} />
                 <Route path="settings" element={<SettingsPage />} />
               </Route>
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

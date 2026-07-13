@@ -9,6 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { scoreColor } from "@/lib/score-color";
 import ScoreGauge from "@/components/ScoreGauge";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
+import { useEntitlements } from "@/hooks/useEntitlements";
+import { retentionSince } from "@/lib/billing/entitlements-service";
 import { getDomain, updateDomain, setPrimaryDomain } from "@/lib/account/domain-service";
 import { listReports } from "@/lib/account/history-service";
 import { analyzeAndSave } from "@/lib/account/analyze";
@@ -34,6 +36,7 @@ export default function DomainDetailPage() {
     queryFn: async () => (await listReports({ domainId: id }, null, 1)).items[0] ?? null,
     enabled: !!id,
   });
+  const { data: ent } = useEntitlements();
 
   useDocumentMeta({ title: domain ? `${domain.normalized_domain} – Webscore` : "Domän – Webscore", noindex: true });
 
@@ -143,7 +146,7 @@ export default function DomainDetailPage() {
         </TabsContent>
 
         <TabsContent value="history" className="mt-6">
-          <ReportTimeline filters={{ domainId: domain.id }} />
+          <ReportTimeline filters={{ domainId: domain.id, from: retentionSince(ent?.limits.history_days) ?? undefined }} />
         </TabsContent>
 
         <TabsContent value="settings" className="mt-6 space-y-4">

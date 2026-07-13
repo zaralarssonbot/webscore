@@ -1,7 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { validateDomain } from "@/lib/domain";
 import type { Domain, VerificationMethod } from "./types";
-import { MAX_DOMAINS_PER_USER } from "./limits";
 
 // The account tables are not in the generated Database type (same convention as
 // `reports`), so we cast the loosely-typed query results to our domain models.
@@ -34,7 +33,7 @@ export async function getDomain(id: string): Promise<Domain | null> {
 export async function addDomain(
   userId: string,
   input: string,
-): Promise<{ domain?: Domain; error?: string }> {
+): Promise<{ domain?: Domain; error?: string; limitReached?: boolean }> {
   const v = validateDomain(input);
   if (!v.valid || !v.normalized) return { error: v.error ?? "Ogiltig domän." };
   const { data, error } = await db
@@ -44,8 +43,9 @@ export async function addDomain(
     .maybeSingle();
   if (error) {
     if (error.code === "23505") return { error: "Domänen finns redan i ditt konto." };
-    if (/domain_limit_reached/i.test(error.message ?? "")) {
-      return { error: `Du har nått gränsen på ${MAX_DOMAINS_PER_USER} aktiva domäner.` };
+    // The DB trigger enforces the plan cap (Free 3 / Pro 10 / Business 50 / ∞).
+    if (/domain_limit_reached/i.test(error.message ?? "") || /domain_limit_reached/i.test(error.hint ?? "")) {
+      return { error: error.hint || "Du har nått din gräns för antal domäner.", limitReached: true };
     }
     console.error("[domain-service] addDomain:", error);
     return { error: "Kunde inte lägga till domänen." };
