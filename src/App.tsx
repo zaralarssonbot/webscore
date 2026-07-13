@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import { AuthProvider } from "./context/AuthContext.tsx";
 
 const Admin = lazy(() => import("./pages/Admin.tsx"));
 const Pricing = lazy(() => import("./pages/Pricing.tsx"));
@@ -14,6 +15,9 @@ const GuidesIndex = lazy(() => import("./pages/GuidesIndex.tsx"));
 const GuideArticle = lazy(() => import("./pages/GuideArticle.tsx"));
 const Integritetspolicy = lazy(() => import("./pages/Integritetspolicy.tsx"));
 const ReportPage = lazy(() => import("./pages/ReportPage.tsx"));
+// M5 accounts (additive; ship dark behind VITE_ACCOUNTS_ENABLED).
+const LoginPage = lazy(() => import("./pages/LoginPage.tsx"));
+const AuthCallback = lazy(() => import("./pages/AuthCallback.tsx"));
 
 const queryClient = new QueryClient();
 
@@ -23,20 +27,25 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Suspense fallback={<div className="min-h-screen bg-background" />}>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/tjanster/:slug" element={<ServicePage />} />
-            <Route path="/guider" element={<GuidesIndex />} />
-            <Route path="/guider/:slug" element={<GuideArticle />} />
-            <Route path="/integritetspolicy" element={<Integritetspolicy />} />
-            <Route path="/analys/:reportId" element={<ReportPage />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
+        <AuthProvider>
+          <Suspense fallback={<div className="min-h-screen bg-background" />}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/tjanster/:slug" element={<ServicePage />} />
+              <Route path="/guider" element={<GuidesIndex />} />
+              <Route path="/guider/:slug" element={<GuideArticle />} />
+              <Route path="/integritetspolicy" element={<Integritetspolicy />} />
+              <Route path="/analys/:reportId" element={<ReportPage />} />
+              {/* M5 accounts (additive) */}
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
