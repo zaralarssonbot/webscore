@@ -70,8 +70,10 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
             <Wordmark className="text-xl sm:text-2xl" />
           </a>
 
-          {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-9">
+          {/* Desktop nav — only from lg (1024px). Below that the logo, the four
+              links, the account link and the CTA cannot fit on one line: at
+              768–1023px they collided with the wordmark and wrapped. */}
+          <div className="hidden lg:flex items-center gap-9">
             {links.map((l) => (
               <a
                 key={l.href}
@@ -102,7 +104,7 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
             onClick={() => setOpen(!open)}
             aria-label={open ? "Stäng meny" : "Öppna meny"}
             aria-expanded={open}
-            className="md:hidden inline-flex items-center justify-center w-11 h-11 -mr-2 text-muted-foreground hover:text-foreground transition-colors"
+            className="lg:hidden inline-flex items-center justify-center w-11 h-11 -mr-2 text-muted-foreground hover:text-foreground transition-colors"
           >
             {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -113,13 +115,24 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="md:hidden rounded-xl p-4 mb-4 space-y-1 border border-border bg-card/95 backdrop-blur-xl shadow-lg"
+            className="lg:hidden rounded-xl p-4 mb-4 space-y-1 border border-border bg-card/95 backdrop-blur-xl shadow-lg"
           >
             {links.map((l) => (
               <a key={l.href} href={l.href} onClick={(e) => handleNav(e, l.href)} className="flex items-center min-h-[44px] px-2 -mx-2 rounded-lg data-label text-[0.74rem] text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer">
                 {l.label}
               </a>
             ))}
+            {/* Same account entry point as the desktop nav — it used to be desktop-only,
+                so on phones there was no way to reach /login or /app. */}
+            {showAccounts && (
+              <a
+                href={user ? "/app" : "/login"}
+                onClick={(e) => { e.preventDefault(); setOpen(false); navigate(user ? "/app" : "/login"); }}
+                className="flex items-center min-h-[44px] px-2 -mx-2 rounded-lg data-label text-[0.74rem] text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
+              >
+                {user ? "Mitt konto" : "Logga in"}
+              </a>
+            )}
             <Button onClick={() => { setOpen(false); onAnalyze?.(); }} className="w-full mt-2">
               Analysera nu
             </Button>

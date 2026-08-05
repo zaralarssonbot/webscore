@@ -1,7 +1,15 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useRef, useState } from "react";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X, ArrowRight, Loader2, Hash, Search, Building2, User, Phone, MapPin, Shield, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogDescription,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { submitLead } from "@/lib/scan-service";
 import { markBookingClicked } from "@/lib/lead-service";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,6 +23,9 @@ const leadSchema = z.object({
   phone: z.string().trim().min(5, "Telefonnummer krävs").max(30),
   company: z.string().trim().min(1, "Företagsnamn krävs").max(200),
 });
+
+/** Field order = the order the inputs appear in, so we can focus the first failure. */
+const FIELD_ORDER = ["orgNumber", "company", "name", "email", "phone"] as const;
 
 interface AnalysisContext {
   domain?: string;
@@ -44,6 +55,11 @@ const LeadCaptureModal = ({ open, onClose, scanId, title = "Boka gratis analys",
   const [lookupLoading, setLookupLoading] = useState(false);
   const [lookupDone, setLookupDone] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const formRef = useRef<HTMLFormElement>(null);
+  // The dialog is opened by an external `open` prop rather than a DialogTrigger,
+  // so Radix has no trigger to hand focus back to on close. Capture whatever was
+  // focused just before focus moves into the dialog, and restore it ourselves.
+  const triggerRef = useRef<HTMLElement | null>(null);
   const { toast } = useToast();
 
   const handleClose = () => {
@@ -59,6 +75,12 @@ const LeadCaptureModal = ({ open, onClose, scanId, title = "Boka gratis analys",
       setErrors({});
       setLookupDone(false);
     }, 300);
+  };
+
+  /** Move the caret to the first field that failed, so a rejection is never silent. */
+  const focusFirstError = (fieldErrors: Record<string, string>) => {
+    const first = FIELD_ORDER.find((f) => fieldErrors[f]);
+    if (first) formRef.current?.querySelector<HTMLInputElement>(`#lead-${first}`)?.focus();
   };
 
   const handleOrgLookup = async () => {
@@ -109,6 +131,7 @@ const LeadCaptureModal = ({ open, onClose, scanId, title = "Boka gratis analys",
         if (err.path[0]) fieldErrors[err.path[0] as string] = err.message;
       });
       setErrors(fieldErrors);
+      focusFirstError(fieldErrors);
       return;
     }
 
@@ -143,166 +166,193 @@ const LeadCaptureModal = ({ open, onClose, scanId, title = "Boka gratis analys",
 
   const inputClass = "w-full bg-secondary/20 border border-border/20 rounded-xl px-4 py-3.5 text-foreground placeholder:text-muted-foreground/80 outline-none focus:border-primary/40 transition-colors text-sm";
   const iconInputClass = "w-full bg-secondary/20 border border-border/20 rounded-xl pl-11 pr-4 py-3.5 text-foreground placeholder:text-muted-foreground/80 outline-none focus:border-primary/40 transition-colors text-sm";
+  const labelClass = "text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block";
+
+  /** Error text + the wiring that makes it announceable and reachable. */
+  const errorProps = (field: string) =>
+    errors[field]
+      ? { "aria-invalid": true as const, "aria-describedby": `lead-${field}-error` }
+      : {};
+  const FieldError = ({ field }: { field: string }) =>
+    errors[field] ? (
+      <p id={`lead-${field}-error`} className="text-score-low text-xs mt-1">
+        {errors[field]}
+      </p>
+    ) : null;
+
+  const errorCount = Object.keys(errors).length;
 
   return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto py-8 px-4"
-          onClick={handleClose}
+    <Dialog open={open} onOpenChange={(next) => { if (!next) handleClose(); }}>
+      <DialogPortal>
+        {/* Same veil as before: light haze + blur, not the shared black overlay. */}
+        <DialogOverlay className="bg-foreground/40 backdrop-blur-sm" />
+        <DialogPrimitive.Content
+          aria-modal="true"
+          // Fires before focus moves in, so activeElement is still the trigger.
+          onOpenAutoFocus={() => {
+            const active = document.activeElement;
+            triggerRef.current = active instanceof HTMLElement ? active : null;
+          }}
+          onCloseAutoFocus={(e) => {
+            e.preventDefault();
+            triggerRef.current?.focus();
+          }}
+          className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 max-h-[calc(100dvh-3rem)] overflow-y-auto rounded-3xl border border-neon-cyan/15 bg-card/90 p-8 sm:p-10 shadow-2xl backdrop-blur-xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
         >
-          <div className="absolute inset-0 bg-foreground/40 backdrop-blur-sm" />
-          <motion.div
-            initial={{ scale: 0.95, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative rounded-3xl border border-neon-cyan/15 bg-card/90 backdrop-blur-xl shadow-2xl p-8 sm:p-10 max-w-md w-full my-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <DialogClose asChild>
             <button
-              onClick={handleClose}
+              type="button"
               className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
             >
               <X className="w-5 h-5" />
+              <span className="sr-only">Stäng</span>
             </button>
+          </DialogClose>
 
-            <h2 className="text-2xl font-bold mb-1 font-display">{title}</h2>
-            <p className="text-muted-foreground text-sm mb-6 font-light">
-              Ange ditt organisationsnummer så hämtar vi företagsuppgifterna automatiskt.
-            </p>
+          <DialogTitle className="text-2xl font-bold mb-1 font-display tracking-[-0.02em] leading-tight">{title}</DialogTitle>
+          <DialogDescription className="text-muted-foreground text-sm mb-6 font-light">
+            Ange ditt organisationsnummer så hämtar vi företagsuppgifterna automatiskt – eller fyll i uppgifterna själv.
+          </DialogDescription>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Org number with lookup */}
-              <div>
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">Organisationsnummer</label>
-                <div className="flex gap-2">
-                  <div className="relative flex-1">
-                    <Hash className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" />
-                    <input
-                      type="text"
-                      placeholder="XXXXXX-XXXX"
-                      value={orgNumber}
-                      onChange={(e) => { setOrgNumber(e.target.value); setLookupDone(false); }}
-                      className={iconInputClass + " font-mono"}
-                      maxLength={13}
-                    />
-                  </div>
-                  <Button
-                    type="button"
-                    onClick={handleOrgLookup}
-                    disabled={lookupLoading || orgNumber.replace(/[\s-]/g, '').length < 10}
-                    className="rounded-xl px-5 shrink-0"
-                    variant={lookupDone ? "outline" : "default"}
-                  >
-                    {lookupLoading ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : lookupDone ? (
-                      <Check className="w-4 h-4 text-primary" />
-                    ) : (
-                      <>
-                        <Search className="w-4 h-4" />
-                        Sök
-                      </>
-                    )}
-                  </Button>
-                </div>
-                {errors.orgNumber && <p className="text-score-low text-xs mt-1">{errors.orgNumber}</p>}
-              </div>
-
-              {/* Company info - shown after lookup or manually */}
-              <AnimatePresence>
-                {(lookupDone || company) && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="space-y-4 overflow-hidden"
-                  >
-                    {/* Company name */}
-                    <div>
-                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">Företagsnamn</label>
-                      <div className="relative">
-                        <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" />
-                        <input type="text" value={company} onChange={(e) => setCompany(e.target.value)} className={iconInputClass} placeholder="Företagsnamn" maxLength={200} />
-                      </div>
-                      {errors.company && <p className="text-score-low text-xs mt-1">{errors.company}</p>}
-                    </div>
-
-                    {/* Address */}
-                    {address && (
-                      <div>
-                        <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">Adress</label>
-                        <div className="relative">
-                          <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" />
-                          <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className={iconInputClass} placeholder="Adress" />
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Signatory */}
-                    {signatory && (
-                      <div>
-                        <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">Firmatecknare</label>
-                        <div className="relative">
-                          <Shield className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" />
-                          <input type="text" value={signatory} onChange={(e) => setSignatory(e.target.value)} className={iconInputClass} readOnly />
-                        </div>
-                      </div>
-                    )}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {/* Contact person */}
-              <div>
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">Kontaktperson</label>
-                <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" />
-                  <input type="text" placeholder="Ditt namn" value={name} onChange={(e) => setName(e.target.value)} className={iconInputClass} maxLength={100} />
-                </div>
-                {errors.name && <p className="text-score-low text-xs mt-1">{errors.name}</p>}
-              </div>
-
-              {/* Email */}
-              <div>
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">E-postadress</label>
-                <input type="email" placeholder="E-postadress" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} maxLength={255} />
-                {errors.email && <p className="text-score-low text-xs mt-1">{errors.email}</p>}
-              </div>
-
-              {/* Phone */}
-              <div>
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1.5 block">Telefonnummer</label>
-                <div className="relative">
-                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" />
-                  <input type="tel" placeholder="Telefonnummer" value={phone} onChange={(e) => setPhone(e.target.value)} className={iconInputClass} maxLength={30} />
-                </div>
-                {errors.phone && <p className="text-score-low text-xs mt-1">{errors.phone}</p>}
-              </div>
-
-              <Button type="submit" variant="glow" size="lg" className="w-full" disabled={loading}>
-                {loading ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <>
-                    Skicka förfrågan
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
-              </Button>
-
-              <p className="text-center text-xs text-muted-foreground/80">
-                Vi återkommer inom 24 timmar
+          <form ref={formRef} onSubmit={handleSubmit} className="space-y-4" noValidate>
+            {/* Nothing may fail silently: a rejected submit always says so up front. */}
+            {errorCount > 0 && (
+              <p role="alert" className="text-score-low text-xs rounded-xl border border-score-low/25 bg-score-low/5 px-4 py-3">
+                {errorCount === 1
+                  ? "Ett fält behöver rättas innan du kan skicka."
+                  : `${errorCount} fält behöver rättas innan du kan skicka.`}
               </p>
-            </form>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+            )}
+
+            {/* Org number with lookup */}
+            <div>
+              <label htmlFor="lead-orgNumber" className={labelClass}>Organisationsnummer</label>
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <Hash className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" aria-hidden="true" />
+                  <input
+                    id="lead-orgNumber"
+                    name="orgNumber"
+                    type="text"
+                    placeholder="XXXXXX-XXXX"
+                    value={orgNumber}
+                    onChange={(e) => { setOrgNumber(e.target.value); setLookupDone(false); }}
+                    className={iconInputClass + " font-mono"}
+                    maxLength={13}
+                    {...errorProps("orgNumber")}
+                  />
+                </div>
+                <Button
+                  type="button"
+                  onClick={handleOrgLookup}
+                  disabled={lookupLoading || orgNumber.replace(/[\s-]/g, '').length < 10}
+                  className="rounded-xl px-5 shrink-0"
+                  variant={lookupDone ? "outline" : "default"}
+                >
+                  {lookupLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : lookupDone ? (
+                    <Check className="w-4 h-4 text-primary" />
+                  ) : (
+                    <>
+                      <Search className="w-4 h-4" />
+                      Sök
+                    </>
+                  )}
+                </Button>
+              </div>
+              <FieldError field="orgNumber" />
+            </div>
+
+            {/* Company name — always editable. The lookup may fill it in, but it must
+                never be the ONLY way to provide it (that made submit fail silently). */}
+            <div>
+              <label htmlFor="lead-company" className={labelClass}>Företagsnamn</label>
+              <div className="relative">
+                <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" aria-hidden="true" />
+                <input
+                  id="lead-company"
+                  name="company"
+                  type="text"
+                  value={company}
+                  onChange={(e) => setCompany(e.target.value)}
+                  className={iconInputClass}
+                  placeholder="Företagsnamn"
+                  maxLength={200}
+                  {...errorProps("company")}
+                />
+              </div>
+              <FieldError field="company" />
+            </div>
+
+            {/* Address — only exists once a lookup returned one. */}
+            {address && (
+              <div>
+                <label htmlFor="lead-address" className={labelClass}>Adress</label>
+                <div className="relative">
+                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" aria-hidden="true" />
+                  <input id="lead-address" name="address" type="text" value={address} onChange={(e) => setAddress(e.target.value)} className={iconInputClass} placeholder="Adress" />
+                </div>
+              </div>
+            )}
+
+            {/* Signatory — read-only registry data from the lookup. */}
+            {signatory && (
+              <div>
+                <label htmlFor="lead-signatory" className={labelClass}>Firmatecknare</label>
+                <div className="relative">
+                  <Shield className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" aria-hidden="true" />
+                  <input id="lead-signatory" name="signatory" type="text" value={signatory} onChange={(e) => setSignatory(e.target.value)} className={iconInputClass} readOnly />
+                </div>
+              </div>
+            )}
+
+            {/* Contact person */}
+            <div>
+              <label htmlFor="lead-name" className={labelClass}>Kontaktperson</label>
+              <div className="relative">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" aria-hidden="true" />
+                <input id="lead-name" name="name" type="text" placeholder="Ditt namn" value={name} onChange={(e) => setName(e.target.value)} className={iconInputClass} maxLength={100} {...errorProps("name")} />
+              </div>
+              <FieldError field="name" />
+            </div>
+
+            {/* Email */}
+            <div>
+              <label htmlFor="lead-email" className={labelClass}>E-postadress</label>
+              <input id="lead-email" name="email" type="email" placeholder="E-postadress" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} maxLength={255} {...errorProps("email")} />
+              <FieldError field="email" />
+            </div>
+
+            {/* Phone */}
+            <div>
+              <label htmlFor="lead-phone" className={labelClass}>Telefonnummer</label>
+              <div className="relative">
+                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/80" aria-hidden="true" />
+                <input id="lead-phone" name="phone" type="tel" placeholder="Telefonnummer" value={phone} onChange={(e) => setPhone(e.target.value)} className={iconInputClass} maxLength={30} {...errorProps("phone")} />
+              </div>
+              <FieldError field="phone" />
+            </div>
+
+            <Button type="submit" variant="glow" size="lg" className="w-full" disabled={loading}>
+              {loading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <>
+                  Skicka förfrågan
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
+            </Button>
+
+            <p className="text-center text-xs text-muted-foreground/80">
+              Vi återkommer inom 24 timmar
+            </p>
+          </form>
+        </DialogPrimitive.Content>
+      </DialogPortal>
+    </Dialog>
   );
 };
 

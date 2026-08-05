@@ -97,6 +97,10 @@
     /* The page tone the raised cards sit on — same as the page so it's seamless. */
     --surface-band: 222 24% 6%;
 
+    /* Height of the fixed navbar (h-16 → sm:h-20). Anchor targets subtract this
+       so a jumped-to heading never lands underneath it. */
+    --nav-height: 4rem;
+
     --sidebar-background: 222 22% 8%;
     --sidebar-foreground: 220 24% 90%;
     --sidebar-primary: 199 89% 52%;
@@ -111,6 +115,17 @@
 @layer base {
   * {
     @apply border-border;
+  }
+
+  /* The navbar grows at sm; keep the anchor offset in step with it. */
+  @media (min-width: 640px) {
+    :root { --nav-height: 5rem; }
+  }
+
+  /* Every scroll target clears the fixed navbar. Honoured by both native
+     :target jumps and scrollIntoView(), so no JS scroll maths is needed. */
+  [id] {
+    scroll-margin-top: calc(var(--nav-height) + 1.5rem);
   }
 
   /* Visible focus ring everywhere for accessibility — one consistent style.

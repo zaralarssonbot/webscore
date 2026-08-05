@@ -26,7 +26,10 @@ const PricingSection = () => {
     <>
       <section id="pricing" className="relative py-24 sm:py-32">
         <div className="max-w-6xl mx-auto px-4">
+          {/* This section only renders on /pricing, where it IS the page title —
+              the homepage uses HomePricingSection, which keeps its h2. */}
           <SectionHeading
+            as="h1"
             eyebrow="TRANSPARENTA PRISER"
             title={<>Betala för det du <span className="gradient-text">behöver</span></>}
             subtitle={pricingExplainer}

@@ -34,6 +34,7 @@ const GuidesIndex = () => {
 
       <main className="relative z-10 max-w-5xl mx-auto px-6 pt-32 pb-28">
         <SectionHeading
+          as="h1"
           eyebrow="GUIDER & INSIKTER"
           title={<>Klartext om <span className="gradient-text">det digitala</span></>}
           subtitle="Konkreta svar på frågorna företag faktiskt googlar – inga säljsnack, bara det vi själva skulle vilja veta."
