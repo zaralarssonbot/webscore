@@ -160,9 +160,15 @@ const Index = () => {
               />
             </div>
 
+            {/* Order tells one story: what we do and why it pays off (Services
+                incl. RESULTAT) → proof we've done it (Portfolio) → how we work
+                (Process) → ideas we can explore (AI studio) → why us → price →
+                action. Portfolio now precedes Process so real delivered work is
+                the evidence a visitor meets first, and it also puts a full
+                section between the client work and the AI concepts. */}
             <ServicesSection />
-            <ProcessSection />
             <PortfolioSection />
+            <ProcessSection />
             <VideoShowcaseSection />
             <WhyUsSection />
             <HomePricingSection />

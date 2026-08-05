@@ -62,8 +62,11 @@ const PortfolioSection = () => {
       <section id="portfolio" className="relative z-10 py-24 sm:py-32 px-6">
         <div className="max-w-6xl mx-auto">
 
+          {/* Eyebrow says "kundprojekt" outright: this section is reserved for
+              work actually delivered to a customer. AI concept material lives in
+              VideoShowcaseSection and is labelled as such there. */}
           <SectionHeading
-            eyebrow="PORTFOLIO"
+            eyebrow="RIKTIGA KUNDPROJEKT"
             title={<>Projekt som visar vad rätt hemsida{" "}<span className="gradient-text">faktiskt kan göra</span></>}
             subtitle="Vi bygger inte bara snygga sidor — vi skapar hemsidor som stärker varumärket, ökar förtroendet och driver fler affärer."
             className="mb-14 sm:mb-16"

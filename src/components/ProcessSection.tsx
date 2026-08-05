@@ -4,11 +4,16 @@ import { Search, Compass, Code2, Rocket, TrendingUp } from "lucide-react";
 import SectionHeading from "@/components/SectionHeading";
 import InfoModal, { type InfoModalData, clickableCardClass, CardMoreIndicator } from "@/components/InfoModal";
 
+// The one Webscore process. It previously ran alongside a second, four-step
+// version in ServicesSection ("Fyra steg till bättre resultat"), which said the
+// same thing with a different number of steps. That block is gone; its strongest
+// copy — the self-serve test, the three things we grade, and the strategy call
+// being advice rather than a pitch — is folded into step 1 below.
 const steps = [
   {
     number: 1, icon: Search, title: "Gratis analys", day: "DAG 1",
     detail:
-      "Vi börjar med en kostnadsfri analys av er nuvarande sajt och era mål. Den lägger grunden för allt vi gör – så att vi bygger utifrån vad ni faktiskt behöver, inte gissningar.",
+      "Allt börjar med en kostnadsfri analys av er nuvarande sajt. På ett par minuter ser ni ett tydligt betyg och vad som håller sidan tillbaka inom synlighet, förtroende och konvertering – utan att prata med en säljare först. Vill ni gå vidare tar vi ett kort samtal om vad som ger störst effekt för just er. Det är rådgivning, inte en säljpresentation.",
   },
   {
     number: 2, icon: Compass, title: "Designförslag", day: "DAG 2–3",
@@ -37,8 +42,10 @@ const ProcessSection = () => {
   const openStep = (step: typeof steps[number]) =>
     setActive({ eyebrow: step.day, title: step.title, description: step.detail, icon: step.icon });
 
+  // Owns #process-steps: the navbar's "Så fungerar det" link points here now
+  // that this is the only process on the page.
   return (
-    <section id="process" className="relative z-10 py-24 sm:py-32 px-6 overflow-hidden">
+    <section id="process-steps" className="relative z-10 py-24 sm:py-32 px-6 overflow-hidden">
       <div className="max-w-6xl mx-auto relative">
         <SectionHeading
           eyebrow="VÅR PROCESS"
