@@ -33,3 +33,5 @@ supabase/.temp
 
 # Local verification harness (Playwright checks, not shipped)
 .verify/
+.vercel
+.env*
