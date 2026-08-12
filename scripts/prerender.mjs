@@ -82,7 +82,21 @@ async function run() {
       // Let useDocumentMeta's effect flush the <head> for this route.
       await page.waitForFunction(() => /Webscore/.test(document.title), { timeout: 10000 });
 
-      const html = await page.evaluate(() => "<!DOCTYPE html>\n" + document.documentElement.outerHTML);
+      const html = await page.evaluate(() => {
+        // The snapshot must capture CONTENT, not this machine's device class.
+        // Prerendering runs in a desktop, fine-pointer headless browser, so the
+        // homepage's decorative WebGL field mounts and Vite injects
+        // <link rel="modulepreload"> for the LatticeScene + three.js chunks.
+        // Serialising those would ship a dead 1280x720 canvas to everyone and
+        // make phones — which never run WebGL — download ~126 KB gzip of
+        // three.js they will never execute. The client decides whether to mount
+        // the field; the static HTML must stay neutral.
+        document
+          .querySelectorAll('link[rel="modulepreload"][href*="vendor-three"], link[rel="modulepreload"][href*="LatticeScene"]')
+          .forEach((el) => el.remove());
+        document.querySelectorAll(".imm-canvas-layer canvas").forEach((el) => el.remove());
+        return "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      });
       snapshots[route] = html;
       console.log(`  ✓ rendered ${route} (${(html.length / 1024).toFixed(1)} KB)`);
       await page.close();

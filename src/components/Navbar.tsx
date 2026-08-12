@@ -12,10 +12,13 @@ interface NavbarProps {
   onAnalyze?: () => void;
 }
 
-// Hash links point to real homepage section ids; route links go to pages.
+// Path+hash links point to real homepage section ids; route links go to pages.
+// These carry an explicit "/" prefix because the sections they target moved:
+// the homepage is now the studio page (#tjanster / #process), while the old
+// #services / #process-steps ids live on the analysis page at /analys.
 const links = [
-  { href: "#services", label: "Tjänster" },
-  { href: "#process-steps", label: "Så fungerar det" },
+  { href: "/#tjanster", label: "Tjänster" },
+  { href: "/#process", label: "Process" },
   { href: "/guider", label: "Guider" },
   { href: "/pricing", label: "Priser" },
 ];
@@ -40,13 +43,16 @@ const Navbar = ({ onAnalyze }: NavbarProps) => {
   const handleNav = (e: React.MouseEvent, href: string) => {
     e.preventDefault();
     setOpen(false);
-    if (href.startsWith("#")) {
-      const id = href.slice(1);
-      if (location.pathname !== "/") {
-        navigate("/");
-        setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 140);
+    const hash = href.indexOf("#");
+    if (hash !== -1) {
+      const path = href.slice(0, hash) || "/";
+      const id = href.slice(hash + 1);
+      const scroll = () => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      if (location.pathname !== path) {
+        navigate(path);
+        setTimeout(scroll, 140);
       } else {
-        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+        scroll();
       }
     } else {
       navigate(href);

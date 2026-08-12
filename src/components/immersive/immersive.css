@@ -225,7 +225,9 @@
   background: none;
   border: 0;
   cursor: pointer;
-  padding: 12px;
+  /* 13px keeps the button a legal 44px tap target: 2 × 13 + two 1.5px bars
+     + the 10px gap between them. At 12px it measured 42px. */
+  padding: 13px;
   margin-left: auto;
 }
 .imm .bars {
@@ -757,13 +759,23 @@
   max-width: 46ch;
   margin-bottom: 38px;
 }
+/* The closing line sits exactly where the lattice converges to its `point`
+   state, so bright nodes pass directly behind 11px mono text. The field is
+   deliberately at full presence here (it is the resolution of the whole scroll
+   narrative), so rather than withdraw it, the type carries its own halo in the
+   page colour. Costs nothing where there is nothing behind it, and keeps the
+   approved composition intact. */
 .imm .final-sub {
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--dim);
+  color: #a4adbe;
   margin-top: 20px;
+  text-shadow:
+    0 0 10px var(--void),
+    0 0 22px var(--void),
+    0 1px 3px var(--void);
 }
 
 /* ── footer ── */
@@ -858,6 +870,21 @@
   .imm .foot {
     flex-direction: column;
     align-items: flex-start;
+    gap: 4px;
+  }
+  /* 11px mono links are an 18px-tall tap target at their natural size. Stack
+     them and pad to a legal 44px on touch without changing the type itself. */
+  .imm .foot-links {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    width: 100%;
+  }
+  .imm .foot a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    width: 100%;
   }
 }
 

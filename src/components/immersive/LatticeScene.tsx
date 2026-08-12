@@ -93,6 +93,21 @@ export default function LatticeScene({
     const data: LatticeData = buildLattice(count);
 
     /* ── renderer ─────────────────────────────────────────────────────────── */
+    // Probe for a context BEFORE constructing WebGLRenderer. three.js writes
+    // "THREE.WebGLRenderer: Error creating WebGL context." to console.error and
+    // *then* throws, so a bare try/catch still leaves a red error in the console
+    // of any visitor without WebGL. Probing keeps that path completely silent.
+    const probe = document.createElement("canvas");
+    const supported = !!(
+      probe.getContext("webgl2") ||
+      probe.getContext("webgl") ||
+      probe.getContext("experimental-webgl")
+    );
+    if (!supported) {
+      failRef.current?.();
+      return;
+    }
+
     let renderer: THREE.WebGLRenderer;
     try {
       renderer = new THREE.WebGLRenderer({
@@ -101,7 +116,8 @@ export default function LatticeScene({
         alpha: true,
       });
     } catch {
-      // No WebGL at all (old driver, blocklisted GPU, hardened browser).
+      // Context creation can still fail after a successful probe (GPU reset,
+      // too many live contexts). Fall back rather than surface a broken canvas.
       failRef.current?.();
       return;
     }
