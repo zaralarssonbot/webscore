@@ -684,6 +684,36 @@
   color: var(--flare);
 }
 
+/* ── about ── */
+/* Deliberately prose, not cards. This is the one place on the page where the
+   studio speaks in its own voice, and a grid of tiles would flatten it back into
+   the template language the rest of the page avoids. Two columns on wide
+   screens so the measure stays readable. */
+/* One left column, not two. This section sits late in the scroll where the
+   lattice has converged to a bright central mass, and a right-hand column put
+   body copy straight on top of it. The page's grammar is already "copy owns the
+   left, field owns the right" (see the hero and the camera bias in
+   LatticeScene) — following it here keeps the field at full strength and the
+   prose fully legible, instead of dimming the composition to rescue the text. */
+.imm .about-body {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  max-width: 50ch;
+}
+.imm .about-body p {
+  color: var(--dim);
+  font-size: 16.5px;
+  line-height: 1.72;
+  /* Cheap insurance for the few nodes that do drift left. */
+  text-shadow: 0 0 12px var(--void), 0 0 26px var(--void);
+}
+/* The closing paragraph is the argument the whole page has been making, so it
+   carries slightly more presence than the two that set it up. */
+.imm .about-body > div:last-child p {
+  color: var(--ink);
+}
+
 /* ── process ── */
 .imm .steps {
   list-style: none;
@@ -812,6 +842,14 @@
 .imm .foot a:hover {
   color: var(--ink);
 }
+/* Legal access, kept reachable but set back — it is an obligation, not a
+   destination we are inviting the visitor toward. */
+.imm .foot-legal {
+  opacity: 0.55;
+}
+.imm .foot-legal:hover {
+  opacity: 1;
+}
 
 /* ── responsive ── */
 @media (max-width: 1080px) {
@@ -860,6 +898,9 @@
   }
   .imm .disciplines {
     grid-template-columns: 1fr;
+  }
+  .imm .about-body {
+    gap: 20px;
   }
   .imm .hero {
     min-height: 92svh;

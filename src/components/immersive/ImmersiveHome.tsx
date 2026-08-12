@@ -462,7 +462,7 @@ export default function ImmersiveHome() {
           </div>
         </section>
 
-        <section id="om" className="tech" aria-labelledby="tech-h">
+        <section id="teknik" className="tech" aria-labelledby="tech-h">
           <Reveal>
             <div className="rule" />
             <h2 id="tech-h" className="section-h">Kreativ teknik</h2>
@@ -512,6 +512,41 @@ export default function ImmersiveHome() {
           </ol>
         </section>
 
+        <section id="om" className="about" aria-labelledby="om-h">
+          <Reveal>
+            <div className="rule" />
+            <h2 id="om-h" className="section-h">Om Webscore</h2>
+            <p className="section-lead">
+              Webscore är en kreativ teknikstudio i Sverige. Strategi, design, utveckling,
+              innehåll och AI ligger i samma team — och vi bygger det vi ritar.
+            </p>
+          </Reveal>
+          <div className="about-body">
+            <Reveal delay={0.05}>
+              <p>
+                De flesta digitala projekt tappar något mellan disciplinerna. Strategin
+                lämnas över till design, designen till utveckling, och innehållet kommer
+                sist. Vi arbetar tvärtom: samma team håller i hela kedjan, från första
+                hypotesen till det som ligger live.
+              </p>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <p>
+                Det är därför detaljerna överlever. Rörelsen som fanns i designen finns
+                kvar i koden. Texten är skriven för ytan den sitter på. Tekniken väljs för
+                att den löser problemet — inte för att den står på en lista.
+              </p>
+            </Reveal>
+            <Reveal delay={0.15}>
+              <p>
+                Den här sidan är byggd på precis det sättet. Fältet bakom dig är
+                realtidsgrafik som körs i din webbläsare — inte en video, inte en bild.
+                Det är det ärligaste sättet vi vet att visa vad vi kan bygga.
+              </p>
+            </Reveal>
+          </div>
+        </section>
+
         <section id="kontakt" className="final" aria-labelledby="final-h">
           <Reveal>
             <p className="eyebrow final-eyebrow">Nästa steg</p>
@@ -520,9 +555,18 @@ export default function ImmersiveHome() {
               Berätta vad ni vill åstadkomma. Vi återkommer med en konkret bild av vad
               det skulle innebära.
             </p>
-            <a className="btn btn-primary btn-lg" href="mailto:info@webscore.se">
+            {/* A prefilled subject makes the reply land in the right place and
+                tells the visitor what will happen when they click. */}
+            <a
+              className="btn btn-primary btn-lg"
+              href="mailto:info@webscore.se?subject=Projektf%C3%B6rfr%C3%A5gan"
+            >
               Starta ett projekt <span className="arrow" aria-hidden="true">→</span>
             </a>
+            {/* One action, nothing beside it. A secondary "or email us" line was
+                tried here and removed: it landed on the densest part of the
+                converged field and diluted the close. The address is in the
+                footer for anyone who wants to copy it. */}
             <p className="final-sub">Svar inom en arbetsdag · Sverige</p>
           </Reveal>
         </section>
@@ -530,10 +574,14 @@ export default function ImmersiveHome() {
 
       <footer className="foot">
         <p>© {new Date().getFullYear()} Webscore — kreativ teknikstudio</p>
+        {/* Deliberately minimal. The analysis product lives on at /analys but is
+            not linked from here: it is a different design language, and sending a
+            visitor into it mid-narrative breaks the experience this page exists to
+            demonstrate. The privacy policy stays reachable because it must be,
+            but it is set back rather than presented as a destination. */}
         <div className="foot-links">
           <a href="mailto:info@webscore.se">info@webscore.se</a>
-          <a href="/analys">Webbanalys</a>
-          <a href="/integritetspolicy">Integritetspolicy</a>
+          <a className="foot-legal" href="/integritetspolicy">Integritetspolicy</a>
         </div>
       </footer>
     </div>
