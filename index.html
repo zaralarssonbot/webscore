@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Webscore – Få betyg på din hemsida</title>
-    <meta name="description" content="Analysera din hemsida på 30 sekunder. Få ett tydligt betyg, se vad som håller sidan tillbaka och upptäck var den kan förbättras — gratis och utan förpliktelser." />
+    <title>Webscore — kreativ teknikstudio</title>
+    <meta name="description" content="Webscore är en kreativ teknikstudio som designar och bygger webbplatser, digitala upplevelser, innehåll och AI-drivna system för varumärken som vill märkas." />
     <meta name="author" content="Webscore" />
-    <meta name="theme-color" content="#0a0a0f" />
+    <meta name="theme-color" content="#07080B" />
     <link rel="canonical" href="https://webscore.se/" />
 
     <!-- Open Graph -->
@@ -14,24 +14,39 @@
     <meta property="og:site_name" content="Webscore" />
     <meta property="og:locale" content="sv_SE" />
     <meta property="og:url" content="https://webscore.se/" />
-    <meta property="og:title" content="Webscore – Få betyg på din hemsida" />
-    <meta property="og:description" content="Analysera din hemsida på 30 sekunder. Få ett tydligt betyg, se vad som håller sidan tillbaka och upptäck var den kan förbättras." />
+    <meta property="og:title" content="Webscore — kreativ teknikstudio" />
+    <meta property="og:description" content="Vi designar och bygger webbplatser, digitala upplevelser, innehåll och AI-drivna system för varumärken som vill märkas." />
     <meta property="og:image" content="https://webscore.se/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Webscore – Få betyg på din hemsida" />
-    <meta name="twitter:description" content="Analysera din hemsida på 30 sekunder. Få ett tydligt betyg, se vad som håller sidan tillbaka och upptäck var den kan förbättras." />
+    <meta name="twitter:title" content="Webscore — kreativ teknikstudio" />
+    <meta name="twitter:description" content="Vi designar och bygger webbplatser, digitala upplevelser, innehåll och AI-drivna system för varumärken som vill märkas." />
     <meta name="twitter:image" content="https://webscore.se/og-image.png" />
 
     <!-- Performance: font preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <!-- Performance: preload the LCP hero object image so it paints ASAP -->
-    <link rel="preload" as="image" href="/hero-mark-i.webp" fetchpriority="high" />
+    <!--
+      Homepage display faces. Requested here rather than with @import in CSS: an
+      @import cannot start until the stylesheet containing it has downloaded and
+      parsed, so the faces arrive after first paint and the hero re-flows on
+      swap. Preconnecting above removes a further round trip.
+    -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap"
+    />
+
+    <!--
+      No LCP image preload: the homepage hero is typography over a lazily-loaded
+      WebGL field, so its LCP element is text. The old scan hero's /hero-mark-i.webp
+      lives on /analys now, and preloading it globally would download an image
+      that the homepage never paints.
+    -->
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
@@ -47,7 +62,7 @@
       "name": "Webscore",
       "url": "https://webscore.se/",
       "image": "https://webscore.se/og-image.png",
-      "description": "Webscore analyserar din hemsida och ger ett tydligt betyg på synlighet, förtroende och konvertering — och visar konkret vad som kan förbättras.",
+      "description": "Webscore är en kreativ teknikstudio som designar och bygger webbplatser, digitala upplevelser, innehåll och AI-drivna system.",
       "areaServed": "SE",
       "availableLanguage": "sv",
       "priceRange": "$$"

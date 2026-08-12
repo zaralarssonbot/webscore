@@ -25,6 +25,7 @@ const DIST = join(ROOT, "dist");
 // Indexable, statically-known routes. /admin is intentionally excluded (noindex).
 const ROUTES = [
   "/",
+  "/analys",
   "/pricing",
   "/tjanster/hemsidor",
   "/tjanster/intranat",

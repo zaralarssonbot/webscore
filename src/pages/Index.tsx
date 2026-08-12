@@ -27,7 +27,7 @@ const Index = () => {
     title: "Webscore – Få betyg på din hemsida",
     description:
       "Analysera din hemsida på 30 sekunder. Få ett tydligt betyg, se vad som håller sidan tillbaka och upptäck var den kan förbättras — gratis och utan förpliktelser.",
-    canonical: "https://webscore.se/",
+    canonical: "https://webscore.se/analys",
   });
   const [state, setState] = useState<AppState>("hero");
   const [domain, setDomain] = useState("");
@@ -129,9 +129,9 @@ const Index = () => {
     setScreenshotUrl(null);
     setAnalysisError(null);
     setReportId(null);
-    // Restore the home URL (the analysis updated it to /analys/:id).
+    // Restore the scan URL (the analysis updated it to /analys/:id).
     if (window.location.pathname.startsWith("/analys/")) {
-      window.history.replaceState(null, "", "/");
+      window.history.replaceState(null, "", "/analys");
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };

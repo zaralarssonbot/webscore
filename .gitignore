@@ -30,3 +30,6 @@ dist-ssr
 
 # Supabase CLI machine-local state (linked project ref, versions, pooler url)
 supabase/.temp
+
+# Local verification harness (Playwright checks, not shipped)
+.verify/
