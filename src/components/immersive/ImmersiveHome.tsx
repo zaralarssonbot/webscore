@@ -176,23 +176,16 @@ interface Project {
   name: string;
   sector: string;
   line: string;
-  /** Shown as text in the browser chrome — never baked into the image. */
-  domain: string;
   image: string;
   alt: string;
 }
 
 /**
- * One real customer project and four concept studies.
- *
- * The distinction is load-bearing and must never blur: Papa Jun is a delivered
- * commission for a paying customer. The other four are fictional brands we
- * authored ourselves to show a design direction — every one carries a visible
- * "Konceptstudie" tag AND an explicit sentence stating it is not a customer or
- * a delivered assignment. No logo walls, no testimonials, no metrics.
- */
-/**
  * The one real engagement, presented at more weight than the studies.
+ *
+ * The distinction between this and PROJECTS is load-bearing and must never
+ * blur: Papa Jun is a delivered commission for a paying customer, so it is the
+ * only entry that carries a real host in its browser chrome.
  *
  * Scope is preserved verbatim from the existing case notes — what was actually
  * delivered, nothing more. No metrics, no uplift claims, no testimonial: we did
@@ -217,13 +210,18 @@ const PAPAJUN = {
   ],
 };
 
+/**
+ * Four self-authored concept studies. Every one carries a visible
+ * "Konceptstudie" tag, an explicit sentence stating it is not a customer or a
+ * delivered assignment, and — unlike Papa Jun — no host in its browser chrome.
+ * No logo walls, no testimonials, no metrics.
+ */
 const PROJECTS: Project[] = [
   {
     id: "veyra",
     name: "Veyra Hotels",
     sector: "Boutiquehotell",
     line: "Direktbokning som en designad upplevelse, inte ett formulär.",
-    domain: conceptVisuals.veyra.domain,
     image: conceptVisuals.veyra.desktop,
     alt: conceptVisuals.veyra.desktopAlt,
   },
@@ -232,7 +230,6 @@ const PROJECTS: Project[] = [
     name: "Nordform Studio",
     sector: "Arkitektur & inredning",
     line: "Ett arkiv där arbetet bär sidan — inte dekoren.",
-    domain: conceptVisuals.nordform.domain,
     image: conceptVisuals.nordform.desktop,
     alt: conceptVisuals.nordform.desktopAlt,
   },
@@ -241,7 +238,6 @@ const PROJECTS: Project[] = [
     name: "Lumera Skin",
     sector: "Premiumhandel",
     line: "Lugn produktyta där materialet och ljuset gör försäljningen.",
-    domain: conceptVisuals.lumera.domain,
     image: conceptVisuals.lumera.desktop,
     alt: conceptVisuals.lumera.desktopAlt,
   },
@@ -250,7 +246,6 @@ const PROJECTS: Project[] = [
     name: "Asteron Systems",
     sector: "Affärssystem",
     line: "Trovärdighet genom produktyta, inte genom loggväggar.",
-    domain: conceptVisuals.asteron.domain,
     image: conceptVisuals.asteron.desktop,
     alt: conceptVisuals.asteron.desktopAlt,
   },
@@ -280,13 +275,32 @@ const STEPS = [
   { n: "04", t: "Lansering", d: "Testad övergång — och en plan för vad som händer sen." },
 ];
 
-/** Restrained browser chrome. The host is React text, so it stays sharp. */
-function Shot({ domain, image, alt }: { domain: string; image: string; alt: string }) {
+/**
+ * Restrained browser chrome. The label is React text, so it stays sharp.
+ *
+ * The address bar shows a real host ONLY for the real engagement. A concept
+ * study gets "Konceptstudie" instead: those brands have no site to visit, and
+ * putting a domain-shaped string like `veyra.webscore.se` in browser chrome
+ * implies a live URL a viewer could open. The frame still does its job — it
+ * says "this is a website" — without asserting something untrue.
+ */
+function Shot({
+  label,
+  live,
+  image,
+  alt,
+}: {
+  label: string;
+  /** True only for a real, reachable site. */
+  live?: boolean;
+  image: string;
+  alt: string;
+}) {
   return (
     <div className="shot">
       <div className="shot-bar">
         <i /><i /><i />
-        <span className="shot-host">{domain}</span>
+        <span className={`shot-host${live ? "" : " shot-host-concept"}`}>{label}</span>
       </div>
       <div className="shot-view">
         <img src={image} alt={alt} loading="lazy" decoding="async" />
@@ -432,7 +446,7 @@ export default function ImmersiveHome() {
             <Reveal>
               <article className="work-item work-featured">
                 <div className="work-visual">
-                  <Shot domain={PAPAJUN.domain} image={PAPAJUN.image} alt={PAPAJUN.alt} />
+                  <Shot label={PAPAJUN.domain} live image={PAPAJUN.image} alt={PAPAJUN.alt} />
                 </div>
                 <div className="work-meta">
                   <p className="tag client">✓ Kundprojekt</p>
@@ -459,7 +473,7 @@ export default function ImmersiveHome() {
               <Reveal key={p.id} delay={i * 0.05}>
                 <article className="work-item">
                   <div className="work-visual">
-                    <Shot domain={p.domain} image={p.image} alt={p.alt} />
+                    <Shot label="Konceptstudie" image={p.image} alt={p.alt} />
                   </div>
                   <div className="work-meta">
                     <p className="tag concept">◇ Konceptstudie</p>
