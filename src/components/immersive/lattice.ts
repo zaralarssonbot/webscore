@@ -155,9 +155,23 @@ export function fieldPresence(progress: number): number {
     const t = Math.min(Math.max((x - a) / (b - a), 0), 1);
     return t * t * (3 - 2 * t);
   };
-  // Fully withdrawn by the time the "Utvalt arbete" heading lands (~26% of the
-  // document), and still strong through the capability clusters before it.
-  const dip = smooth(progress, 0.15, 0.26) * (1 - smooth(progress, 0.6, 0.78));
+  // Window retuned against the shipped page rather than the prototype's section
+  // layout. Measured section fractions at 1440: hero 0–0.125, the five-column
+  // "Ett system som tar form" band 0.125–0.204, work 0.204–0.575, services
+  // 0.575–0.708. The original 0.15→0.26 ramp meant the band's three right-hand
+  // columns were read against a full-strength dispersed field — the one place on
+  // the page where body copy genuinely competed with nodes.
+  //
+  // The band's columns are on screen at the START of its range, so withdrawal
+  // has to be complete by ~0.12 rather than beginning there. Pulling the ramp
+  // back to 0.05–0.12 is safe for the hero: its copy is driven to zero opacity
+  // by progress 0.1 (heroFade in ImmersiveHome), so the field is at full
+  // strength for the whole time the hero is actually legible, and only recedes
+  // as the hero itself scrolls away.
+  //
+  // The 0.6→0.78 recovery is unchanged: the field returns as the services rows
+  // give way to the creative-technology section, which is *about* the 3D.
+  const dip = smooth(progress, 0.05, 0.12) * (1 - smooth(progress, 0.6, 0.78));
   return 1 - 0.8 * dip;
 }
 

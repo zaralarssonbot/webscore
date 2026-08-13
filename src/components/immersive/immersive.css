@@ -660,7 +660,9 @@
   padding: 0;
 }
 .imm .disciplines li {
-  background: rgba(13, 15, 21, 0.72);
+  background: rgba(13, 15, 21, 0.86);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   padding: 26px 22px;
   display: flex;
   flex-direction: column;
@@ -723,11 +725,18 @@
   padding: 0;
   margin: 0;
 }
+/* The process sits at ~0.81–0.90, where the lattice has re-formed into the
+   helix at full presence. At 50% opacity and no blur these panels let the
+   brightest part of the field run straight through the step copy. Matching the
+   glass treatment already used by .work-item keeps the helix visible *around*
+   the steps — which is the point — while the text sits on a real surface. */
 .imm .steps li {
   border: 1px solid var(--line);
   border-radius: 18px;
   padding: 26px;
-  background: rgba(18, 21, 29, 0.5);
+  background: rgba(16, 19, 27, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   position: relative;
 }
 .imm .steps li::before {
