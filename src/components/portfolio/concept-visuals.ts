@@ -107,13 +107,13 @@ export const conceptVisuals = {
   asteron: {
     domain: "asteron.webscore.se",
     desktop: asteronDesktop,
-    desktopAlt: "Startsidan i konceptstudien Asteron Systems: mörkt enterprise-gränssnitt med abstrakt dashboard.",
-    tint: "rgba(23,22,46,0.92)",
+    desktopAlt: "Startsidan i konceptstudien Asteron Systems: nästan svart yta med varm serifrubrik, en bild från en svensk verkstad i lågt kvällsljus och en lugn orderlista.",
+    tint: "rgba(10,9,16,0.92)",
     pages: [
-      { src: asteronPlattform, label: "Plattform", alt: "Konceptsida: plattformssida med funktionsavsnitt och abstrakta gränssnittspaneler." },
-      { src: asteronLosningar, label: "Lösningar", alt: "Konceptsida: lösningar presenterade som kort med enkla linjeikoner." },
-      { src: asteronIntegrationer, label: "Integrationer", alt: "Konceptsida: integrationer som ett rutnät av abstrakta, påhittade symboler." },
-      { src: asteronDemo, label: "Boka demo", alt: "Konceptsida: boka demo med ett tomt formulär och en tydlig knapp." },
+      { src: asteronPlattform, label: "Plattform", alt: "Konceptsida: plattformen beskriven i tre spalter — orderhantering, lagerstyrning och produktionsflöde — över ett brett verkstadsfoto." },
+      { src: asteronLosningar, label: "Lösningar", alt: "Konceptsida: lösningsområden som en lugn lista med tunna linjer mellan raderna." },
+      { src: asteronIntegrationer, label: "Integrationer", alt: "Konceptsida: integrationer som ett rutnät av rutor med allmänna systemkategorier i text — ekonomi, lager, frakt, e-handel." },
+      { src: asteronDemo, label: "Boka demo", alt: "Konceptsida: boka demo med ett tomt formulär och ett foto av en svensk arbetsplats i lågt ljus." },
     ],
   },
 } satisfies Record<string, ConceptVisual>;

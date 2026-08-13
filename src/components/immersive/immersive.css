@@ -1126,12 +1126,17 @@
 .imm .cs-flip {
   grid-template-columns: 0.95fr 1.25fr;
 }
+/* All three children get an explicit order, not just the two being swapped:
+   `order` defaults to 0, so the pages strip — which is not mentioned — sorted
+   ahead of a visual at 2 and a meta at 1 and rendered ABOVE the card it belongs
+   to. */
 .imm .cs-flip .work-visual { order: 2; }
 .imm .cs-flip .work-meta {
   order: 1;
   border-left: 0;
   border-right: 1px solid var(--line);
 }
+.imm .cs-flip .cs-pages { order: 3; }
 
 /* The page travels to its own foot on hover or keyboard focus.
    These are full-page screenshots shown through a browser frame, so the honest
