@@ -9,6 +9,9 @@ import {
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 import { conceptVisuals } from "@/components/portfolio/concept-visuals";
 import papajun from "@/assets/portfolio/papajun.webp";
+import papajun1 from "@/assets/portfolio/papajun-1.webp";
+import papajun2 from "@/assets/portfolio/papajun-2.webp";
+import papajun3 from "@/assets/portfolio/papajun-3.webp";
 import "./immersive.css";
 
 /**
@@ -167,11 +170,10 @@ function StaticField({ reduced, progress }: { reduced: boolean; progress: Motion
 
 /* ── content ──────────────────────────────────────────────────────────────── */
 
+/** A self-authored concept study. The one real engagement is PAPAJUN, above. */
 interface Project {
   id: string;
   name: string;
-  /** `client` is a real, paid, delivered engagement. `concept` is a self-authored study. */
-  kind: "client" | "concept";
   sector: string;
   line: string;
   /** Shown as text in the browser chrome — never baked into the image. */
@@ -189,21 +191,36 @@ interface Project {
  * "Konceptstudie" tag AND an explicit sentence stating it is not a customer or
  * a delivered assignment. No logo walls, no testimonials, no metrics.
  */
+/**
+ * The one real engagement, presented at more weight than the studies.
+ *
+ * Scope is preserved verbatim from the existing case notes — what was actually
+ * delivered, nothing more. No metrics, no uplift claims, no testimonial: we did
+ * not measure them, so we do not state them.
+ */
+const PAPAJUN = {
+  name: "Papa Jun",
+  sector: "Restaurang · Kvicksund, Mälaren",
+  domain: "papajun.se",
+  image: papajun,
+  alt: "Startsidan för Papa Jun: varm restaurangsajt med meny och bokning.",
+  line: "En mysig restaurang vid Mälaren som behövde en sajt som förmedlade deras atmosfär. Vi byggde en visuellt varm närvaro med integrerad meny och bokning.",
+  delivered: [
+    "Visuell storytelling",
+    "Integrerad meny och bokning",
+    "Lokal SEO för Kvicksund-området",
+  ],
+  gallery: [
+    { src: papajun1, alt: "Papa Jun: meny presenterad som en redaktionell sida." },
+    { src: papajun2, alt: "Papa Jun: sektion för catering och event." },
+    { src: papajun3, alt: "Papa Jun: bokningsvy med öppettider och kontaktuppgifter." },
+  ],
+};
+
 const PROJECTS: Project[] = [
-  {
-    id: "papajun",
-    name: "Papa Jun",
-    kind: "client",
-    sector: "Restaurang · Kvicksund, Mälaren",
-    line: "En varm digital närvaro med integrerad meny och bokning — byggd för att förmedla restaurangens atmosfär.",
-    domain: "papajun.se",
-    image: papajun,
-    alt: "Startsidan för Papa Jun: varm restaurangsajt med meny och bokning.",
-  },
   {
     id: "veyra",
     name: "Veyra Hotels",
-    kind: "concept",
     sector: "Boutiquehotell",
     line: "Direktbokning som en designad upplevelse, inte ett formulär.",
     domain: conceptVisuals.veyra.domain,
@@ -213,7 +230,6 @@ const PROJECTS: Project[] = [
   {
     id: "nordform",
     name: "Nordform Studio",
-    kind: "concept",
     sector: "Arkitektur & inredning",
     line: "Ett arkiv där arbetet bär sidan — inte dekoren.",
     domain: conceptVisuals.nordform.domain,
@@ -223,7 +239,6 @@ const PROJECTS: Project[] = [
   {
     id: "lumera",
     name: "Lumera Skin",
-    kind: "concept",
     sector: "Premiumhandel",
     line: "Lugn produktyta där materialet och ljuset gör försäljningen.",
     domain: conceptVisuals.lumera.domain,
@@ -233,7 +248,6 @@ const PROJECTS: Project[] = [
   {
     id: "asteron",
     name: "Asteron Systems",
-    kind: "concept",
     sector: "Affärssystem",
     line: "Trovärdighet genom produktyta, inte genom loggväggar.",
     domain: conceptVisuals.asteron.domain,
@@ -414,6 +428,33 @@ export default function ImmersiveHome() {
             </p>
           </Reveal>
           <div className="work-stack">
+            {/* The real engagement, given the weight of one. */}
+            <Reveal>
+              <article className="work-item work-featured">
+                <div className="work-visual">
+                  <Shot domain={PAPAJUN.domain} image={PAPAJUN.image} alt={PAPAJUN.alt} />
+                </div>
+                <div className="work-meta">
+                  <p className="tag client">✓ Kundprojekt</p>
+                  <h3>{PAPAJUN.name}</h3>
+                  <p className="sector">{PAPAJUN.sector}</p>
+                  <p className="line">{PAPAJUN.line}</p>
+                  <ul className="delivered">
+                    {PAPAJUN.delivered.map((d) => (
+                      <li key={d}>{d}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="work-gallery">
+                  {PAPAJUN.gallery.map((g) => (
+                    <figure key={g.src}>
+                      <img src={g.src} alt={g.alt} loading="lazy" decoding="async" />
+                    </figure>
+                  ))}
+                </div>
+              </article>
+            </Reveal>
+
             {PROJECTS.map((p, i) => (
               <Reveal key={p.id} delay={i * 0.05}>
                 <article className="work-item">
@@ -421,18 +462,14 @@ export default function ImmersiveHome() {
                     <Shot domain={p.domain} image={p.image} alt={p.alt} />
                   </div>
                   <div className="work-meta">
-                    <p className={`tag ${p.kind}`}>
-                      {p.kind === "client" ? "✓ Kundprojekt" : "◇ Konceptstudie"}
-                    </p>
+                    <p className="tag concept">◇ Konceptstudie</p>
                     <h3>{p.name}</h3>
                     <p className="sector">{p.sector}</p>
                     <p className="line">{p.line}</p>
-                    {p.kind === "concept" && (
-                      <p className="disclaim">
-                        Påhittat varumärke framtaget för att visa en designriktning — inte
-                        ett företag, en kund eller ett utfört uppdrag.
-                      </p>
-                    )}
+                    <p className="disclaim">
+                      Påhittat varumärke framtaget för att visa en designriktning — inte
+                      ett företag, en kund eller ett utfört uppdrag.
+                    </p>
                   </div>
                 </article>
               </Reveal>
