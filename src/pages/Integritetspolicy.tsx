@@ -1,14 +1,14 @@
-import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ShieldCheck } from "lucide-react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import BackgroundEffect from "@/components/BackgroundEffect";
+import ImmersiveShell from "@/components/immersive/ImmersiveShell";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 
+/**
+ * The only page reachable from the homepage, so it wears the studio chrome
+ * rather than the previous brand's marketing Navbar/Footer. The policy text
+ * itself is unchanged — it is a legal document, not a design surface.
+ */
 const Integritetspolicy = () => {
-  const navigate = useNavigate();
-
   useDocumentMeta({
     title: "Integritetspolicy | Webscore",
     description:
@@ -17,11 +17,7 @@ const Integritetspolicy = () => {
   });
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
-      <BackgroundEffect />
-      <Navbar onAnalyze={() => navigate("/")} />
-
-      <main className="relative z-10 max-w-2xl mx-auto px-6 pt-32 pb-28">
+    <ImmersiveShell>
         {/* Header */}
         <motion.header
           initial={{ opacity: 0, y: 20 }}
@@ -29,7 +25,7 @@ const Integritetspolicy = () => {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="mb-10"
         >
-          <span className="data-label text-[0.72rem] text-neon-blue inline-flex items-center gap-1.5">
+          <span className="eyebrow inline-flex items-center gap-1.5" style={{ color: "var(--flare)" }}>
             <ShieldCheck className="w-3 h-3" /> Legal
           </span>
           <h1 className="font-display font-semibold tracking-[-0.03em] leading-[1.1] text-3xl sm:text-4xl mt-4 mb-3">
@@ -113,10 +109,7 @@ const Integritetspolicy = () => {
             Vi kan uppdatera policyn. Senaste versionen finns alltid på den här sidan.
           </p>
         </motion.article>
-      </main>
-
-      <Footer />
-    </div>
+    </ImmersiveShell>
   );
 };
 

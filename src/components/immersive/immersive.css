@@ -275,6 +275,46 @@
   text-decoration: none;
 }
 
+/* ── secondary pages (ImmersiveShell) ── */
+/* A document page, not a scroll narrative: no fixed WebGL layer behind it, so
+   it needs its own background and top offset for the floating nav. */
+.imm-page {
+  background: var(--void);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+.imm-page main {
+  flex: 1;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 148px var(--pad) 120px;
+  width: 100%;
+}
+.imm .nav-cta-back {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  margin-left: auto;
+}
+.imm .nav-cta-back:hover {
+  border-color: rgba(255, 255, 255, 0.28);
+}
+/* The shared prose styles accent with the previous brand's cyan. Inside the
+   studio shell they take the flare instead, so a legal page still reads as the
+   same company. */
+.imm .guide-prose a {
+  color: var(--flare);
+}
+.imm .guide-prose li::marker {
+  color: var(--flare);
+}
+.imm-page h1 {
+  font-family: var(--serif);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
 /* ── shared ── */
 .imm main {
   position: relative;
