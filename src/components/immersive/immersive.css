@@ -946,9 +946,15 @@
   flex-wrap: wrap;
   align-items: center;
 }
+/* 11px mono is an 18px-tall target at its natural size, under the 24x24 pointer
+   minimum (WCAG 2.5.8). Padding lifts it without changing the type. Touch gets
+   a full 44px in the mobile block below. */
 .imm .foot a {
   text-decoration: none;
   transition: color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
 }
 .imm .foot a:hover {
   color: var(--ink);
