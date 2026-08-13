@@ -1115,3 +1115,256 @@
     transform: none;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CONCEPT STUDIES — the preview behaves like the site it shows
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Alternating the grid stops five stacked cards from reading as one card
+   repeated. Content order is unchanged — only the columns swap — so the DOM
+   still reads visual-then-meta for a screen reader. */
+.imm .cs-flip {
+  grid-template-columns: 0.95fr 1.25fr;
+}
+.imm .cs-flip .work-visual { order: 2; }
+.imm .cs-flip .work-meta {
+  order: 1;
+  border-left: 0;
+  border-right: 1px solid var(--line);
+}
+
+/* The page travels to its own foot on hover or keyboard focus.
+   These are full-page screenshots shown through a browser frame, so the honest
+   way to show the rest is to scroll it rather than to crop it — the old card
+   cut Nordform's grid and Lumera's hero mid-element and called it a preview.
+   One transform on one element: composited, no layout, no repaint. The duration
+   is long on purpose; it reads as a page being read, not as a slide. */
+.imm .cs-scroll {
+  width: 100%;
+  height: auto;
+  min-height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+  transform: translateY(0);
+  transition: transform 2.4s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+.imm .cs-item:hover .cs-scroll,
+.imm .cs-item:focus-within .cs-scroll {
+  /* Travels by its own overflow, never further — a percentage of the image, so
+     a taller page scrolls further and a short one barely moves. */
+  transform: translateY(calc(-100% + 100cqh));
+}
+@supports not (height: 100cqh) {
+  .imm .cs-item:hover .cs-scroll,
+  .imm .cs-item:focus-within .cs-scroll { transform: translateY(-38%); }
+}
+.imm .cs-item .shot-view {
+  container-type: size;
+}
+
+/* ── the four supporting pages ── */
+/* The card is a two-column grid; this row spans both and closes it. */
+.imm .cs-item { grid-template-rows: auto auto; }
+.imm .cs-pages {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--line);
+  padding: clamp(18px, 2vw, 26px) clamp(20px, 2.4vw, 32px) clamp(20px, 2.4vw, 30px);
+}
+.imm .cs-pages-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 10px;
+}
+.imm .cs-pages ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  /* minmax(0,1fr), not 1fr: a `1fr` track floors at min-content, and the labels
+     are `nowrap`, so "Projektöversikt" widened its own column and left the four
+     thumbnails at four different widths — which the aspect-ratio then turned
+     into four different heights. */
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+.imm .cs-pages button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.25s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.imm .cs-pages button:hover,
+.imm .cs-pages button:focus-visible {
+  border-color: rgba(255, 255, 255, 0.28);
+  transform: translateY(-2px);
+}
+.imm .cs-pages img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+.imm .cs-pages span {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--dim);
+  padding: 9px 11px 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── the dialog ── */
+.imm .cs-dialog {
+  position: fixed;
+  inset: 0;
+  /* Above the fixed nav (100) and below the skip link (200). At 90 the navbar
+     floated over the modal, which both broke the overlay and left a control
+     visible that the focus trap had already made unreachable. */
+  z-index: 150;
+  display: grid;
+  place-items: center;
+  padding: clamp(16px, 4vw, 56px);
+  background: rgba(4, 6, 11, 0.82);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  animation: cs-fade 0.28s ease both;
+}
+@keyframes cs-fade { from { opacity: 0 } to { opacity: 1 } }
+.imm .cs-dialog-inner {
+  width: min(1180px, 100%);
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow: auto;
+}
+.imm .cs-dialog-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.imm .cs-dialog-head h3 {
+  font-family: var(--serif);
+  font-size: clamp(24px, 3vw, 38px);
+  font-weight: 400;
+  line-height: 1.05;
+}
+.imm .cs-dialog-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--flare);
+  margin-bottom: 6px;
+}
+.imm .cs-close {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 100px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+.imm .cs-close:hover,
+.imm .cs-close:focus-visible {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+}
+.imm .cs-dialog-figure {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #0b0d12;
+}
+.imm .cs-dialog-figure {
+  /* The point of opening a page is to see the whole page. Left unconstrained the
+     image ran past the viewport and the caption sat below the fold, so the study
+     was cut off exactly where it was supposed to open up. This bounds the image
+     by the space actually available — viewport minus the dialog's own padding,
+     header, page nav and note — so a full page fits without scrolling. */
+  min-height: 0;
+}
+.imm .cs-dialog-figure img {
+  width: 100%;
+  height: auto;
+  max-height: calc(100svh - 300px);
+  object-fit: contain;
+  object-position: top center;
+  display: block;
+  background: #0b0d12;
+}
+.imm .cs-dialog-figure figcaption {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--dim);
+  padding: 10px 14px;
+  border-top: 1px solid var(--line);
+}
+.imm .cs-dialog-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.imm .cs-dialog-dot {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--dim);
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  padding: 7px 13px;
+  background: transparent;
+  cursor: pointer;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+.imm .cs-dialog-dot:hover,
+.imm .cs-dialog-dot:focus-visible { color: var(--ink); border-color: rgba(255,255,255,0.3); }
+.imm .cs-dialog-dot.is-current {
+  color: var(--void);
+  background: var(--ink);
+  border-color: var(--ink);
+}
+.imm .cs-dialog-note {
+  font-size: 12.5px;
+  color: var(--dim);
+  max-width: 68ch;
+}
+
+@media (max-width: 860px) {
+  .imm .cs-flip { grid-template-columns: 1fr; }
+  .imm .cs-flip .work-visual { order: 1; }
+  .imm .cs-flip .work-meta { order: 2; border-right: 0; }
+  .imm .cs-pages ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .imm .cs-scroll { transition: none; }
+  .imm .cs-item:hover .cs-scroll,
+  .imm .cs-item:focus-within .cs-scroll { transform: none; }
+  .imm .cs-dialog { animation: none; }
+  .imm .cs-pages button:hover,
+  .imm .cs-pages button:focus-visible { transform: none; }
+}

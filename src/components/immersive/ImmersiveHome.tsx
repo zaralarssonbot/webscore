@@ -8,6 +8,7 @@ import {
 } from "framer-motion";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 import SpatialHero from "@/immersive/spatial/SpatialHero";
+import ConceptStudy, { type ConceptStudyData } from "./ConceptStudy";
 import { conceptVisuals } from "@/components/portfolio/concept-visuals";
 import papajun from "@/assets/portfolio/papajun.webp";
 import papajun1 from "@/assets/portfolio/papajun-1.webp";
@@ -217,38 +218,34 @@ const PAPAJUN = {
  * delivered assignment, and — unlike Papa Jun — no host in its browser chrome.
  * No logo walls, no testimonials, no metrics.
  */
-const PROJECTS: Project[] = [
+const PROJECTS: ConceptStudyData[] = [
   {
     id: "veyra",
     name: "Veyra Hotels",
     sector: "Boutiquehotell",
     line: "Direktbokning som en designad upplevelse, inte ett formulär.",
-    image: conceptVisuals.veyra.desktop,
-    alt: conceptVisuals.veyra.desktopAlt,
+    visual: conceptVisuals.veyra,
   },
   {
     id: "nordform",
     name: "Nordform Studio",
     sector: "Arkitektur & inredning",
     line: "Ett arkiv där arbetet bär sidan — inte dekoren.",
-    image: conceptVisuals.nordform.desktop,
-    alt: conceptVisuals.nordform.desktopAlt,
+    visual: conceptVisuals.nordform,
   },
   {
     id: "lumera",
     name: "Lumera Skin",
     sector: "Premiumhandel",
     line: "Lugn produktyta där materialet och ljuset gör försäljningen.",
-    image: conceptVisuals.lumera.desktop,
-    alt: conceptVisuals.lumera.desktopAlt,
+    visual: conceptVisuals.lumera,
   },
   {
     id: "asteron",
     name: "Asteron Systems",
     sector: "Affärssystem",
     line: "Trovärdighet genom produktyta, inte genom loggväggar.",
-    image: conceptVisuals.asteron.desktop,
-    alt: conceptVisuals.asteron.desktopAlt,
+    visual: conceptVisuals.asteron,
   },
 ];
 
@@ -263,7 +260,7 @@ const CAPS = [
 /** The creative-technology disciplines. Kept concise: the page is the argument. */
 const DISCIPLINES = [
   { k: "Design", d: "System, typografi och komposition — inte mallar." },
-  { k: "Kod", d: "Vi bygger det vi ritar. Ingen överlämning som tappar detaljerna." },
+  { k: "Kod", d: "Vi utvecklar det vi formger. Ingen överlämning som tappar detaljerna." },
   { k: "Rörelse", d: "Animation med syfte: riktning, tyngd och kontinuitet." },
   { k: "3D", d: "Realtidsgrafik i webbläsaren — som fältet bakom den här sidan." },
   { k: "AI", d: "Research, produktion och system som anpassar sig." },
@@ -476,21 +473,7 @@ export default function ImmersiveHome() {
 
             {PROJECTS.map((p, i) => (
               <Reveal key={p.id} delay={i * 0.05}>
-                <article className="work-item">
-                  <div className="work-visual">
-                    <Shot label="Konceptstudie" image={p.image} alt={p.alt} />
-                  </div>
-                  <div className="work-meta">
-                    <p className="tag concept">◇ Konceptstudie</p>
-                    <h3>{p.name}</h3>
-                    <p className="sector">{p.sector}</p>
-                    <p className="line">{p.line}</p>
-                    <p className="disclaim">
-                      Påhittat varumärke framtaget för att visa en designriktning — inte
-                      ett företag, en kund eller ett utfört uppdrag.
-                    </p>
-                  </div>
-                </article>
+                <ConceptStudy study={p} flip={i % 2 === 1} />
               </Reveal>
             ))}
           </div>
