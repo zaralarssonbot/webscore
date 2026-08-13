@@ -227,11 +227,11 @@ const PROJECTS: ConceptStudyData[] = [
     visual: conceptVisuals.veyra,
   },
   {
-    id: "nordform",
-    name: "Nordform Studio",
-    sector: "Arkitektur & inredning",
-    line: "Ett arkiv där arbetet bär sidan — inte dekoren.",
-    visual: conceptVisuals.nordform,
+    id: "verk",
+    name: "Verk",
+    sector: "Digitalt magasin",
+    line: "Innehållet är gränssnittet — typografi, bild och ljud i ett system.",
+    visual: conceptVisuals.verk,
   },
   {
     id: "lumera",

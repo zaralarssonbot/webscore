@@ -5,11 +5,11 @@ import veyraUpplevelser from "@/assets/portfolio/concepts/veyra-upplevelser.webp
 import veyraRestaurang from "@/assets/portfolio/concepts/veyra-restaurang.webp";
 import veyraBokning from "@/assets/portfolio/concepts/veyra-direktbokning.webp";
 
-import nordformDesktop from "@/assets/portfolio/concepts/nordform-desktop.webp";
-import nordformOversikt from "@/assets/portfolio/concepts/nordform-projektoversikt.webp";
-import nordformDetalj from "@/assets/portfolio/concepts/nordform-projektdetalj.webp";
-import nordformStudio from "@/assets/portfolio/concepts/nordform-studio.webp";
-import nordformKontakt from "@/assets/portfolio/concepts/nordform-kontakt.webp";
+import verkDesktop from "@/assets/portfolio/concepts/verk-desktop.webp";
+import verkReportage from "@/assets/portfolio/concepts/verk-reportage.webp";
+import verkArkiv from "@/assets/portfolio/concepts/verk-arkiv.webp";
+import verkLjud from "@/assets/portfolio/concepts/verk-ljud.webp";
+import verkOm from "@/assets/portfolio/concepts/verk-om.webp";
 
 import lumeraDesktop from "@/assets/portfolio/concepts/lumera-desktop.webp";
 import lumeraMobile from "@/assets/portfolio/concepts/lumera-mobile.webp";
@@ -79,16 +79,16 @@ export const conceptVisuals = {
       { src: veyraBokning, label: "Direktbokning", alt: "Konceptsida: direktbokning med kalender, rumssammanfattning och en tydlig bekräfta-knapp." },
     ],
   },
-  nordform: {
-    domain: "nordform.webscore.se",
-    desktop: nordformDesktop,
-    desktopAlt: "Startsidan i konceptstudien Nordform Studio: stramt skandinaviskt rutnät med arkitekturbilder.",
-    tint: "rgba(232,232,230,0.9)",
+  verk: {
+    domain: "verk.webscore.se",
+    desktop: verkDesktop,
+    desktopAlt: "Startsidan i konceptstudien Verk: redaktionellt magasin på varmt pappersvitt med serifrubrik och ett asymmetriskt bildrutnät med bylines.",
+    tint: "rgba(244,241,236,0.9)",
     pages: [
-      { src: nordformOversikt, label: "Projektöversikt", alt: "Konceptsida: projektöversikt som ett strikt rutnät av arkitekturprojekt." },
-      { src: nordformDetalj, label: "Projektdetalj", alt: "Konceptsida: enskilt projekt med en stor interiörbild och en smal textspalt." },
-      { src: nordformStudio, label: "Studio", alt: "Konceptsida: studiosida med en lugn bild av arbetsbord med ritningar och modeller." },
-      { src: nordformKontakt, label: "Kontakt", alt: "Konceptsida: kontaktsida med ett avskalat formulär och ett blekt kartblock." },
+      { src: verkReportage, label: "Reportage", alt: "Konceptsida: ett enskilt reportage med stor serifrubrik, ingress, byline, ett brett foto och två spalter brödtext." },
+      { src: verkArkiv, label: "Arkiv", alt: "Konceptsida: arkivet som ett lugnt textregister med rubrik, kategori och årtal på varje rad." },
+      { src: verkLjud, label: "Ljud", alt: "Konceptsida: ljudavsnitt som rader med kvadratiskt foto, titel, en beskrivande rad och en enkel spelknapp." },
+      { src: verkOm, label: "Om", alt: "Konceptsida: om-sidan med en smal textspalt, ett brett studiofoto och en redaktionsruta med roller." },
     ],
   },
   lumera: {

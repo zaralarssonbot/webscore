@@ -1373,3 +1373,79 @@
   .imm .cs-pages button:hover,
   .imm .cs-pages button:focus-visible { transform: none; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FIELD ATTENUATION — the lattice supports the reading, it does not compete
+   ══════════════════════════════════════════════════════════════════════════
+
+   The lattice is a fixed full-viewport canvas behind transparent sections, so
+   the editorial sections were setting `--dim` body copy directly over moving
+   accent nodes. In "Vad vi gör" the field ran straight through the lead
+   paragraph and the capability rows, and the text lost.
+
+   The fix attenuates the FIELD rather than boxing the TEXT. A single wide
+   ellipse of the page's own colour is anchored over the text column and is
+   fully dissolved before it reaches any section edge — there is no rectangle,
+   no visible boundary, and nothing that reads as a panel. It is the same idea
+   as the hero's local contrast carrier, which is already this codebase's
+   established answer to type over a busy ground: lower the luminance behind the
+   glyphs instead of adding light to them.
+
+   It costs nothing per frame: one static gradient, painted once, no filter, no
+   backdrop-filter, no new compositing layer. `main` already establishes a
+   stacking context above the canvas, so a z-index of -1 here sits above the
+   lattice and below the section's own content.
+
+   The dot field stays fully visible in the margins, between sections and behind
+   the section headings, which is where it was doing its work anyway. */
+.imm .caps,
+.imm .tech,
+.imm .process,
+.imm .about,
+.imm .transform-band {
+  position: relative;
+}
+.imm .caps::before,
+.imm .tech::before,
+.imm .process::before,
+.imm .about::before,
+.imm .transform-band::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  /* Bleeds well past the padding box so the falloff happens off-section. */
+  inset: -8% -14%;
+  /* Centred at 44%, not 30%: the capability rows run a description column out to
+     roughly 80% of the section width, and a veil anchored on the heading left
+     the ends of those lines sitting on bare field. Sized to the text measure. */
+  background: radial-gradient(74% 48% at 44% 46%,
+    rgba(7, 8, 11, 0.9) 0%,
+    rgba(7, 8, 11, 0.76) 40%,
+    rgba(7, 8, 11, 0.42) 64%,
+    rgba(7, 8, 11, 0.14) 82%,
+    transparent 94%);
+}
+
+/* Body copy over the field gets one step more presence. `--dim` is tuned for
+   text on flat near-black; over a live field it sits too close to the nodes. */
+.imm .caps .section-lead,
+.imm .tech .section-lead,
+.imm .process .section-lead,
+.imm .about .section-lead,
+.imm .cap-row p,
+.imm .cap-orbit p {
+  color: #a7b0c2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The field is static here, so the veil can be lighter. */
+  .imm .caps::before,
+  .imm .tech::before,
+  .imm .process::before,
+  .imm .about::before,
+  .imm .transform-band::before {
+    background: radial-gradient(58% 44% at 30% 46%,
+      rgba(7, 8, 11, 0.78) 0%, rgba(7, 8, 11, 0.4) 52%, transparent 88%);
+  }
+}
