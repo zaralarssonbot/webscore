@@ -1,0 +1,212 @@
+/**
+ * THE SPATIAL HERO — styles.
+ *
+ * Scoped under `.imm` for the same reason `immersive.css` is: this app is
+ * Tailwind + shadcn and a bare `section`/`h1` rule would reach the Admin
+ * console and the /app dashboard. Tokens (`--void`, `--ink`, `--dim`, `--serif`,
+ * `--mono`, `--pad`) are the homepage's own — this file defines no palette.
+ *
+ * The type deliberately uses the page's `--serif`, not the prototype's Fraunces.
+ * The hero's identity is the film, the copy and the two-tier roman/italic
+ * structure, all of which are preserved; the typeface is the homepage's, and a
+ * second serif family loaded for one line would read as two art directions on
+ * one page, which is the thing this integration exists to avoid.
+ */
+
+/* ── the scrubbed track ──
+   The track is tall and the stage sticks to the viewport inside it, so scrolling
+   the track scrubs the film while the picture stays still on screen. */
+.imm .sp-track {
+  position: relative;
+}
+.imm .sp-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+.imm .sp-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* The film fades from black; this is what it fades FROM, and it is also what
+     shows for the few seconds before the first clip has decoded. Never a poster
+     and never a spinner — the typography carries that wait. */
+  background: var(--void);
+}
+
+.imm .sp-hero {
+  position: relative;
+  z-index: 1;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 var(--pad);
+}
+.imm .sp-hero-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* ── typography ── */
+/* The page sets its eyebrow in `--dim` (#8A93A6), which is correct on near-black
+   and disappears against sky — measured at the opening frame it sits on a field
+   brighter than itself. Over the film it takes `--ink`, the same colour the film
+   hands the page over at. */
+.imm .sp-hero .eyebrow {
+  position: relative;
+  display: inline-block;
+  padding: 2px 0;
+  color: var(--ink);
+  opacity: 0.94;
+  /* The label lands on the sun and the horizon — the brightest band in the whole
+     sequence — and it is the smallest type on the screen, so the carrier behind
+     it is not enough on its own at 11px. This is the same idea applied locally:
+     lower luminance immediately behind the glyphs, tight enough that it reads as
+     contrast rather than as a glow. */
+  text-shadow: 0 0 2px rgba(4, 11, 30, 0.75), 0 1px 14px rgba(4, 11, 30, 0.9);
+}
+.imm .sp-hero h1 {
+  position: relative;
+  font-family: var(--serif);
+  font-size: min(150px, 10.4vw);
+  line-height: 0.86;
+  letter-spacing: -0.035em;
+  font-weight: 400;
+  margin-bottom: 34px;
+}
+/* Cool, not `--flare`.
+   The rest of the homepage sets its italic accent in the warm flare, which is
+   right on near-black. Here the accent sits on golden hour — measured across the
+   chain at R−B +23 (the air) to +58 (the glass) — and warm type on warm footage
+   loses the separation the accent exists to create. The cool reading is the one
+   verified legible over the film, and it is not a new colour: the film hands the
+   page over at #E8E8F1 and the page's own `--ink` is #ECEFF6. */
+.imm .sp-hero h1 em {
+  font-style: italic;
+  color: #a9cdf4;
+}
+.imm .sp-hero .lede {
+  position: relative;
+  color: var(--ink);
+  opacity: 0.86;
+  font-size: clamp(16px, 1.45vw, 19px);
+  max-width: 44ch;
+  margin: 0 auto 34px;
+}
+
+/* ── local contrast carrier ──
+   Ported from the approved prototype, values unchanged.
+
+   The type lay over sunset and bright sky and washed out. Glow does not solve
+   that: glow adds light, and the problem is that the background is already
+   brighter than the type. What is needed is lower luminance BEHIND the glyphs.
+
+   The carrier is a soft navy gradient bound to the text block itself rather than
+   to the hero layer, so it travels with the type instead of sitting as a panel
+   over the picture. It is fully dissolved before it reaches the building or the
+   horizon, and it is a pure gradient: no filter pass, no backdrop-filter, no new
+   compositing layer, no cost per frame. The footage is never flattened to make
+   room for text. */
+.imm .sp-hero h1,
+.imm .sp-hero .lede,
+.imm .sp-hero .eyebrow {
+  isolation: isolate;
+}
+.imm .sp-hero h1::before,
+.imm .sp-hero .lede::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  left: -14%;
+  right: -14%;
+  top: -70%;
+  bottom: -70%;
+  background: radial-gradient(58% 50% at 42% 50%,
+    rgba(4, 11, 30, 0.72) 0%, rgba(4, 11, 30, 0.52) 38%,
+    rgba(4, 11, 30, 0.22) 62%, transparent 82%);
+}
+.imm .sp-hero .lede::before { top: -140%; bottom: -140%; }
+/* The label is smallest and stands least; it gets the densest core. */
+.imm .sp-hero .eyebrow::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  left: -8%;
+  right: -8%;
+  top: -320%;
+  bottom: -320%;
+  background: radial-gradient(52% 50% at 50% 50%,
+    rgba(4, 11, 30, 0.86), rgba(4, 11, 30, 0.38) 54%, transparent 78%);
+}
+
+/* The carrier bleeds outside its text box on purpose — a radial gradient that
+   stopped hard at the glyph edge would read as a visible plate. The bleed is set
+   in percentages of the text block, so at narrow widths it can reach past the
+   viewport; `clip` contains it without creating a scroll container, which
+   `hidden` would (and which would break the sticky stage). */
+.imm .sp-track { overflow-x: clip; }
+
+.imm .sp-hero .cta-row { justify-content: center; }
+
+/* ── the still build: small screens, coarse pointers, reduced motion ──
+   Clip A's own first frame — the picture desktop opens on. No canvas mounts and
+   no video element is created, so no film is ever fetched here. */
+.imm .sp-hero-still {
+  position: relative;
+  overflow: hidden;
+}
+.imm .sp-still {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: 50% 18%;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 52%, transparent 88%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 52%, transparent 88%);
+}
+/* The still build's version of the carrier above — same reasoning, same
+   restraint: clear across the sky where the type sits, closing only toward the
+   bottom so the picture hands over to the page colour instead of being
+   flattened. */
+.imm .sp-still::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(11, 22, 48, 0.42) 0%, rgba(11, 22, 48, 0.58) 38%,
+    rgba(9, 16, 34, 0.86) 72%, var(--void) 100%);
+}
+.imm .sp-hero-still .sp-hero-inner { position: relative; z-index: 1; }
+
+/* Roman on one line, italic on the next — the only break in the hero line, set
+   rather than left to the wrapper. There is no width at which the full line fits
+   the still build, and every automatic break was a bad one: left alone it split
+   "Kliv in i det / vi skapar." and orphaned the article, and holding the accent
+   together with nowrap moved the break one word left to "Kliv in / i det vi
+   skapar." The wrapper breaks at the last space that fits, and that space is
+   never the one between the two tiers. */
+.imm .sp-hero-still h1 {
+  font-size: clamp(46px, 13.5vw, 96px);
+}
+.imm .sp-hero-still h1 em {
+  display: block;
+  white-space: nowrap;
+}
+
+/* The display line was sized for height, never for width. Measured on the
+   current line it sets at 7.59× its font size and the hero column is 79vw, so
+   the largest size that still fits one line is 10.4vw — which `min()` above
+   already applies. Short viewports keep their own ceiling. */
+@media (max-height: 820px) {
+  .imm .sp-hero h1 { font-size: min(118px, 10.4vw); }
+  .imm .sp-hero .eyebrow { margin-bottom: 22px; }
+}
+@media (max-height: 680px) {
+  .imm .sp-hero h1 { font-size: min(96px, 10.4vw); }
+}

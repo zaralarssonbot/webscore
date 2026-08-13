@@ -33,6 +33,19 @@ interface SceneProps {
   chargeRef: React.MutableRefObject<number>;
   reduced: boolean;
   mobile: boolean;
+  /**
+   * True while something opaque covers the whole viewport — in practice the
+   * Spatial hero's film, which is its own full-screen WebGL canvas.
+   *
+   * The wake gating below is an IntersectionObserver on this scene's own wrap,
+   * and that wrap is fixed and full-viewport, so it is always intersecting and
+   * the scene never slept. With the film in front of it that meant two
+   * full-screen contexts drawing every frame for the whole 880vh hero, one of
+   * them invisible: measured 28–30 fps with p99 34.3 ms — a clean halving, not
+   * jitter. Paused here it is not merely cheaper, it is drawing nothing anyone
+   * can see.
+   */
+  paused?: boolean;
   /** Called if WebGL is unavailable or the context is lost, so the page can
       swap in the lightweight static field instead of showing nothing. */
   onFailure?: () => void;
@@ -73,14 +86,15 @@ export default function LatticeScene({
   chargeRef,
   reduced,
   mobile,
+  paused = false,
   onFailure,
 }: SceneProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
   // Props the animation loop reads every frame. Held in a ref so the effect can
   // stay mount-only (rebuilding the scene on a prop change would restart the
   // whole field mid-scroll).
-  const liveProps = useRef({ reduced, mobile });
-  liveProps.current = { reduced, mobile };
+  const liveProps = useRef({ reduced, mobile, paused });
+  liveProps.current = { reduced, mobile, paused };
 
   const failRef = useRef(onFailure);
   failRef.current = onFailure;
@@ -323,7 +337,9 @@ export default function LatticeScene({
     const loop = () => {
       raf = requestAnimationFrame(loop);
       const delta = clock.getDelta();
-      if (!awake) return; // gated: offscreen or backgrounded — no simulation, no draw
+      // gated: offscreen, backgrounded, or covered by the hero film — no
+      // simulation, no draw.
+      if (!awake || liveProps.current.paused) return;
       step(delta);
     };
 

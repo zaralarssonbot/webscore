@@ -7,6 +7,7 @@ import {
   type MotionValue,
 } from "framer-motion";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
+import SpatialHero from "@/immersive/spatial/SpatialHero";
 import { conceptVisuals } from "@/components/portfolio/concept-visuals";
 import papajun from "@/assets/portfolio/papajun.webp";
 import papajun1 from "@/assets/portfolio/papajun-1.webp";
@@ -327,6 +328,9 @@ export default function ImmersiveHome() {
   const chargeRef = useRef(0);
   const [active, setActive] = useState("");
   const [charged, setCharged] = useState(false);
+  // The lattice sleeps while the hero film is in front of it. Starts true: at
+  // load the film covers the viewport, and the lattice has nothing to say yet.
+  const [filmCovering, setFilmCovering] = useState(true);
 
   const { scrollYProgress } = useScroll();
   useEffect(() => scrollYProgress.on("change", (v) => { progressRef.current = v; }), [scrollYProgress]);
@@ -384,6 +388,7 @@ export default function ImmersiveHome() {
             chargeRef={chargeRef}
             reduced={reduced}
             mobile={mobile}
+            paused={filmCovering}
             onFailure={() => setWebglFailed(true)}
           />
         </Suspense>
@@ -391,26 +396,26 @@ export default function ImmersiveHome() {
       {!useWebGL && <StaticField reduced={reduced} progress={scrollYProgress} />}
 
       <main id="main">
-        <section className="hero" id="top">
-          <motion.div
-            className="hero-inner"
-            style={reduced ? undefined : { opacity: heroFade, y: heroLift }}
-          >
-            <p className="eyebrow">Kreativ teknikstudio · Sverige</p>
-            <h1>Digitala upplevelser<br />som <em>inte går att ignorera.</em></h1>
-            <p className="lede">
-              Vi designar och bygger webbplatser, digitala upplevelser, innehåll och
-              AI-drivna system för varumärken som vill märkas.
-            </p>
-            <div className="cta-row">
-              <a className="btn btn-primary" href="#kontakt">
-                Starta ett projekt <span className="arrow" aria-hidden="true">→</span>
-              </a>
-              <a className="btn btn-ghost" href="#projekt">Se våra projekt</a>
-            </div>
-          </motion.div>
-          <div className="scroll-cue" aria-hidden="true"><span /><p>Scrolla</p></div>
-        </section>
+        {/* The approved Norra Tornen sequence, scrubbed by scroll on desktop and
+            held as its own first frame on phones and coarse pointers. The copy
+            is the approved hero copy and the two tiers are load-bearing: the
+            eyebrow gives the category and the lede the scope, so by the time
+            "skapar" is read the object is already digital. Weakening either
+            neighbour puts the building back in play — the film under this line
+            is an aerial of a residential tower. */}
+        <SpatialHero onCoverChange={setFilmCovering}>
+          <p className="eyebrow">Kreativ teknikstudio · Sverige</p>
+          <h1>Kliv in i <em>det vi skapar.</em></h1>
+          <p className="lede">
+            Webbplatser, digitala produkter, innehåll och AI&#8209;system.
+          </p>
+          <div className="cta-row">
+            <a className="btn btn-primary" href="#kontakt">
+              Starta ett projekt <span className="arrow" aria-hidden="true">→</span>
+            </a>
+            <a className="btn btn-ghost" href="#projekt">Se våra projekt</a>
+          </div>
+        </SpatialHero>
 
         <section className="transform-band" aria-labelledby="tf-h">
           <Reveal>

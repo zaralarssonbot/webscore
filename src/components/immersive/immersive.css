@@ -34,7 +34,17 @@
   font-size: 17px;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
+  /* `clip`, not `hidden`, and both are declared on purpose.
+     `overflow-x: hidden` makes this element a scroll container, and a scroll
+     container becomes the scrollport that any `position: sticky` descendant
+     sticks inside. `.imm` never scrolls itself, so the Spatial hero's sticky
+     stage never engaged — measured at 80% through the track it had scrolled
+     5616px off the top instead of holding at 0. `clip` gives the same
+     containment without creating that scroll container. The `hidden` line stays
+     first as the fallback for engines without `clip` (Safari < 16), where the
+     overflow guard matters more than the film. */
   overflow-x: hidden;
+  overflow-x: clip;
   position: relative;
   min-height: 100svh;
 }
