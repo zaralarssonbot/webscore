@@ -23,6 +23,10 @@
   --line: rgba(255, 255, 255, 0.1);
   --flare: #ff6b3d;
   --cool: #4c7df0;
+  /* The colour the film's last frame must equal, read by the Spatial backdrop.
+     It is the ground of the bright world that now follows the portal, and it is
+     the value clip E was graded to land on. */
+  --portal-landing: #f1f4f8;
   --sans: "Inter", system-ui, sans-serif;
   --serif: "Instrument Serif", Georgia, serif;
   --mono: "JetBrains Mono", ui-monospace, monospace;

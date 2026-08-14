@@ -165,8 +165,13 @@ export function createBackdrop(opts: BackdropOptions): Backdrop | null {
   // each side. The scrim is left ungraded on purpose — it carries no picture.
   // The hand-over colour is read from the page rather than hard-coded, so the
   // film cannot end on a colour the page is not.
+  // Read from `--portal-landing`, not from `--void`. The rule is that the film's
+  // last frame and the page's first frame must be the same colour, and the page
+  // that follows is no longer the dark homepage — it is the bright world, whose
+  // ground is #F1F4F8. That is also the colour clip E was graded to land on in
+  // the first place, so this returns the hand-over to its measured value.
   const pageColour =
-    getComputedStyle(wrap).getPropertyValue("--void").trim() || "#07080b";
+    getComputedStyle(wrap).getPropertyValue("--portal-landing").trim() || "#F1F4F8";
   const grade = makeGradeUniforms(pageColour);
   for (const m of [videoMesh, freezeMesh, blendMesh]) {
     if (m) applyGrade(m.material, grade);

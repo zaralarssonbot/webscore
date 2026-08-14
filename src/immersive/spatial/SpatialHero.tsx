@@ -96,9 +96,18 @@ interface Props {
    * build, which has no canvas of its own to hide anything.
    */
   onCoverChange?: (covering: boolean) => void;
+  /**
+   * Fires when the film's own flatten passes half — the point at which the frame
+   * is already mostly the page's landing colour.
+   *
+   * The chrome cannot wait for the bright world to scroll into view: the film
+   * goes white a screen earlier, and for that screen the dark pill and the orange
+   * CTA sat on #F1F4F8, which is exactly the hand-over the grade exists to hide.
+   */
+  onLightChrome?: (light: boolean) => void;
 }
 
-export default function SpatialHero({ children, onCoverChange }: Props) {
+export default function SpatialHero({ children, onCoverChange, onLightChrome }: Props) {
   const reduced = !!useReducedMotion();
   const still = useRef(typeof window === "undefined" ? true : preferStill()).current;
   const quality = useRef(typeof window === "undefined" ? ("m1440" as Quality) : qualityFromUrl()).current;
@@ -284,6 +293,9 @@ export default function SpatialHero({ children, onCoverChange }: Props) {
   // "nothing behind this is visible".
   const coverRef = useRef(onCoverChange);
   coverRef.current = onCoverChange;
+  const onLightRef = useRef(onLightChrome);
+  onLightRef.current = onLightChrome;
+  const lightRef = useRef(false);
   useEffect(() => {
     if (!film) { coverRef.current?.(false); return; }
     const el = trackRef.current;
@@ -302,6 +314,11 @@ export default function SpatialHero({ children, onCoverChange }: Props) {
     return scrollYProgress.on("change", (v) => {
       syncRef.current(v);
       applyTypeTravel(v);
+      const light = chainAt(v).flatten > 0.5;
+      if (light !== lightRef.current) {
+        lightRef.current = light;
+        onLightRef.current?.(light);
+      }
     });
   }, [film, scrollYProgress]);
 

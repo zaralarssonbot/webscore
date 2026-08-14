@@ -9,6 +9,7 @@ import {
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 import SpatialHero from "@/immersive/spatial/SpatialHero";
 import ConceptStudy, { type ConceptStudyData } from "./ConceptStudy";
+import BrightWorld from "./BrightWorld";
 import { conceptVisuals } from "@/components/portfolio/concept-visuals";
 import papajun from "@/assets/portfolio/papajun.webp";
 import papajun1 from "@/assets/portfolio/papajun-1.webp";
@@ -58,7 +59,7 @@ const NAV = [
   { id: "kontakt", label: "Kontakt" },
 ];
 
-function Nav({ active }: { active: string }) {
+function Nav({ active, light }: { active: string; light?: boolean }) {
   const [open, setOpen] = useState(false);
 
   // Close on Escape so the menu is never a keyboard trap.
@@ -70,7 +71,7 @@ function Nav({ active }: { active: string }) {
   }, [open]);
 
   return (
-    <header className="nav-wrap">
+    <header className={`nav-wrap${light ? " is-light" : ""}`}>
       <nav className="nav" aria-label="Huvudmeny">
         <a className="brand" href="#top">
           <span className="brand-mark" aria-hidden="true" />
@@ -328,6 +329,23 @@ export default function ImmersiveHome() {
   // The lattice sleeps while the hero film is in front of it. Starts true: at
   // load the film covers the viewport, and the lattice has nothing to say yet.
   const [filmCovering, setFilmCovering] = useState(true);
+  // The chrome inverts while the bright world is under it. Without this the dark
+  // pill and the orange CTA — the language the bright world exists to replace —
+  // sit on top of #F1F4F8 and are the first thing seen after the portal.
+  const [onBright, setOnBright] = useState(false);
+  // The film reports its own flatten a screen earlier than the bright world
+  // scrolls in; either one puts the chrome into its light state.
+  const [filmWhite, setFilmWhite] = useState(false);
+  useEffect(() => {
+    const el = document.querySelector(".bw");
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([e]) => setOnBright(e.isIntersecting && e.intersectionRatio > 0),
+      { rootMargin: "-72px 0px -85% 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   const { scrollYProgress } = useScroll();
   useEffect(() => scrollYProgress.on("change", (v) => { progressRef.current = v; }), [scrollYProgress]);
@@ -374,7 +392,7 @@ export default function ImmersiveHome() {
   return (
     <div className="imm">
       <a className="skip" href="#main">Hoppa till innehåll</a>
-      <Nav active={active} />
+      <Nav active={active} light={onBright || filmWhite} />
 
       {useWebGL && (
         <Suspense fallback={null}>
@@ -400,7 +418,7 @@ export default function ImmersiveHome() {
             "skapar" is read the object is already digital. Weakening either
             neighbour puts the building back in play — the film under this line
             is an aerial of a residential tower. */}
-        <SpatialHero onCoverChange={setFilmCovering}>
+        <SpatialHero onCoverChange={setFilmCovering} onLightChrome={setFilmWhite}>
           <p className="eyebrow">Kreativ teknikstudio · Sverige</p>
           <h1>Kliv in i <em>det vi skapar.</em></h1>
           <p className="lede">
@@ -413,6 +431,10 @@ export default function ImmersiveHome() {
             <a className="btn btn-ghost" href="#projekt">Se våra projekt</a>
           </div>
         </SpatialHero>
+
+        {/* The computer screen expands into the website. Sections beyond these
+            two are still the old dark language and are next in line. */}
+        <BrightWorld />
 
         <section className="transform-band" aria-labelledby="tf-h">
           <Reveal>

@@ -160,27 +160,48 @@
 .imm .sp-hero-still {
   position: relative;
   overflow: hidden;
+  /* Whatever is not covered by the photograph is the landing colour, never the
+     void. The old value here is what produced the black line where the still met
+     the bright world. */
+  background: var(--portal-landing, #f1f4f8);
 }
+/* No mask. The mask used to fade the photograph out by 88%, which exposed the
+   section beneath it and put a hard edge across the frame. The hand-over is done
+   by the light instead — see the scrim below — so the picture itself runs the
+   full height and stays cinematic to the last pixel it is allowed. */
 .imm .sp-still {
   position: absolute;
   inset: 0;
   z-index: 0;
   background-size: cover;
   background-position: 50% 18%;
-  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 52%, transparent 88%);
-  mask-image: linear-gradient(180deg, #000 0%, #000 52%, transparent 88%);
 }
-/* The still build's version of the carrier above — same reasoning, same
-   restraint: clear across the sky where the type sits, closing only toward the
-   bottom so the picture hands over to the page colour instead of being
-   flattened. */
+/* The still build's version of the carrier — and, in its lower third, the
+   hand-over the film performs on desktop.
+
+   The old ramp closed on `--void`, so the photograph darkened into near-black
+   and met #F1F4F8 at a hard line. It now closes on the landing colour instead,
+   and it does it slowly: the light starts entering at 72% and does not reach
+   full strength until the very bottom, so the final ~28% of the frame brightens,
+   loses contrast, loses saturation and takes on icy blue before it becomes the
+   page. Laying translucent light over a picture is what removes contrast and
+   colour — no filter, no blur, no second layer, nothing to see as an effect.
+
+   The upper stops are unchanged, because they are the type's contrast carrier
+   and the copy still has to read against sky. */
 .imm .sp-still::after {
   content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg,
-    rgba(11, 22, 48, 0.42) 0%, rgba(11, 22, 48, 0.58) 38%,
-    rgba(9, 16, 34, 0.86) 72%, var(--void) 100%);
+    rgba(11, 22, 48, 0.42) 0%,
+    rgba(11, 22, 48, 0.58) 38%,
+    rgba(12, 24, 50, 0.55) 66%,
+    rgba(58, 104, 172, 0.44) 78%,
+    rgba(150, 188, 232, 0.68) 86%,
+    rgba(206, 224, 244, 0.88) 92%,
+    rgba(236, 241, 247, 0.97) 97%,
+    var(--portal-landing, #f1f4f8) 100%);
 }
 .imm .sp-hero-still .sp-hero-inner { position: relative; z-index: 1; }
 
