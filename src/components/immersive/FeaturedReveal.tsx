@@ -65,18 +65,24 @@ export default function FeaturedReveal() {
           a transformed element cannot establish perspective for itself. */}
       <div className="bw-reveal-stage">
         {/* A real capture of the live Papa Jun site at 1440 CSS × DPR 2, not a
-            render and not an upscale. The mobile source is a 4:5 crop of that
-            same capture around the headline block — the strongest real region —
-            so a phone gets the page at its own scale rather than a thumbnail of
-            the whole desktop layout. */}
+            render and not an upscale. Both files are cut from that one master.
+
+            The desktop file stops above Papa Jun's own scroll-mouse indicator,
+            which was being captured with the page and then read as a stray
+            Webscore control sitting at the bottom of the plate.
+
+            The mobile file is a 4:5 crop around the headline block that starts
+            BELOW the menu row. Cropping through it — which is what the previous
+            frame did — left "BOKA" chopped in half at 834, and a half-word from
+            somebody else's navigation looks like a broken image, not a crop. */}
         <motion.figure className="bw-reveal-plate" style={style}>
           <picture>
-            <source media="(max-width: 860px)" srcSet={pjMobile} />
+            <source media="(max-width: 860px)" srcSet={pjMobile} width={1280} height={1600} />
             <img
               src={pjDesktop}
               alt="Startsidan för Papa Jun: solnedgång över Mälaren med publik framför en scen, serifrubriken Välkommen till en smakfull stund vid Mälaren, och knappar för dagens lunch, meny och bordsbokning."
               width={2560}
-              height={1778}
+              height={1626}
               loading="lazy"
               decoding="async"
             />

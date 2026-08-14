@@ -325,6 +325,15 @@ export default function SpatialHero({ children, onCoverChange, onLightChrome }: 
   const litRef = useRef(false);
   const lastSample = useRef(0);
   const probe = useRef<HTMLCanvasElement | null>(null);
+  /** Mean relative luminance of `rows` of the 16×9 probe, starting at `y`. */
+  const bandLuma = (ctx: CanvasRenderingContext2D, y: number, rows: number) => {
+    const d = ctx.getImageData(0, y, 16, rows).data;
+    let sum = 0;
+    for (let i = 0; i < d.length; i += 4) {
+      sum += (0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2]) / 255;
+    }
+    return sum / (d.length / 4);
+  };
   const sampleLuminance = (v: HTMLVideoElement, hero: HTMLElement | null) => {
     if (!hero || v.readyState < 2 || !v.videoWidth) return;
     const now = performance.now();
@@ -338,16 +347,25 @@ export default function SpatialHero({ children, onCoverChange, onLightChrome }: 
     // Rows 2–6 of 9. The copy block runs from roughly 30% to 65% of viewport
     // height — eyebrow, headline, lede — and sampling from row 4 missed the
     // eyebrow entirely, which is the line that sits on open sky and fails first.
-    const d = ctx.getImageData(0, 2, 16, 5).data;
-    let sum = 0;
-    for (let i = 0; i < d.length; i += 4) {
-      sum += (0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2]) / 255;
-    }
-    const lum = sum / (d.length / 4);
+    const lum = bandLuma(ctx, 2, 5);
     const lit = litRef.current ? lum > 0.52 : lum > 0.62;
     if (lit !== litRef.current) {
       litRef.current = lit;
       hero.classList.toggle("is-lit", lit);
+    }
+
+    /* The navigation is a separate decision from the copy, and it has to be:
+       the bar sits in the top ~9% of the viewport and the copy sits across the
+       middle, so one measurement cannot serve both. Driving the chrome off the
+       chain's `flatten` value instead left a dark grey capsule with a black
+       button sitting on the film's near-white final act for roughly 800px of
+       scrolling — the picture had gone white long before the edit said it had.
+       This reads the two rows the bar actually covers. */
+    const top = bandLuma(ctx, 0, 2);
+    const light = lightRef.current ? top > 0.5 : top > 0.6;
+    if (light !== lightRef.current) {
+      lightRef.current = light;
+      onLightRef.current?.(light);
     }
   };
   useEffect(() => {
@@ -370,11 +388,6 @@ export default function SpatialHero({ children, onCoverChange, onLightChrome }: 
       applyTypeTravel(v);
       const video = videoRef.current;
       if (video) sampleLuminance(video, heroRef.current);
-      const light = chainAt(v).flatten > 0.5;
-      if (light !== lightRef.current) {
-        lightRef.current = light;
-        onLightRef.current?.(light);
-      }
     });
   }, [film, scrollYProgress]);
 

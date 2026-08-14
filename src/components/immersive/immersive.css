@@ -21,7 +21,12 @@
   --ink: #eceff6;
   --dim: #8a93a6;
   --line: rgba(255, 255, 255, 0.1);
-  --flare: #ff6b3d;
+  /* Was #FF6B3D. The orange was the previous brand's accent and it survived in
+     eighteen places — including the mark beside the wordmark, which made it the
+     first colour anyone saw. It contradicted a site that is otherwise entirely
+     white and icy blue, so the token now holds the blue and every one of those
+     eighteen places followed without being touched individually. */
+  --flare: #3d8fe8;
   --cool: #4c7df0;
   /* The colour the film's last frame must equal, read by the Spatial backdrop.
      It is the ground of the bright world that now follows the portal, and it is
@@ -74,8 +79,10 @@
   left: -9999px;
   top: 0;
   z-index: 200;
-  background: var(--flare);
-  color: var(--void);
+  /* White on the deep navy, not the accent on the ground: the skip link has to
+     clear 4.5:1 wherever it lands, and it can land on either half of the page. */
+  background: #0a1220;
+  color: #ffffff;
   padding: 12px 20px;
   font-weight: 600;
 }
@@ -1452,4 +1459,242 @@
     background: radial-gradient(58% 44% at 30% 46%,
       rgba(7, 8, 11, 0.78) 0%, rgba(7, 8, 11, 0.4) 52%, transparent 88%);
   }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   THE POST-PORTAL WORLD
+   ══════════════════════════════════════════════════════════════════════════
+
+   Everything after the computer screen is one room: #F1F4F8 ground, #0A1220
+   ink, one blue accent, one button. Before this block the page changed
+   character halfway down — the bright world ended at the bridge and the
+   remaining six sections were the previous near-black site, complete with an
+   orange accent, its own container width and a primary button measured at
+   1.08:1 against its own background.
+
+   It is done by redefining the palette TOKENS rather than by restyling the
+   sections, because the section styles already read every colour from
+   `--ink`, `--dim`, `--line`, `--flare` and `--panel`. One scope moves all of
+   them, the structure and the grid are untouched, and there is exactly one
+   place to look when a colour is wrong. What follows the token block is only
+   the handful of values that were written as literals rather than as tokens.
+
+   The tokens keep their original names on purpose. `--void` no longer means
+   "near-black", it means "the ground" — renaming it would have meant touching
+   every rule that reads it, which is the change this block exists to avoid. */
+.imm .post-portal {
+  --void: #f1f4f8;
+  --near: #ffffff;
+  --panel: #ffffff;
+  --ink: #0a1220;
+  /* 6.7:1 on the ground — secondary copy here is long-form and has to be read,
+     not glanced at. */
+  --dim: #46536b;
+  --line: rgba(10, 18, 32, 0.12);
+  --flare: #16417c;
+
+  position: relative;
+  z-index: 2;
+  background: #f1f4f8;
+  color: var(--ink);
+}
+
+/* The veils existed to hold the WebGL field back from behind body copy. There
+   is no field and no dark ground, so on a light page they are simply a grey
+   cloud painted over every section. */
+.imm .post-portal .caps::before,
+.imm .post-portal .tech::before,
+.imm .post-portal .process::before,
+.imm .post-portal .about::before,
+.imm .post-portal .transform-band::before { display: none }
+
+/* Same story: text shadows in the old page colour, added as insurance against
+   bright nodes drifting under the type. On a light ground they are a dirty grey
+   halo around every line — which is exactly how they read. */
+.imm .post-portal .about-body p,
+.imm .post-portal .final-sub { text-shadow: none }
+
+/* This rule lifted body copy off the live field by a step. The field is gone;
+   the token is correct on its own now. */
+.imm .post-portal .caps .section-lead,
+.imm .post-portal .tech .section-lead,
+.imm .post-portal .process .section-lead,
+.imm .post-portal .about .section-lead,
+.imm .post-portal .cap-row p,
+.imm .post-portal .final-sub { color: var(--dim) }
+
+/* ── surfaces ──
+   Cards were dark glass: a translucent near-black over a moving field, with a
+   blur to keep the field from reading through the copy. On a flat bright ground
+   there is nothing to blur and nothing to hold back, so they become what the
+   bright world's own plates are — white, one hairline, one soft shadow. The
+   blur is dropped rather than re-tuned: it cost a compositor layer per card and
+   bought nothing once the field behind it stopped existing. */
+.imm .post-portal .work-item,
+.imm .post-portal .steps li,
+.imm .post-portal .disciplines li {
+  background: #ffffff;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.imm .post-portal .work-item,
+.imm .post-portal .steps li,
+.imm .post-portal .disciplines {
+  box-shadow: 0 1px 2px rgba(10, 18, 32, 0.04), 0 18px 40px -30px rgba(10, 18, 32, 0.28);
+}
+/* The row's own 1px gaps are drawn with `--line`, which is what separates the
+   five cells; on white it needs to be a visible hairline rather than the 10%
+   white it was on near-black. */
+.imm .post-portal .disciplines { background: rgba(10, 18, 32, 0.1) }
+.imm .post-portal .work-item:hover { border-color: rgba(22, 65, 124, 0.34) }
+.imm .post-portal .work-featured { border-color: rgba(22, 65, 124, 0.26) }
+
+/* The browser frame around project media. Restrained on dark; on white it needs
+   its own edge or the screenshot bleeds into the card it sits in. */
+.imm .post-portal .shot {
+  border-color: rgba(10, 18, 32, 0.14);
+  box-shadow: 0 8px 22px -14px rgba(10, 18, 32, 0.4);
+  background: #f6f8fb;
+}
+.imm .post-portal .shot-bar i { background: rgba(10, 18, 32, 0.16) }
+.imm .post-portal .shot-host {
+  background: rgba(10, 18, 32, 0.05);
+  color: #46536b;
+}
+.imm .post-portal .shot-host-concept { color: #5b6880 }
+.imm .post-portal .shot-view,
+.imm .post-portal .work-gallery figure { background: #f6f8fb }
+
+/* The client tag was the last orange object on the page. */
+.imm .post-portal .tag.client {
+  color: #16417c;
+  border-color: rgba(22, 65, 124, 0.45);
+  background: rgba(61, 143, 232, 0.08);
+}
+.imm .post-portal .tag.concept {
+  color: #46536b;
+  border-color: rgba(10, 18, 32, 0.18);
+}
+
+/* ── the concept-study page strip ──
+   Four 1280px screenshots rendered into ~290px each: at that reduction body
+   text stops being small and starts being noise, which is what made the studies
+   read as machine-made at a glance. Showing the top of each page instead of the
+   whole of it puts the masthead and the headline — the only parts that carry
+   the brand at this size — at roughly twice the scale, and the strip goes back
+   to doing what it is for: saying "there is more of this", not "read this". */
+.imm .post-portal .cs-pages img { aspect-ratio: 16 / 7.6 }
+.imm .post-portal .cs-pages button {
+  background: #ffffff;
+  border-color: rgba(10, 18, 32, 0.12);
+}
+.imm .post-portal .cs-pages button:hover,
+.imm .post-portal .cs-pages button:focus-visible {
+  border-color: rgba(22, 65, 124, 0.4);
+}
+.imm .post-portal .cs-pages span { color: #46536b }
+.imm .post-portal .cs-scroll { background: #f6f8fb }
+
+/* ── the closing section and the footer ──
+   The footer sits outside `.post-portal` in the DOM because it sits outside
+   `<main>`; it is only ever reached after the portal, so it takes the same
+   ground directly. */
+/* Full-bleed ground, 1360 measure. The footer used to be a 1360px-wide centred
+   box, which was invisible while the page behind it was the same near-black —
+   and became two hard black gutters the moment the page went light. The
+   constraint moves from the element to its padding, so the ground reaches both
+   edges while the content stays exactly where it was. */
+.imm .foot {
+  background: #f1f4f8;
+  border-top-color: rgba(10, 18, 32, 0.12);
+  max-width: none;
+  padding-inline: max(var(--pad), calc((100% - 1360px) / 2 + var(--pad)));
+}
+.imm .foot p,
+.imm .foot a { color: #46536b }
+.imm .foot a:hover { color: #0a1220 }
+/* 0.55 on a light ground put this under 3:1. It stays set back, by weight
+   rather than by fading it out of legibility. */
+.imm .foot-legal { opacity: 1; color: #5b6880 }
+
+/* ── luminous type, applied to the second half ──
+   The same restrained tiers the bright world already uses, so the two halves
+   read as one system. Painted behind the glyphs with `text-shadow`, never with
+   `filter`, so the letterforms stay exactly as sharp as the font renders them. */
+.imm .post-portal .section-h { text-shadow: var(--glow-section-light) }
+.imm .post-portal .final-h { text-shadow: var(--glow-display-light) }
+.imm .post-portal .section-lead,
+.imm .post-portal .final-lead { text-shadow: var(--glow-body-light) }
+.imm .post-portal .cap-n,
+.imm .post-portal .disc-i,
+.imm .post-portal .step-n,
+.imm .post-portal .final-eyebrow { text-shadow: var(--glow-label-light) }
+
+/* The hairline that opens each section reads as a fade-out on dark; on light it
+   needs to be a rule, not a smudge. */
+.imm .post-portal .rule {
+  background: linear-gradient(90deg, rgba(10, 18, 32, 0.22), rgba(10, 18, 32, 0.04));
+}
+
+/* ── clearance for the fixed bar ──
+   The navigation is fixed and opaque, so any heading that comes to rest in the
+   top ~100px of the viewport is cut in half by it. Section padding already
+   covers this on desktop; at narrow widths the padding shrinks with the
+   viewport and the headings started landing underneath. */
+@media (max-width: 860px) {
+  .imm .post-portal section { padding-top: max(clamp(90px, 13vh, 150px), 118px) }
+}
+
+/* ── the project viewer ──
+   Scoped on its own rather than under `.post-portal`, because the dialog is
+   portalled up to `.imm` to escape the card's stacking context and so never
+   inherits that scope. It opens from the second half of the page and has to
+   belong to it: a near-black modal over a white page is the single most jarring
+   thing a bright site can do, and it was the last dark surface left. */
+.imm .cs-dialog {
+  background: rgba(214, 226, 240, 0.86);
+}
+.imm .cs-dialog .cs-dialog-inner {
+  --ink: #0a1220;
+  --dim: #46536b;
+  --line: rgba(10, 18, 32, 0.14);
+  --void: #ffffff;
+  color: #0a1220;
+  background: #ffffff;
+  border: 1px solid rgba(10, 18, 32, 0.1);
+  border-radius: 18px;
+  padding: clamp(18px, 2.4vw, 28px);
+  box-shadow: 0 40px 90px -50px rgba(10, 18, 32, 0.6);
+}
+.imm .cs-dialog .cs-dialog-tag { color: #16417c }
+.imm .cs-dialog .cs-close {
+  background: rgba(10, 18, 32, 0.04);
+  border-color: rgba(10, 18, 32, 0.14);
+  color: #0a1220;
+}
+.imm .cs-dialog .cs-close:hover,
+.imm .cs-dialog .cs-close:focus-visible {
+  background: rgba(22, 65, 124, 0.1);
+  border-color: rgba(22, 65, 124, 0.4);
+}
+.imm .cs-dialog .cs-dialog-figure,
+.imm .cs-dialog .cs-dialog-figure img { background: #f6f8fb }
+/* The figure was being flex-shrunk to 548px while the image inside it was still
+   sized to 600px by its own viewport cap, so `overflow: hidden` cut the page
+   off mid-content and pushed the caption out of the box entirely — where it
+   landed on top of the page nav and the disclaimer, three overlapping rows in
+   one place. The figure takes its natural height now, and the image's ceiling
+   accounts for everything else the dialog has to fit: header, page nav, note,
+   the gaps between them and the panel's own padding. */
+.imm .cs-dialog .cs-dialog-figure { flex: none }
+.imm .cs-dialog .cs-dialog-figure img { max-height: calc(100svh - 396px) }
+.imm .cs-dialog .cs-dialog-dot:hover,
+.imm .cs-dialog .cs-dialog-dot:focus-visible {
+  color: #0a1220;
+  border-color: rgba(22, 65, 124, 0.4);
+}
+.imm .cs-dialog .cs-dialog-dot.is-current {
+  color: #ffffff;
+  background: #0a1220;
+  border-color: #0a1220;
 }

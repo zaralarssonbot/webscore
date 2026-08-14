@@ -168,17 +168,22 @@
    the page's own light rather than in a plate. The bottom edge is NOT faded: the
    spheres rest on that surface and their contact shadows live there, so fading
    it would cut the objects off the ground they are standing on. */
+/* A framed surface, not a fading one.
+   This used to dissolve its own edges with a two-axis mask so the photograph
+   would melt into the ground. It never did: the picture's out-of-focus white is
+   warmer and a step darker than #F1F4F8, so what showed was a soft-edged grey
+   rectangle — a pasted-in JPEG, which is the one thing the section must not look
+   like. A fade cannot hide a colour difference; a frame makes it deliberate.
+   It is also the same plate the section below and the project reveal use, so the
+   bright world now has one way of holding an image instead of three. */
 .bw-shot-01 {
   width: min(100%, 620px);
   justify-self: center;
-  -webkit-mask-image:
-    linear-gradient(180deg, transparent 0%, #000 16%, #000 95%, transparent 100%),
-    linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
-  mask-image:
-    linear-gradient(180deg, transparent 0%, #000 16%, #000 95%, transparent 100%),
-    linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
-  -webkit-mask-composite: source-in;
-  mask-composite: intersect;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(142, 174, 231, 0.42);
+  box-shadow: 0 40px 80px -60px rgba(22, 65, 124, 0.55);
+  background: #ffffff;
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -279,10 +284,13 @@
   /* The object leads on a phone and bleeds off the right edge, so it reads as a
      room rather than a picture sitting in a column. The mobile source is the
      tighter re-crop, so bleeding does not lose the subject. */
+  /* Framed rather than bled off the edge: a plate that runs off one side and is
+     cut square by the viewport reads as an overflow bug on a phone, and now
+     that the picture carries a visible border the cut edge would be a hairline
+     that stops in mid-air. */
   .bw-shot-01 {
     order: -1;
-    width: calc(100% + var(--w-pad));
-    margin-right: calc(var(--w-pad) * -1);
+    width: 100%;
     max-width: none;
   }
   .bw-plate { aspect-ratio: 4 / 5 }
@@ -333,25 +341,19 @@
 
    The lattice canvas is behind this and must not show through: the ground here
    is opaque. */
+/* This section used to ramp from #F1F4F8 down to #08101F, because the page below
+   it was near-black and the descent was the join between the two halves. The
+   page below it is now the same bright ground, so the ramp has nothing to
+   descend to: it was drawing a dark band across a light page, and — because the
+   section is inset from the viewport while the bright world is full-bleed — it
+   painted that band as a rectangle with the page colour showing down both
+   sides. The ground is flat here now, and the transition it used to perform is
+   done by spacing instead. */
 .imm .bw-bridge {
   position: relative;
   z-index: 2;
-  background:
-    linear-gradient(180deg,
-      #f1f4f8 0%,
-      #f1f4f8 46%,
-      #dfe9f6 66%,
-      #a8c4e6 80%,
-      #4a7ab5 88%,
-      #1c3f6d 95%,
-      /* Closes on the board's own `--deep`, which is within a couple of levels
-         of the void the remaining page still uses — so the meeting point is not
-         a visible step. It stays a blue, so the descent reads as depth in this
-         world rather than as a cut to another one. When the rest of the homepage
-         migrates, this last stop is the only value that changes. */
-      #08101f 100%);
+  background: #f1f4f8;
   color: #0a1220;
-  padding-bottom: clamp(120px, 18vh, 220px);
 }
 .imm .bw-bridge .band-h { color: #0a1220 }
 .imm .bw-bridge .band-p { color: #4c5a70 }
@@ -414,10 +416,24 @@
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.95) 20%, rgba(255, 255, 255, 0.95) 64%, transparent);
   pointer-events: none;
 }
+/* The plate has to be an OBJECT, and an object you cannot see the edges of is a
+   background. Measured before this cap: at 1440×900 the plate settled at 891px
+   tall inside a 900px viewport, with its top 33px behind the fixed navigation
+   and its caption starting at y=896 — so at the exact frame the whole
+   interaction builds toward, Papa Jun's own masthead sat directly under
+   Webscore's, and nothing on screen said whose site it was.
+
+   Bounding the image by viewport height rather than by width is what fixes it:
+   the surface now settles complete, with air above and below and its client
+   label on screen. */
 .bw-reveal-plate img {
   display: block;
   width: 100%;
   height: auto;
+  /* Viewport, less the fixed bar, less the caption, less breathing room. */
+  max-height: calc(100svh - 260px);
+  object-fit: cover;
+  object-position: 50% 0%;
 }
 /* Below the image, not over it. Overlaid it sat on the article text inside the
    captured page and the two collided — and unlike the glass plate in Section 2,
@@ -446,17 +462,22 @@
      never a small overlay on a small picture. */
   .bw-reveal-stage { perspective: 900px }
   .bw-reveal-plate { border-radius: 10px }
-  .bw-reveal-plate figcaption { padding: 11px 14px 13px; font-size: 9.5px }
-  /* Crop, do not shrink. A 2400px-wide page scaled into 346px is a thumbnail of
-     a website, not a website — the masthead, headline and first images all
-     become illegible, which is the tiny-browser-mockup failure exactly. Showing
-     the upper-left region at its own scale keeps the surface readable as a real
-     page, and the reveal still has something worth rotating up. */
-  .bw-reveal-plate img {
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-    object-position: 0% 0%;
+  /* The caption is two labels, and on a phone they were two columns that each
+     wrapped to two lines and did not align with one another — a tick alone on
+     one line, "KUNDPROJEKT" under it, the project name wrapping beside them.
+     It reads as broken markup. Stacked, it reads as a caption. */
+  .bw-reveal-plate figcaption {
+    display: block;
+    padding: 11px 14px 13px;
+    font-size: 9.5px;
+    line-height: 1.5;
   }
+  .bw-reveal-plate figcaption .bw-cap-k { display: block; margin-bottom: 3px }
+  /* Crop, do not shrink — but the crop is now cut into the file itself rather
+     than imposed here, so the frame can start below Papa Jun's menu row instead
+     of through it. The element only has to stop the tall source from filling
+     more than the screen. */
+  .bw-reveal-plate img { max-height: calc(100svh - 300px) }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -549,6 +570,37 @@
   border-radius: 6px;
 }
 .imm .bw .btn-ghost:hover { border-color: rgba(22, 65, 124, 0.5) }
+
+/* The hero's secondary action is the same object over the film, and there it
+   needs an edge it does not need on a flat ground: `--line` is a 10%-alpha white
+   hairline built for near-black, and over a sunlit sky it disappeared
+   completely, leaving what looked like unstyled text floating on a building. A
+   frosted plate gives it a body on any frame the film can produce, without
+   turning it into a second filled button beside the primary one. */
+.imm .sp-hero .btn-ghost {
+  color: #ffffff;
+  background: rgba(10, 18, 32, 0.34);
+  border-color: rgba(255, 255, 255, 0.44);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  text-shadow: 0 1px 10px rgba(4, 11, 30, 0.8);
+}
+.imm .sp-hero .btn-ghost:hover {
+  background: rgba(10, 18, 32, 0.5);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+/* On the film's bright frames the type inverts; the secondary follows it, or it
+   would be white-on-white by the time the portal arrives. */
+.imm .sp-hero.is-lit .btn-ghost {
+  color: #0a1220;
+  background: rgba(255, 255, 255, 0.62);
+  border-color: rgba(22, 65, 124, 0.4);
+  text-shadow: none;
+}
+.imm .sp-hero.is-lit .btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(22, 65, 124, 0.62);
+}
 
 /* ── the glow, applied ── */
 .bw .bw-display { text-shadow: var(--glow-display-light) }

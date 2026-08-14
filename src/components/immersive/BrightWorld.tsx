@@ -91,29 +91,41 @@ export default function BrightWorld() {
             decoding="async"
           />
         </picture>
+        {/* This copy used to describe the photograph — cold daylight, clear
+            materials, one object carrying the colour. True of the picture, and
+            it told a reader five screens in nothing about the studio. The
+            composition is unchanged; the words now do the work the position
+            deserves. */}
         <div className="bw-s1-copy">
-          <p className="bw-station">01 — Miljön</p>
+          <p className="bw-station">01 — Studion</p>
           <h2 id="bw-s1-h" className="bw-h2">
-            Ljus, glas och <em>precision.</em>
+            En studio, hela <em>kedjan.</em>
           </h2>
           <p className="bw-body">
-            Vi arbetar i kallt dagsljus och klara material. Ytan är ljus, formen
-            är exakt, och färgen bor i ett enda objekt i taget.
+            Strategi, design, utveckling, innehåll och AI i samma team. Vi formger
+            och utvecklar webbplatser, digitala produkter och de system som bär dem.
           </p>
         </div>
       </section>
 
-      {/* ── SECTION 2 — imagery, typography and glass together ──
-          Reference 05: display type set large enough to pass BEHIND the white
-          surface and be cropped by it, with blue glass held inside the surface.
-          The image occupies the majority of the visual field. */}
+      {/* ── SECTION 2 — the image carries it ──
+          Reference 05: blue glass held inside a white surface, the image
+          occupying the majority of the visual field.
+
+          The oversized word that used to sit behind this plate is gone.
+          It was set to pass BEHIND the surface and be cropped by it, but the
+          plate only ever covered 77px of its 224px height, so what actually
+          cropped it was the fixed navigation — half a word at 1440, letter-tops
+          at 834, an unreadable pale fragment at 390. It also made "Utvalt" the
+          heading of three consecutive sections. The idea needs a layout the
+          fixed bar cannot reach, and that is not a thing to design the night
+          before a presentation. */}
       <section
         className={`bw-s2${two.arrived ? " is-in" : ""}`}
         ref={two.ref}
         aria-labelledby="bw-s2-h"
       >
-        <h2 id="bw-s2-h" className="bw-behind" aria-hidden="true">Utvalt</h2>
-        <span className="sr-only">Utvalt arbete</span>
+        <h2 id="bw-s2-h" className="sr-only">Yta och typografi</h2>
 
         <figure className="bw-plate">
           {/* IMG-02, commissioned. The mobile source is a rebuilt 4:5 frame
@@ -131,17 +143,17 @@ export default function BrightWorld() {
               decoding="async"
             />
           </picture>
-          <figcaption>
-            <span className="bw-cap-k">Material</span>
-            <span className="bw-cap-v">Glas · kallt dagsljus</span>
-          </figcaption>
         </figure>
 
+        {/* The caption that sat on the image is gone: pale mono on the bright
+            reflective floor of the picture, describing the material of the
+            picture. Unreadable, and nothing was lost by reading it. */}
         <div className="bw-s2-meta">
-          <p className="bw-station">02 — Yta och typografi</p>
+          <p className="bw-station">02 — Hantverket</p>
           <p className="bw-body">
-            Bilden bär sektionen. Typografin ligger bakom ytan och skärs av den,
-            så att de två läser som ett rum och inte som två lager.
+            Vi lämnar inte över mellan discipliner. Rörelsen som finns i designen
+            finns kvar i koden, och texten är skriven för ytan den sitter på — det
+            är därför detaljerna överlever hela vägen till lansering.
           </p>
         </div>
       </section>

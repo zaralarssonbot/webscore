@@ -1,11 +1,5 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useReducedMotion,
-  type MotionValue,
-} from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 import SpatialHero from "@/immersive/spatial/SpatialHero";
 import ConceptStudy, { type ConceptStudyData } from "./ConceptStudy";
@@ -18,38 +12,24 @@ import papajun3 from "@/assets/portfolio/papajun-3.webp";
 import "./immersive.css";
 
 /**
- * THE LATTICE — Webscore's homepage.
+ * WEBSCORE — the homepage.
  *
- * Ported from the approved immersive prototype. Positioning: Webscore is a
- * creative technology studio; the site itself is the proof of capability. The
- * website-analysis product still exists and still works, but it lives at
- * /analys now rather than owning the homepage.
+ * Positioning: Webscore is a creative technology studio; the site itself is the
+ * proof of capability. The website-analysis product still exists and still
+ * works, but it lives at /analys now rather than owning the homepage.
  *
- * Structural contract, unchanged from the prototype:
- *   · Every word of content is semantic HTML. The WebGL layer is decorative and
- *     `aria-hidden`; if it never mounts the page still reads and converts.
- *   · three.js is lazy-imported and only on fine-pointer, non-mobile devices.
- *   · Coarse pointer / small screen / WebGL failure all fall back to a composed
- *     CSS atmosphere, not a stripped one.
+ * The page is one journey in two rooms. The Spatial film is the approach; the
+ * portal hands over to #F1F4F8, and everything from that point to the footer is
+ * the bright world — one ground, one type colour, one button. There is no
+ * second, darker half any more, which is why the WebGL lattice and its static
+ * fallback are gone rather than retired: both existed only to give a near-black
+ * page some atmosphere, and there is no near-black page left for them to sit
+ * behind. The film is the only moving image on the site now.
+ *
+ * Structural contract, unchanged: every word of content is semantic HTML, and
+ * the film is decorative — if it never decodes the page still reads and
+ * converts.
  */
-
-const LatticeScene = lazy(() => import("./LatticeScene"));
-
-function useEnv() {
-  const [mobile, setMobile] = useState(
-    () => typeof window !== "undefined" && window.matchMedia("(max-width: 860px)").matches,
-  );
-  const [coarse] = useState(
-    () => typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches,
-  );
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 860px)");
-    const on = () => setMobile(mq.matches);
-    mq.addEventListener("change", on);
-    return () => mq.removeEventListener("change", on);
-  }, []);
-  return { mobile, coarse };
-}
 
 const NAV = [
   { id: "projekt", label: "Projekt" },
@@ -139,38 +119,6 @@ function Reveal({
   );
 }
 
-/**
- * Mobile, coarse-pointer and WebGL-failure atmosphere. Deliberately not a flat
- * gradient: it mirrors the 3D lighting model — one warm core inside a cool
- * volume — so small screens get a composed version rather than a stripped one.
- *
- * Three stacked layers, animated only via transform/opacity on the compositor.
- * No canvas, no WebGL, and the three.js chunk is never requested.
- */
-function StaticField({ reduced, progress }: { reduced: boolean; progress: MotionValue<number> }) {
-  const coreY = useTransform(progress, [0, 1], ["-6%", "14%"]);
-  const coreScale = useTransform(progress, [0, 0.5, 1], [1.06, 0.82, 1.12]);
-  const coreFade = useTransform(progress, [0, 0.35, 0.62, 1], [0.95, 0.4, 0.5, 1]);
-  const coolY = useTransform(progress, [0, 1], ["4%", "-10%"]);
-
-  if (reduced) {
-    return (
-      <div className="static-field" aria-hidden="true">
-        <div className="sf-cool" />
-        <div className="sf-core" />
-        <div className="sf-grain" />
-      </div>
-    );
-  }
-  return (
-    <div className="static-field" aria-hidden="true">
-      <motion.div className="sf-cool" style={{ y: coolY }} />
-      <motion.div className="sf-core" style={{ y: coreY, scale: coreScale, opacity: coreFade }} />
-      <div className="sf-grain" />
-    </div>
-  );
-}
-
 /* ── content ──────────────────────────────────────────────────────────────── */
 
 /** A self-authored concept study. The one real engagement is PAPAJUN, above. */
@@ -200,7 +148,7 @@ const PAPAJUN = {
   domain: "papajun.se",
   image: papajun,
   alt: "Startsidan för Papa Jun: varm restaurangsajt med meny och bokning.",
-  line: "En mysig restaurang vid Mälaren som behövde en sajt som förmedlade deras atmosfär. Vi byggde en visuellt varm närvaro med integrerad meny och bokning.",
+  line: "En mysig restaurang vid Mälaren som behövde en sajt som förmedlade deras atmosfär. Vi formgav och utvecklade en visuellt varm närvaro med integrerad meny och bokning.",
   delivered: [
     "Visuell storytelling",
     "Integrerad meny och bokning",
@@ -253,7 +201,7 @@ const PROJECTS: ConceptStudyData[] = [
 const CAPS = [
   { k: "Strategi", d: "Vi börjar med affären: vem ni talar till, vad som ska hända, hur det mäts." },
   { k: "Design", d: "Ett visuellt system som håller — inte en samling skärmar." },
-  { k: "Utveckling", d: "Byggt för hastighet, tillgänglighet och att faktiskt förvaltas." },
+  { k: "Utveckling", d: "Utvecklat för hastighet, tillgänglighet och att faktiskt förvaltas." },
   { k: "Innehåll", d: "Text, bild och rörelse som bär budskapet hela vägen." },
   { k: "AI", d: "Där det gör verklig nytta: research, produktion, personalisering." },
 ];
@@ -263,14 +211,14 @@ const DISCIPLINES = [
   { k: "Design", d: "System, typografi och komposition — inte mallar." },
   { k: "Kod", d: "Vi utvecklar det vi formger. Ingen överlämning som tappar detaljerna." },
   { k: "Rörelse", d: "Animation med syfte: riktning, tyngd och kontinuitet." },
-  { k: "3D", d: "Realtidsgrafik i webbläsaren — som fältet bakom den här sidan." },
+  { k: "3D", d: "Realtidsgrafik och rörlig bild direkt i webbläsaren." },
   { k: "AI", d: "Research, produktion och system som anpassar sig." },
 ];
 
 const STEPS = [
   { n: "01", t: "Riktning", d: "Vi kartlägger mål, publik och kant. Ni får en tydlig hypotes." },
   { n: "02", t: "Form", d: "Designspråk och struktur tas fram och testas mot innehåll." },
-  { n: "03", t: "Bygge", d: "Vi bygger snabbt, tillgängligt och mätbart från start." },
+  { n: "03", t: "Utveckling", d: "Vi utvecklar snabbt, tillgängligt och mätbart från start." },
   { n: "04", t: "Lansering", d: "Testad övergång — och en plan för vad som händer sen." },
 ];
 
@@ -316,59 +264,55 @@ export default function ImmersiveHome() {
     canonical: "https://webscore.se/",
   });
 
-  const { mobile, coarse } = useEnv();
-  const reduced = !!useReducedMotion();
-  const [webglFailed, setWebglFailed] = useState(false);
-  const useWebGL = !mobile && !coarse && !webglFailed;
-
-  const progressRef = useRef(0);
-  const pointerRef = useRef({ x: 0, y: 0 });
-  const chargeRef = useRef(0);
   const [active, setActive] = useState("");
-  const [charged, setCharged] = useState(false);
-  // The lattice sleeps while the hero film is in front of it. Starts true: at
-  // load the film covers the viewport, and the lattice has nothing to say yet.
-  const [filmCovering, setFilmCovering] = useState(true);
-  // The chrome inverts while the bright world is under it. Without this the dark
-  // pill and the orange CTA — the language the bright world exists to replace —
-  // sit on top of #F1F4F8 and are the first thing seen after the portal.
+  // The chrome inverts once the page is bright under it, and from the portal
+  // down it always is. Two independent signals set it, because the film reports
+  // its own flatten a screen earlier than the bright world scrolls in.
   const [onBright, setOnBright] = useState(false);
-  // One-way: set the first time the bright world is reached, never cleared.
-  const [latticeRetired, setLatticeRetired] = useState(false);
-  // The film reports its own flatten a screen earlier than the bright world
-  // scrolls in; either one puts the chrome into its light state.
   const [filmWhite, setFilmWhite] = useState(false);
+
+  /* Light from the moment the bright world reaches the bar, and light for the
+     rest of the page — because the rest of the page is the bright world.
+
+     This was an IntersectionObserver on `.bw` and it was wrong in both
+     directions. Past the bright world's own end it reported whatever it had
+     last reported rather than re-evaluating, which left a white capsule on the
+     dark half at 1440; and at 390 — where `.bw` is proportionally much taller
+     than the root — it never reported an intersection at all, so a dark grey
+     pill sat on a white page for the entire scroll. What is actually being
+     asked is a comparison between two numbers, so it is one now: no thresholds,
+     no root margins, no state that can be missed. One rect read per frame, and
+     only on frames where the page actually moved. */
   useEffect(() => {
-    const el = document.querySelector(".bw");
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([e]) => {
-        const on = e.isIntersecting && e.intersectionRatio > 0;
-        setOnBright(on);
-        // The moment the bright world is on screen the lattice is finished.
-        if (on) setLatticeRetired(true);
-      },
-      { rootMargin: "-72px 0px -85% 0px" },
-    );
-    io.observe(el);
-    return () => io.disconnect();
+    const bw = document.querySelector<HTMLElement>(".bw");
+    if (!bw) return;
+    let raf = 0;
+    const read = () => {
+      raf = 0;
+      setOnBright(bw.getBoundingClientRect().top <= 96);
+    };
+    const schedule = () => { if (!raf) raf = requestAnimationFrame(read); };
+    read();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
   }, []);
 
-  const { scrollYProgress } = useScroll();
-  useEffect(() => scrollYProgress.on("change", (v) => { progressRef.current = v; }), [scrollYProgress]);
-
-  const heroFade = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
-  const heroLift = useTransform(scrollYProgress, [0, 0.1], [0, -60]);
-
+  /* The document canvas — what shows in the rubber-band past either end of the
+     page — comes from the app's global near-black theme. The homepage now ends
+     on #F1F4F8, so over-scrolling at the bottom flashed black under a white
+     footer. Set for the lifetime of this page only and restored on unmount, so
+     the dashboard and the admin console keep their own ground. */
   useEffect(() => {
-    if (reduced || coarse) return;
-    const on = (e: PointerEvent) => {
-      pointerRef.current.x = (e.clientX / window.innerWidth) * 2 - 1;
-      pointerRef.current.y = -((e.clientY / window.innerHeight) * 2 - 1);
-    };
-    window.addEventListener("pointermove", on, { passive: true });
-    return () => window.removeEventListener("pointermove", on);
-  }, [reduced, coarse]);
+    const root = document.documentElement;
+    const prev = root.style.backgroundColor;
+    root.style.backgroundColor = "#f1f4f8";
+    return () => { root.style.backgroundColor = prev; };
+  }, []);
 
   useEffect(() => {
     const ids = NAV.map((n) => n.id);
@@ -383,50 +327,10 @@ export default function ImmersiveHome() {
     return () => io.disconnect();
   }, []);
 
-  // The one interactive moment: a controlled pulse through the field.
-  const fire = () => {
-    setCharged(true);
-    const start = performance.now();
-    const tick = (now: number) => {
-      const t = Math.min((now - start) / 1400, 1);
-      chargeRef.current = Math.sin(t * Math.PI);
-      if (t < 1) requestAnimationFrame(tick);
-      else { chargeRef.current = 0; setCharged(false); }
-    };
-    requestAnimationFrame(tick);
-  };
-
   return (
     <div className="imm">
       <a className="skip" href="#main">Hoppa till innehåll</a>
       <Nav active={active} light={onBright || filmWhite} />
-
-      {/* The lattice belongs to the dark half and does not survive the portal.
-          Once the bright world has been reached it is UNMOUNTED, not paused and
-          not hidden: pausing leaves a live WebGL context, its buffers and its
-          rAF subscription alive behind a site that never shows it again.
-          Unmounting runs the scene's own cleanup, which disposes the geometry,
-          the material and the renderer and releases the context.
-
-          It does not come back if the visitor scrolls up — `latticeRetired` is
-          one-way. Re-mounting would rebuild the whole field mid-scroll, and by
-          then the film has already been released too, so there is nothing above
-          for it to sit behind. */}
-      {useWebGL && !latticeRetired && (
-        <Suspense fallback={null}>
-          <LatticeScene
-            key={mobile ? "m" : "d"}
-            progressRef={progressRef}
-            pointerRef={pointerRef}
-            chargeRef={chargeRef}
-            reduced={reduced}
-            mobile={mobile}
-            paused={filmCovering}
-            onFailure={() => setWebglFailed(true)}
-          />
-        </Suspense>
-      )}
-      {!useWebGL && !latticeRetired && <StaticField reduced={reduced} progress={scrollYProgress} />}
 
       <main id="main">
         {/* The approved Norra Tornen sequence, scrubbed by scroll on desktop and
@@ -436,7 +340,7 @@ export default function ImmersiveHome() {
             "skapar" is read the object is already digital. Weakening either
             neighbour puts the building back in play — the film under this line
             is an aerial of a residential tower. */}
-        <SpatialHero onCoverChange={setFilmCovering} onLightChrome={setFilmWhite}>
+        <SpatialHero onLightChrome={setFilmWhite}>
           <p className="eyebrow">Kreativ teknikstudio · Sverige</p>
           <h1>Kliv in i <em>det vi skapar.</em></h1>
           <p className="lede">
@@ -450,208 +354,208 @@ export default function ImmersiveHome() {
           </div>
         </SpatialHero>
 
-        {/* The computer screen expands into the website. Sections beyond these
-            two are still the old dark language and are next in line. */}
+        {/* The computer screen expands into the website. */}
         <BrightWorld />
 
-        {/* The bridge. Carries the bright world one chapter further so nothing
-            dark sits immediately under Section 2, and closes on the deep blue
-            the rest of the page still uses — a change of depth, not a reset. */}
-        <section className="transform-band bw-bridge" aria-labelledby="tf-h">
-          <Reveal>
-            <h2 id="tf-h" className="band-h">Ett system som tar form.</h2>
-            <p className="band-p">
-              Samma fem förmågor formar varje projekt. De arbetar tillsammans — inte som
-              separata tjänster.
-            </p>
-          </Reveal>
-          <ol className="cap-orbit">
-            {CAPS.map((c, i) => (
-              <Reveal as="li" key={c.k} delay={i * 0.07}>
-                <span className="cap-i">{String(i + 1).padStart(2, "0")}</span>
-                <h3>{c.k}</h3>
-                <p>{c.d}</p>
-              </Reveal>
-            ))}
-          </ol>
-        </section>
-
-        <section id="projekt" className="work" aria-labelledby="work-h">
-          <Reveal>
-            <div className="rule" />
-            <h2 id="work-h" className="section-h">Utvalt arbete</h2>
-            <p className="section-lead">
-              Ett verkligt kunduppdrag och fyra konceptstudier. Konceptstudierna är
-              påhittade varumärken vi tagit fram för att visa hur vi tänker — inte
-              utförda uppdrag.
-            </p>
-          </Reveal>
-          <div className="work-stack">
-            {/* The real engagement, given the weight of one. */}
+        {/* Everything from the portal to the footer is one room.
+            `post-portal` is not decoration: it redefines the palette tokens the
+            section styles already read from, so a single scope turns the whole
+            second half bright instead of forty scattered colour overrides. The
+            structure, the components and the grid are untouched — only the
+            ground, the ink and the accent change. */}
+        <div className="post-portal">
+          {/* The bridge. One short chapter that carries the bright world out of
+              the image sections and into the argument. It used to restate the
+              five capabilities that "Vad vi gör" states in full a screen later,
+              word for word; the list is gone and the transition stays. */}
+          <section className="transform-band bw-bridge" aria-labelledby="tf-h">
             <Reveal>
-              <article className="work-item work-featured">
-                <div className="work-visual">
-                  <Shot label={PAPAJUN.domain} live image={PAPAJUN.image} alt={PAPAJUN.alt} />
-                </div>
-                <div className="work-meta">
-                  <p className="tag client">✓ Kundprojekt</p>
-                  <h3>{PAPAJUN.name}</h3>
-                  <p className="sector">{PAPAJUN.sector}</p>
-                  <p className="line">{PAPAJUN.line}</p>
-                  <ul className="delivered">
-                    {PAPAJUN.delivered.map((d) => (
-                      <li key={d}>{d}</li>
+              <h2 id="tf-h" className="band-h">Ett system som tar form.</h2>
+              <p className="band-p">
+                Samma team håller i hela kedjan — strategi, design, utveckling,
+                innehåll och AI. Det är därför delarna sitter ihop när de möter
+                verkligheten.
+              </p>
+            </Reveal>
+          </section>
+
+          <section id="projekt" className="work" aria-labelledby="work-h">
+            <Reveal>
+              <div className="rule" />
+              <h2 id="work-h" className="section-h">Utvalt arbete</h2>
+              {/* The distinction is stated once, plainly, and then carried by the
+                  labels on the cards. "Påhittade" was the second word a reader
+                  met under the portfolio heading — accurate, but it volunteered
+                  the weakness before the work had been seen. */}
+              <p className="section-lead">
+                Ett kunduppdrag och fyra konceptstudier. Konceptstudierna är egna
+                varumärken vi tagit fram för att visa hur vi tänker — de är märkta som
+                sådana och är inte utförda uppdrag.
+              </p>
+            </Reveal>
+            <div className="work-stack">
+              {/* The real engagement, given the weight of one. */}
+              <Reveal>
+                <article className="work-item work-featured">
+                  <div className="work-visual">
+                    <Shot label={PAPAJUN.domain} live image={PAPAJUN.image} alt={PAPAJUN.alt} />
+                  </div>
+                  <div className="work-meta">
+                    <p className="tag client">✓ Kundprojekt</p>
+                    <h3>{PAPAJUN.name}</h3>
+                    <p className="sector">{PAPAJUN.sector}</p>
+                    <p className="line">{PAPAJUN.line}</p>
+                    <ul className="delivered">
+                      {PAPAJUN.delivered.map((d) => (
+                        <li key={d}>{d}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="work-gallery">
+                    {PAPAJUN.gallery.map((g) => (
+                      <figure key={g.src}>
+                        <img src={g.src} alt={g.alt} loading="lazy" decoding="async" />
+                      </figure>
                     ))}
-                  </ul>
-                </div>
-                <div className="work-gallery">
-                  {PAPAJUN.gallery.map((g) => (
-                    <figure key={g.src}>
-                      <img src={g.src} alt={g.alt} loading="lazy" decoding="async" />
-                    </figure>
-                  ))}
-                </div>
-              </article>
-            </Reveal>
-
-            {PROJECTS.map((p, i) => (
-              <Reveal key={p.id} delay={i * 0.05}>
-                <ConceptStudy study={p} flip={i % 2 === 1} />
+                  </div>
+                </article>
               </Reveal>
-            ))}
-          </div>
-        </section>
 
-        <section id="tjanster" className="caps" aria-labelledby="caps-h">
-          <Reveal>
-            <div className="rule" />
-            <h2 id="caps-h" className="section-h">Vad vi gör</h2>
-            <p className="section-lead">
-              Fem förmågor i samma team. Vi lämnar inte över mellan discipliner — det är
-              därför resultatet håller ihop.
-            </p>
-          </Reveal>
-          <div className="cap-seq">
-            {CAPS.map((c, i) => (
-              <Reveal key={c.k} delay={i * 0.06}>
-                <div className="cap-row">
-                  <span className="cap-n">{String(i + 1).padStart(2, "0")}</span>
-                  <h3>{c.k}</h3>
-                  <p>{c.d}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </section>
+              {PROJECTS.map((p, i) => (
+                <Reveal key={p.id} delay={i * 0.05}>
+                  <ConceptStudy study={p} flip={i % 2 === 1} />
+                </Reveal>
+              ))}
+            </div>
+          </section>
 
-        <section id="teknik" className="tech" aria-labelledby="tech-h">
-          <Reveal>
-            <div className="rule" />
-            <h2 id="tech-h" className="section-h">Kreativ teknik</h2>
-            <p className="section-lead">
-              Design, kod, rörelse, 3D och AI i samma team. Den här sidan är byggd med
-              exakt de förmågorna — fältet bakom är realtidsgrafik, inte en video.
-            </p>
-          </Reveal>
-          <ol className="disciplines">
-            {DISCIPLINES.map((d, i) => (
-              <Reveal as="li" key={d.k} delay={i * 0.06}>
-                <span className="disc-i">{String(i + 1).padStart(2, "0")}</span>
-                <h3>{d.k}</h3>
-                <p>{d.d}</p>
-              </Reveal>
-            ))}
-          </ol>
-          <Reveal>
-            <button type="button" className="btn btn-primary charge" onClick={fire} disabled={charged}>
-              {charged ? "Reagerar…" : "Aktivera systemet"}
-            </button>
-            <p className="hint">
-              {useWebGL
-                ? "Knappen skickar en puls genom 3D-systemet i bakgrunden."
-                : "På mindre skärmar visas en lättare, statisk version av systemet."}
-            </p>
-          </Reveal>
-        </section>
-
-        <section id="process" className="process" aria-labelledby="proc-h">
-          <Reveal>
-            <div className="rule" />
-            <h2 id="proc-h" className="section-h">Så arbetar vi</h2>
-            <p className="section-lead">
-              Fyra steg, samma varje gång. Ni vet hela tiden var projektet står och vad
-              nästa beslut är.
-            </p>
-          </Reveal>
-          <ol className="steps">
-            {STEPS.map((s, i) => (
-              <Reveal as="li" key={s.n} delay={i * 0.06}>
-                <span className="step-n">{s.n}</span>
-                <h3>{s.t}</h3>
-                <p>{s.d}</p>
-              </Reveal>
-            ))}
-          </ol>
-        </section>
-
-        <section id="om" className="about" aria-labelledby="om-h">
-          <Reveal>
-            <div className="rule" />
-            <h2 id="om-h" className="section-h">Om Webscore</h2>
-            <p className="section-lead">
-              Webscore är en kreativ teknikstudio i Sverige. Strategi, design, utveckling,
-              innehåll och AI ligger i samma team — och vi bygger det vi ritar.
-            </p>
-          </Reveal>
-          <div className="about-body">
-            <Reveal delay={0.05}>
-              <p>
-                De flesta digitala projekt tappar något mellan disciplinerna. Strategin
-                lämnas över till design, designen till utveckling, och innehållet kommer
-                sist. Vi arbetar tvärtom: samma team håller i hela kedjan, från första
-                hypotesen till det som ligger live.
+          <section id="tjanster" className="caps" aria-labelledby="caps-h">
+            <Reveal>
+              <div className="rule" />
+              <h2 id="caps-h" className="section-h">Vad vi gör</h2>
+              <p className="section-lead">
+                Fem förmågor i samma team. Vi lämnar inte över mellan discipliner — det är
+                därför resultatet håller ihop.
               </p>
             </Reveal>
-            <Reveal delay={0.1}>
-              <p>
-                Det är därför detaljerna överlever. Rörelsen som fanns i designen finns
-                kvar i koden. Texten är skriven för ytan den sitter på. Tekniken väljs för
-                att den löser problemet — inte för att den står på en lista.
-              </p>
-            </Reveal>
-            <Reveal delay={0.15}>
-              <p>
-                Den här sidan är byggd på precis det sättet. Fältet bakom dig är
-                realtidsgrafik som körs i din webbläsare — inte en video, inte en bild.
-                Det är det ärligaste sättet vi vet att visa vad vi kan bygga.
-              </p>
-            </Reveal>
-          </div>
-        </section>
+            <div className="cap-seq">
+              {CAPS.map((c, i) => (
+                <Reveal key={c.k} delay={i * 0.06}>
+                  <div className="cap-row">
+                    <span className="cap-n">{String(i + 1).padStart(2, "0")}</span>
+                    <h3>{c.k}</h3>
+                    <p>{c.d}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </section>
 
-        <section id="kontakt" className="final" aria-labelledby="final-h">
-          <Reveal>
-            <p className="eyebrow final-eyebrow">Nästa steg</p>
-            <h2 id="final-h" className="final-h">Låt oss bygga något människor minns.</h2>
-            <p className="final-lead">
-              Berätta vad ni vill åstadkomma. Vi återkommer med en konkret bild av vad
-              det skulle innebära.
-            </p>
-            {/* A prefilled subject makes the reply land in the right place and
-                tells the visitor what will happen when they click. */}
-            <a
-              className="btn btn-primary btn-lg"
-              href="mailto:info@webscore.se?subject=Projektf%C3%B6rfr%C3%A5gan"
-            >
-              Starta ett projekt <span className="arrow" aria-hidden="true">→</span>
-            </a>
-            {/* One action, nothing beside it. A secondary "or email us" line was
-                tried here and removed: it landed on the densest part of the
-                converged field and diluted the close. The address is in the
-                footer for anyone who wants to copy it. */}
-            <p className="final-sub">Svar inom en arbetsdag · Sverige</p>
-          </Reveal>
-        </section>
+          <section id="teknik" className="tech" aria-labelledby="tech-h">
+            <Reveal>
+              <div className="rule" />
+              <h2 id="tech-h" className="section-h">Kreativ teknik</h2>
+              {/* This lead used to point at a live 3D field behind the page and
+                  invite the reader to look at it. The field is gone, so the
+                  claim is gone with it — the film at the top of this page is the
+                  demonstration now, and it is one we can actually stand behind. */}
+              <p className="section-lead">
+                Design, kod, rörelse, 3D och AI i samma team. Sidan du läser är gjord
+                med exakt de förmågorna — filmen högst upp är vår egen produktion.
+              </p>
+            </Reveal>
+            <ol className="disciplines">
+              {DISCIPLINES.map((d, i) => (
+                <Reveal as="li" key={d.k} delay={i * 0.06}>
+                  <span className="disc-i">{String(i + 1).padStart(2, "0")}</span>
+                  <h3>{d.k}</h3>
+                  <p>{d.d}</p>
+                </Reveal>
+              ))}
+            </ol>
+          </section>
+
+          <section id="process" className="process" aria-labelledby="proc-h">
+            <Reveal>
+              <div className="rule" />
+              <h2 id="proc-h" className="section-h">Så arbetar vi</h2>
+              <p className="section-lead">
+                Fyra steg, samma varje gång. Ni vet hela tiden var projektet står och vad
+                nästa beslut är.
+              </p>
+            </Reveal>
+            <ol className="steps">
+              {STEPS.map((s, i) => (
+                <Reveal as="li" key={s.n} delay={i * 0.06}>
+                  <span className="step-n">{s.n}</span>
+                  <h3>{s.t}</h3>
+                  <p>{s.d}</p>
+                </Reveal>
+              ))}
+            </ol>
+          </section>
+
+          <section id="om" className="about" aria-labelledby="om-h">
+            <Reveal>
+              <div className="rule" />
+              <h2 id="om-h" className="section-h">Om Webscore</h2>
+              <p className="section-lead">
+                Webscore är en kreativ teknikstudio i Sverige. Strategi, design, utveckling,
+                innehåll och AI ligger i samma team — och vi utvecklar det vi formger.
+              </p>
+            </Reveal>
+            <div className="about-body">
+              <Reveal delay={0.05}>
+                <p>
+                  De flesta digitala projekt tappar något mellan disciplinerna. Strategin
+                  lämnas över till design, designen till utveckling, och innehållet kommer
+                  sist. Vi arbetar tvärtom: samma team håller i hela kedjan, från första
+                  hypotesen till det som ligger live.
+                </p>
+              </Reveal>
+              <Reveal delay={0.1}>
+                <p>
+                  Det är därför detaljerna överlever. Rörelsen som fanns i designen finns
+                  kvar i koden. Texten är skriven för ytan den sitter på. Tekniken väljs för
+                  att den löser problemet — inte för att den står på en lista.
+                </p>
+              </Reveal>
+              <Reveal delay={0.15}>
+                <p>
+                  Den här sidan är gjord på precis det sättet. Filmen, typografin,
+                  rörelsen och koden kommer från samma team — och det är det ärligaste
+                  sättet vi vet att visa vad vi kan göra.
+                </p>
+              </Reveal>
+            </div>
+          </section>
+
+          <section id="kontakt" className="final" aria-labelledby="final-h">
+            <Reveal>
+              <p className="eyebrow final-eyebrow">Nästa steg</p>
+              {/* "Bygga" is the one verb this studio cannot afford in display
+                  type: the film directly above it is an aerial of a residential
+                  tower, and the two together read as a construction company. */}
+              <h2 id="final-h" className="final-h">Låt oss skapa något människor minns.</h2>
+              <p className="final-lead">
+                Berätta vad ni vill åstadkomma. Vi återkommer med en konkret bild av vad
+                det skulle innebära.
+              </p>
+              {/* A prefilled subject makes the reply land in the right place and
+                  tells the visitor what will happen when they click. */}
+              <a
+                className="btn btn-primary btn-lg"
+                href="mailto:info@webscore.se?subject=Projektf%C3%B6rfr%C3%A5gan"
+              >
+                Starta ett projekt <span className="arrow" aria-hidden="true">→</span>
+              </a>
+              {/* One action, nothing beside it. A secondary "or email us" line was
+                  tried here and removed: it diluted the close. The address is in
+                  the footer for anyone who wants to copy it. */}
+              <p className="final-sub">Svar inom en arbetsdag · Sverige</p>
+            </Reveal>
+          </section>
+        </div>
       </main>
 
       <footer className="foot">

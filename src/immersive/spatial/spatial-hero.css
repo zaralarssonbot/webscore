@@ -194,17 +194,25 @@
    gradient was never actually behind the glyphs — which is why an 11px line on
    a sunlit horizon stayed faint no matter how much alpha was added. Same
    softness, concentrated where the text is. */
+/* Denser than it was, and the label no longer sits at 94%.
+   This line lands on the horizon haze — the brightest, flattest band in the
+   whole sequence — at 11px, and it is the only line on the opening frame that
+   says what Webscore is. It was legible in isolation and invisible in place. */
 .imm .sp-hero .eyebrow::before {
   content: "";
   position: absolute;
   z-index: -1;
   pointer-events: none;
-  left: -14%;
-  right: -14%;
+  left: -16%;
+  right: -16%;
   top: -150%;
   bottom: -150%;
   background: radial-gradient(58% 50% at 50% 50%,
-    rgba(4, 11, 30, 0.9), rgba(4, 11, 30, 0.46) 48%, transparent 76%);
+    rgba(4, 11, 30, 0.96), rgba(4, 11, 30, 0.62) 48%, transparent 78%);
+}
+.imm .sp-hero .eyebrow {
+  opacity: 1;
+  color: #ffffff;
 }
 
 /* The carrier bleeds outside its text box on purpose — a radial gradient that
@@ -231,12 +239,21 @@
    section beneath it and put a hard edge across the frame. The hand-over is done
    by the light instead — see the scrim below — so the picture itself runs the
    full height and stays cinematic to the last pixel it is allowed. */
+/* 12%, not 18% — six points of sky back in the frame, which is as much as this
+   source can give.
+
+   Horizontal panning was tried and reverted: `flat-hero.webp` is already a
+   portrait crop composed on the two towers, so there is no sunrise or water off
+   to one side to pan toward — moving left simply pushed the frame further INTO
+   a facade. Fixing the phone's first screen properly means re-cutting the still
+   from the film's opening aerial rather than moving this one around, and that
+   is an asset job, not a CSS one. */
 .imm .sp-still {
   position: absolute;
   inset: 0;
   z-index: 0;
   background-size: cover;
-  background-position: 50% 18%;
+  background-position: 50% 12%;
 }
 /* The still build's version of the carrier — and, in its lower third, the
    hand-over the film performs on desktop.
@@ -256,9 +273,16 @@
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg,
-    rgba(11, 22, 48, 0.42) 0%,
-    rgba(11, 22, 48, 0.58) 38%,
-    rgba(12, 24, 50, 0.55) 66%,
+    /* Lightened from 0.42/0.58/0.55. The scrim was carrying the whole contrast
+       job on its own and it flattened a golden-hour photograph into a slate-grey
+       one — the desktop opening frame is the best asset on the site and the
+       phone was getting a dusk-coloured version of it. The copy's own carrier
+       and halo do the legibility work here; measured after the change, the lede
+       still clears 4.5:1 against the brightest pixels behind it. The hand-over
+       ramp below 66% is untouched, because that is the locked join. */
+    rgba(11, 22, 48, 0.3) 0%,
+    rgba(11, 22, 48, 0.44) 38%,
+    rgba(12, 24, 50, 0.5) 66%,
     rgba(58, 104, 172, 0.44) 78%,
     rgba(150, 188, 232, 0.68) 86%,
     rgba(206, 224, 244, 0.88) 92%,
