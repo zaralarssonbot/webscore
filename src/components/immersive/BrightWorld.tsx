@@ -1,4 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import FeaturedReveal from "./FeaturedReveal";
+import s1Desktop from "@/assets/immersive/bw-s1-cluster-desktop.webp";
+import s1Mobile from "@/assets/immersive/bw-s1-cluster-mobile.webp";
+import s2Desktop from "@/assets/immersive/bw-s2-monolith-desktop.webp";
+import s2Mobile from "@/assets/immersive/bw-s2-monolith-mobile.webp";
 import "./bright-world.css";
 
 /* ────────────────────────────────────────────────────────────────────────────
@@ -71,11 +76,21 @@ export default function BrightWorld() {
           roughly two thirds of the frame given to nothing. Density is
           deliberately the lowest on the site. */}
       <section className="bw-s1" aria-labelledby="bw-s1-h">
-        <div
-          className="bw-form bw-form-01"
-          aria-hidden="true"
-          data-slot="IMG-01 · icy glass sphere cluster, soft diffuse daylight, 4K"
-        />
+        {/* IMG-01, commissioned. Two crops rather than one scaled file: the
+            mobile frame is recomposed tighter on the largest sphere so it
+            survives bleeding off the right edge, instead of being the desktop
+            square shrunk. */}
+        <picture className="bw-shot bw-shot-01">
+          <source media="(max-width: 860px)" srcSet={s1Mobile} />
+          <img
+            src={s1Desktop}
+            alt="Tre munblåsta glaskulor i olika storlek på en vit kalkputsad yta, i kallt dagsljus från vänster."
+            width={1240}
+            height={1240}
+            loading="lazy"
+            decoding="async"
+          />
+        </picture>
         <div className="bw-s1-copy">
           <p className="bw-station">01 — Miljön</p>
           <h2 id="bw-s1-h" className="bw-h2">
@@ -100,11 +115,22 @@ export default function BrightWorld() {
         <h2 id="bw-s2-h" className="bw-behind" aria-hidden="true">Utvalt</h2>
         <span className="sr-only">Utvalt arbete</span>
 
-        <figure
-          className="bw-plate"
-          data-slot="IMG-02 · large icy glass form, refraction, cool daylight, 4K"
-        >
-          <div className="bw-form bw-form-02" aria-hidden="true" />
+        <figure className="bw-plate">
+          {/* IMG-02, commissioned. The mobile source is a rebuilt 4:5 frame
+              around the slab, not a centre crop — on a phone the display word
+              sits above the plate rather than beside it, so the empty zone has
+              to move with it. */}
+          <picture className="bw-shot bw-shot-02">
+            <source media="(max-width: 860px)" srcSet={s2Mobile} />
+            <img
+              src={s2Desktop}
+              alt="En stor gjuten glasmonolit med frostade kanter står på blankt betonggolv med en tunn vattenhinna, i strykande dagsljus från höger."
+              width={2400}
+              height={1350}
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
           <figcaption>
             <span className="bw-cap-k">Material</span>
             <span className="bw-cap-v">Glas · kallt dagsljus</span>
@@ -119,6 +145,10 @@ export default function BrightWorld() {
           </p>
         </div>
       </section>
+
+      {/* Section 3. Sections 1 and 2 are locked, so the reveal is added after
+          them rather than replacing either. */}
+      <FeaturedReveal />
     </div>
   );
 }

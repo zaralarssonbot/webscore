@@ -116,6 +116,7 @@ export default function SpatialHero({ children, onCoverChange, onLightChrome }: 
 
   const trackRef = useRef<HTMLDivElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const freezeRef = useRef<HTMLCanvasElement | null>(null);
   const backdropRef = useRef<Backdrop | null>(null);
@@ -208,7 +209,14 @@ export default function SpatialHero({ children, onCoverChange, onLightChrome }: 
     v.playsInline = true;
     v.preload = "auto";
     v.crossOrigin = "anonymous";
-    const reapply = () => syncRef.current(lastProgress.current);
+    // Also re-measures the frame: a seek or a fresh clip changes the picture
+    // behind the copy without any scroll happening, and on first paint no
+    // scroll has happened at all — which left the eyebrow white on a bright sky.
+    const reapply = () => {
+      syncRef.current(lastProgress.current);
+      lastSample.current = 0;
+      sampleLuminance(v, heroRef.current);
+    };
     v.addEventListener("loadeddata", reapply);
     v.addEventListener("seeked", reapply);
 
@@ -296,6 +304,52 @@ export default function SpatialHero({ children, onCoverChange, onLightChrome }: 
   const onLightRef = useRef(onLightChrome);
   onLightRef.current = onLightChrome;
   const lightRef = useRef(false);
+
+  /**
+   * Adaptive contrast for the hero copy.
+   *
+   * The chain runs from a bright sky through a dim interior to a near-white
+   * portal, so no single text colour survives it. Rather than guess from scroll
+   * position — the same position is a different picture at each delivery quality
+   * — this measures the frame itself: the video is drawn into a 16×9 canvas and
+   * only the band the copy actually occupies is averaged.
+   *
+   * Cost is negligible and deliberately bounded: a 16×9 drawImage plus 144
+   * pixel reads, at most every 160ms, and only while the film is on screen. It
+   * runs off the same scroll handler as the scrub rather than its own loop.
+   *
+   * The threshold has hysteresis — 0.62 to switch to navy, 0.52 to switch back —
+   * because a single threshold makes the type flicker on frames that hover at
+   * the boundary.
+   */
+  const litRef = useRef(false);
+  const lastSample = useRef(0);
+  const probe = useRef<HTMLCanvasElement | null>(null);
+  const sampleLuminance = (v: HTMLVideoElement, hero: HTMLElement | null) => {
+    if (!hero || v.readyState < 2 || !v.videoWidth) return;
+    const now = performance.now();
+    if (now - lastSample.current < 160) return;
+    lastSample.current = now;
+    let c = probe.current;
+    if (!c) { c = document.createElement("canvas"); c.width = 16; c.height = 9; probe.current = c; }
+    const ctx = c.getContext("2d", { willReadFrequently: true });
+    if (!ctx) return;
+    ctx.drawImage(v, 0, 0, 16, 9);
+    // Rows 2–6 of 9. The copy block runs from roughly 30% to 65% of viewport
+    // height — eyebrow, headline, lede — and sampling from row 4 missed the
+    // eyebrow entirely, which is the line that sits on open sky and fails first.
+    const d = ctx.getImageData(0, 2, 16, 5).data;
+    let sum = 0;
+    for (let i = 0; i < d.length; i += 4) {
+      sum += (0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2]) / 255;
+    }
+    const lum = sum / (d.length / 4);
+    const lit = litRef.current ? lum > 0.52 : lum > 0.62;
+    if (lit !== litRef.current) {
+      litRef.current = lit;
+      hero.classList.toggle("is-lit", lit);
+    }
+  };
   useEffect(() => {
     if (!film) { coverRef.current?.(false); return; }
     const el = trackRef.current;
@@ -314,6 +368,8 @@ export default function SpatialHero({ children, onCoverChange, onLightChrome }: 
     return scrollYProgress.on("change", (v) => {
       syncRef.current(v);
       applyTypeTravel(v);
+      const video = videoRef.current;
+      if (video) sampleLuminance(video, heroRef.current);
       const light = chainAt(v).flatten > 0.5;
       if (light !== lightRef.current) {
         lightRef.current = light;
@@ -335,7 +391,7 @@ export default function SpatialHero({ children, onCoverChange, onLightChrome }: 
     <div className="sp-track" ref={trackRef} style={{ height: `${TRACK_VH}vh` }}>
       <div className="sp-stage">
         <div className="sp-canvas" ref={wrapRef} aria-hidden="true" />
-        <section className="sp-hero" id="top">
+        <section className="sp-hero" id="top" ref={heroRef}>
           <div className="sp-hero-inner" ref={innerRef}>{children}</div>
         </section>
       </div>

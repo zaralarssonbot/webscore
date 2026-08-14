@@ -89,6 +89,63 @@
   font-style: italic;
   color: #a9cdf4;
 }
+
+/* ── luminous typography over the film ──
+   The hero joins the same tiered system as the rest of the site. Painted behind
+   the glyphs with `text-shadow`, never with `filter`, so the letterforms stay
+   exactly as sharp as the film behind them is soft — that contrast is the point.
+   The existing local contrast carrier is untouched; this sits on top of it and
+   does the last part of the work the gradient cannot do at small sizes. */
+.imm .sp-hero h1 { text-shadow: var(--glow-display-dark) }
+.imm .sp-hero .lede { text-shadow: var(--glow-body-dark) }
+.imm .sp-hero .eyebrow {
+  /* BOTH halos, and the dark one first. The luminous layer is the brand
+     character; the dark layer is the contrast, and at 11px over a sunlit sky it
+     is doing the actual work. Replacing it with the icy layer alone — which is
+     what happened first — made the label almost disappear on the opening frame.
+     A luminous system is not allowed to cost legibility. */
+  text-shadow:
+    0 0 2px rgba(4, 11, 30, 0.78),
+    0 1px 14px rgba(4, 11, 30, 0.92),
+    var(--glow-label-dark);
+}
+
+/* ── adaptive contrast ──
+   The film runs from a bright sky to a near-white portal, so a single text
+   colour cannot hold across it. `.is-lit` is set from the actual luminance of
+   the frame behind the copy, measured in SpatialHero — not guessed from scroll
+   position, because the same position is a different picture at every quality.
+   On bright frames the type inverts to navy and the bloom flips cool-on-light;
+   the film is never darkened to compensate. */
+.imm .sp-hero.is-lit h1 {
+  color: #0a1220;
+  text-shadow: var(--glow-display-light);
+}
+.imm .sp-hero.is-lit h1 em { color: #16417c }
+.imm .sp-hero.is-lit .lede {
+  color: #16283f;
+  opacity: 1;
+  text-shadow: var(--glow-body-light);
+}
+.imm .sp-hero.is-lit .eyebrow {
+  color: #16417c;
+  opacity: 1;
+  text-shadow: var(--glow-label-light);
+}
+/* The carrier is a navy veil for white type; against navy type it would be the
+   thing reducing contrast, so it fades out as the type inverts. */
+.imm .sp-hero.is-lit h1::before,
+.imm .sp-hero.is-lit .lede::before,
+.imm .sp-hero.is-lit .eyebrow::before { opacity: 0 }
+.imm .sp-hero h1::before,
+.imm .sp-hero .lede::before,
+.imm .sp-hero .eyebrow::before { transition: opacity 420ms ease }
+.imm .sp-hero h1,
+.imm .sp-hero .lede,
+.imm .sp-hero .eyebrow,
+.imm .sp-hero h1 em {
+  transition: color 420ms ease, text-shadow 420ms ease, opacity 420ms ease;
+}
 .imm .sp-hero .lede {
   position: relative;
   color: var(--ink);
@@ -132,17 +189,22 @@
 }
 .imm .sp-hero .lede::before { top: -140%; bottom: -140%; }
 /* The label is smallest and stands least; it gets the densest core. */
+/* Tightened from ±320% to ±150%. Spreading the carrier that far diluted its
+   core across an area far larger than the label, so the densest part of the
+   gradient was never actually behind the glyphs — which is why an 11px line on
+   a sunlit horizon stayed faint no matter how much alpha was added. Same
+   softness, concentrated where the text is. */
 .imm .sp-hero .eyebrow::before {
   content: "";
   position: absolute;
   z-index: -1;
   pointer-events: none;
-  left: -8%;
-  right: -8%;
-  top: -320%;
-  bottom: -320%;
-  background: radial-gradient(52% 50% at 50% 50%,
-    rgba(4, 11, 30, 0.86), rgba(4, 11, 30, 0.38) 54%, transparent 78%);
+  left: -14%;
+  right: -14%;
+  top: -150%;
+  bottom: -150%;
+  background: radial-gradient(58% 50% at 50% 50%,
+    rgba(4, 11, 30, 0.9), rgba(4, 11, 30, 0.46) 48%, transparent 76%);
 }
 
 /* The carrier bleeds outside its text box on purpose — a radial gradient that

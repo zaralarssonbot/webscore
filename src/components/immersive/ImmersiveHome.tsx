@@ -333,6 +333,8 @@ export default function ImmersiveHome() {
   // pill and the orange CTA — the language the bright world exists to replace —
   // sit on top of #F1F4F8 and are the first thing seen after the portal.
   const [onBright, setOnBright] = useState(false);
+  // One-way: set the first time the bright world is reached, never cleared.
+  const [latticeRetired, setLatticeRetired] = useState(false);
   // The film reports its own flatten a screen earlier than the bright world
   // scrolls in; either one puts the chrome into its light state.
   const [filmWhite, setFilmWhite] = useState(false);
@@ -340,7 +342,12 @@ export default function ImmersiveHome() {
     const el = document.querySelector(".bw");
     if (!el) return;
     const io = new IntersectionObserver(
-      ([e]) => setOnBright(e.isIntersecting && e.intersectionRatio > 0),
+      ([e]) => {
+        const on = e.isIntersecting && e.intersectionRatio > 0;
+        setOnBright(on);
+        // The moment the bright world is on screen the lattice is finished.
+        if (on) setLatticeRetired(true);
+      },
       { rootMargin: "-72px 0px -85% 0px" },
     );
     io.observe(el);
@@ -394,7 +401,18 @@ export default function ImmersiveHome() {
       <a className="skip" href="#main">Hoppa till innehåll</a>
       <Nav active={active} light={onBright || filmWhite} />
 
-      {useWebGL && (
+      {/* The lattice belongs to the dark half and does not survive the portal.
+          Once the bright world has been reached it is UNMOUNTED, not paused and
+          not hidden: pausing leaves a live WebGL context, its buffers and its
+          rAF subscription alive behind a site that never shows it again.
+          Unmounting runs the scene's own cleanup, which disposes the geometry,
+          the material and the renderer and releases the context.
+
+          It does not come back if the visitor scrolls up — `latticeRetired` is
+          one-way. Re-mounting would rebuild the whole field mid-scroll, and by
+          then the film has already been released too, so there is nothing above
+          for it to sit behind. */}
+      {useWebGL && !latticeRetired && (
         <Suspense fallback={null}>
           <LatticeScene
             key={mobile ? "m" : "d"}
@@ -408,7 +426,7 @@ export default function ImmersiveHome() {
           />
         </Suspense>
       )}
-      {!useWebGL && <StaticField reduced={reduced} progress={scrollYProgress} />}
+      {!useWebGL && !latticeRetired && <StaticField reduced={reduced} progress={scrollYProgress} />}
 
       <main id="main">
         {/* The approved Norra Tornen sequence, scrubbed by scroll on desktop and
@@ -436,7 +454,10 @@ export default function ImmersiveHome() {
             two are still the old dark language and are next in line. */}
         <BrightWorld />
 
-        <section className="transform-band" aria-labelledby="tf-h">
+        {/* The bridge. Carries the bright world one chapter further so nothing
+            dark sits immediately under Section 2, and closes on the deep blue
+            the rest of the page still uses — a change of depth, not a reset. */}
+        <section className="transform-band bw-bridge" aria-labelledby="tf-h">
           <Reveal>
             <h2 id="tf-h" className="band-h">Ett system som tar form.</h2>
             <p className="band-p">
