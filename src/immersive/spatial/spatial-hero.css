@@ -194,21 +194,27 @@
    gradient was never actually behind the glyphs — which is why an 11px line on
    a sunlit horizon stayed faint no matter how much alpha was added. Same
    softness, concentrated where the text is. */
-/* Denser than it was, and the label no longer sits at 94%.
-   This line lands on the horizon haze — the brightest, flattest band in the
+/* This line lands on the horizon haze — the brightest, flattest band in the
    whole sequence — at 11px, and it is the only line on the opening frame that
-   says what Webscore is. It was legible in isolation and invisible in place. */
+   says what Webscore is. It was legible in isolation and invisible in place.
+
+   The fix is the colour and the opacity below, NOT a denser carrier. Raising the
+   mid stop to 0.62 was tried and reverted: on the still build, where the sky
+   behind it is flat rather than photographic, the extra alpha stopped reading as
+   contrast and started reading as a grey smudge floating over the picture —
+   plainly visible on an iPad at 1194×834. The core stays dense, the falloff
+   stays fast, and the glyphs do the rest. */
 .imm .sp-hero .eyebrow::before {
   content: "";
   position: absolute;
   z-index: -1;
   pointer-events: none;
-  left: -16%;
-  right: -16%;
+  left: -14%;
+  right: -14%;
   top: -150%;
   bottom: -150%;
   background: radial-gradient(58% 50% at 50% 50%,
-    rgba(4, 11, 30, 0.96), rgba(4, 11, 30, 0.62) 48%, transparent 78%);
+    rgba(4, 11, 30, 0.9), rgba(4, 11, 30, 0.46) 48%, transparent 76%);
 }
 .imm .sp-hero .eyebrow {
   opacity: 1;
@@ -290,6 +296,28 @@
     var(--portal-landing, #f1f4f8) 100%);
 }
 .imm .sp-hero-still .sp-hero-inner { position: relative; z-index: 1; }
+
+/* The per-block carriers are for the FILM, where the ground behind the type is
+   photographic and changes every frame, so a local pool of lower luminance is
+   the only thing that holds. The still build already lays a full-frame scrim
+   over the whole picture, so here the same radials are a second darkening on
+   top of a first — and against the still's flat sky they stop reading as
+   contrast and start reading as three grey clouds hanging over the photograph.
+   Plainly visible at 1194×834, which is every iPad in landscape.
+
+   Kept rather than removed: dropped entirely, the copy loses its edge on the
+   brightest part of the sky. At roughly a third of the alpha they do their job
+   and disappear. */
+.imm .sp-hero-still h1::before,
+.imm .sp-hero-still .lede::before {
+  background: radial-gradient(58% 50% at 42% 50%,
+    rgba(4, 11, 30, 0.26) 0%, rgba(4, 11, 30, 0.17) 38%,
+    rgba(4, 11, 30, 0.07) 62%, transparent 82%);
+}
+.imm .sp-hero-still .eyebrow::before {
+  background: radial-gradient(58% 50% at 50% 50%,
+    rgba(4, 11, 30, 0.34), rgba(4, 11, 30, 0.16) 48%, transparent 76%);
+}
 
 /* Roman on one line, italic on the next — the only break in the hero line, set
    rather than left to the wrapper. There is no width at which the full line fits

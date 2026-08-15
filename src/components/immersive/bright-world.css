@@ -430,15 +430,23 @@
   display: block;
   width: 100%;
   height: auto;
-  /* Viewport, less the fixed bar, less the caption, less breathing room.
-     Kept as tight as the bar and the caption allow, because every pixel taken
-     off here is a pixel the rotation has nothing to move — but no tighter: the
-     travel completes with the plate centred in the viewport, and centring
-     knows nothing about a fixed bar, so a plate that is too tall settles with
-     its top edge underneath one. */
-  max-height: calc(100svh - 240px);
   object-fit: cover;
   object-position: 50% 0%;
+}
+/* Viewport, less the fixed bar, less the caption, less breathing room.
+   Kept as tight as the bar and the caption allow, because every pixel taken off
+   here is a pixel the rotation has nothing to move — but no tighter: the travel
+   completes with the plate centred in the viewport, and centring knows nothing
+   about a fixed bar, so a plate that is too tall settles with its top edge
+   underneath one.
+
+   Only where there is height to reserve. On a landscape phone — 343px tall —
+   `100svh - 240px` left the plate 103px high, and a project surface rendered as
+   a 653×100 letterbox strip of sky is not a reduced version of this section, it
+   is a broken one. Below 600px of viewport the cap is dropped and the page
+   scrolls instead, which is what a short screen wants anyway. */
+@media (min-height: 600px) {
+  .bw-reveal-plate img { max-height: calc(100svh - 240px) }
 }
 /* Below the image, not over it. Overlaid it sat on the article text inside the
    captured page and the two collided — and unlike the glass plate in Section 2,
@@ -482,7 +490,12 @@
      than imposed here, so the frame can start below Papa Jun's menu row instead
      of through it. The element only has to stop the tall source from filling
      more than the screen. */
-  .bw-reveal-plate img { max-height: calc(100svh - 300px) }
+  /* Same floor as the general rule: below 600px of viewport there is no height
+     to reserve, and reserving it anyway is what turned the plate into a 100px
+     strip of sky on a landscape phone. */
+  @media (min-height: 600px) {
+    .bw-reveal-plate img { max-height: calc(100svh - 300px) }
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
