@@ -430,8 +430,13 @@
   display: block;
   width: 100%;
   height: auto;
-  /* Viewport, less the fixed bar, less the caption, less breathing room. */
-  max-height: calc(100svh - 260px);
+  /* Viewport, less the fixed bar, less the caption, less breathing room.
+     Kept as tight as the bar and the caption allow, because every pixel taken
+     off here is a pixel the rotation has nothing to move — but no tighter: the
+     travel completes with the plate centred in the viewport, and centring
+     knows nothing about a fixed bar, so a plate that is too tall settles with
+     its top edge underneath one. */
+  max-height: calc(100svh - 240px);
   object-fit: cover;
   object-position: 50% 0%;
 }

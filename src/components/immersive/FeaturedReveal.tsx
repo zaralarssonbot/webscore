@@ -29,19 +29,40 @@ import pjMobile from "@/assets/immersive/pj-featured-mobile.webp";
 
 export default function FeaturedReveal() {
   const ref = useRef<HTMLDivElement>(null);
+  const stage = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
 
-  // Starts when the section's top reaches the bottom of the viewport and
-  // completes well before it leaves, so the surface is flat and readable for
-  // most of the time it is on screen rather than settling as it exits.
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "center center"] });
+  /* Anchored to the PLATE, not to the section.
+     Measured against the section it was: the section opens with a station
+     label, a display heading and a line of body copy, so by the time the plate
+     itself came over the bottom edge the scroll had already spent about seventy
+     percent of its range — and with it seventy percent of the rotation and the
+     growth. The reader watched the last few degrees of a move that had happened
+     while the surface was still below the fold.
+
+     Targeting the stage starts the travel at the moment the plate becomes
+     visible and finishes it when the plate is centred, so the whole move
+     happens where it can be seen. */
+  const { scrollYProgress } = useScroll({ target: stage, offset: ["start end", "center center"] });
   const eased = useSpring(scrollYProgress, { stiffness: 90, damping: 26, mass: 0.6 });
 
   // Mobile gets its own numbers, not the desktop values at a smaller size: a
   // 20° tilt on a 390px screen reads as a broken layout rather than as depth.
   const isNarrow = typeof window !== "undefined" && window.matchMedia("(max-width: 860px)").matches;
   const tilt = isNarrow ? 8 : 20;
-  const from = isNarrow ? 0.94 : 0.86;
+  // 0.78, up from 0.86. The plate used to overflow the viewport at rest, and
+  // the growth was legible simply because the object was enormous. Bounding it
+  // — which is what stopped it hiding behind the navigation and pushing its own
+  // client label off screen — also took the travel down to eight pixels of
+  // height across the entire scroll, so the zoom stopped reading as a zoom.
+  // The object is smaller now, so the scale has to be deeper to move the same
+  // amount of picture.
+  // 0.84 on narrow screens, and it has to be this deep rather than the 0.9 it
+  // reads like it should be. Below 860 the plate is tall and nearly full-bleed,
+  // and a tilted surface in perspective is projected LARGER at the start than
+  // the scale alone accounts for — measured at 834, a 0.9 start ran the whole
+  // move backwards: 900px tall tilted, 871px flat. The plate shrank as it rose.
+  const from = isNarrow ? 0.84 : 0.78;
 
   const rotateX = useTransform(eased, [0, 1], [tilt, 0]);
   const scale = useTransform(eased, [0, 1], [from, 1]);
@@ -63,7 +84,7 @@ export default function FeaturedReveal() {
 
       {/* The perspective lives on the parent, never on the animated element:
           a transformed element cannot establish perspective for itself. */}
-      <div className="bw-reveal-stage">
+      <div className="bw-reveal-stage" ref={stage}>
         {/* A real capture of the live Papa Jun site at 1440 CSS × DPR 2, not a
             render and not an upscale. Both files are cut from that one master.
 
