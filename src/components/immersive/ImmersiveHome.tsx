@@ -9,6 +9,7 @@ import papajun from "@/assets/portfolio/papajun.webp";
 import papajun1 from "@/assets/portfolio/papajun-1.webp";
 import papajun2 from "@/assets/portfolio/papajun-2.webp";
 import papajun3 from "@/assets/portfolio/papajun-3.webp";
+import wMark from "@/assets/brand/webscore-w-mark.webp";
 import "./immersive.css";
 
 /**
@@ -54,8 +55,8 @@ function Nav({ active, light }: { active: string; light?: boolean }) {
     <header className={`nav-wrap${light ? " is-light" : ""}`}>
       <nav className="nav" aria-label="Huvudmeny">
         <a className="brand" href="#top">
-          <span className="brand-mark" aria-hidden="true" />
-          <span className="brand-name">webscore</span>
+          <img className="brand-mark" src={wMark} alt="" aria-hidden="true" />
+          <span className="brand-name">Webscore</span>
         </a>
         <ul className="nav-links">
           {NAV.map((n) => (

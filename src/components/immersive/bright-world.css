@@ -663,8 +663,9 @@
 }
 .imm .nav-wrap.is-light .brand,
 .imm .nav-wrap.is-light .brand-name { color: #0a1220 }
-.imm .nav-wrap.is-light .brand-mark { border-color: #3d8fe8 }
-.imm .nav-wrap.is-light .brand-mark::after { background: #3d8fe8 }
+/* The ring took its colour from the chrome state. The W carries its own, and
+   the same file is correct on both grounds — so there is nothing to override
+   here beyond the wordmark's ink, which is handled above. */
 .imm .nav-wrap.is-light .nav-links a { color: #4c5a70 }
 .imm .nav-wrap.is-light .nav-links a:hover,
 .imm .nav-wrap.is-light .nav-links a[aria-current="true"] {

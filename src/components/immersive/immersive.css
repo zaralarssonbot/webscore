@@ -199,20 +199,18 @@
   min-height: 44px;
   padding-right: 8px;
 }
+/* The mark is the brand's own W now, not the calibration ring that stood in for
+   it. It is one asset for both chrome states on purpose: the blue is saturated
+   enough to hold against the film's near-black AND against the bright world's
+   #F1F4F8, which a single-colour glyph could not do without being recoloured at
+   the join. 9.5 KB of WebP, and the intrinsic ratio is declared so the bar never
+   reflows while it decodes. */
 .imm .brand-mark {
-  width: 15px;
-  height: 15px;
-  border: 1.5px solid var(--flare);
-  border-radius: 50%;
-  position: relative;
+  width: auto;
+  height: 21px;
+  aspect-ratio: 264 / 151;
   flex: 0 0 auto;
-}
-.imm .brand-mark::after {
-  content: "";
-  position: absolute;
-  inset: 3.5px;
-  background: var(--flare);
-  border-radius: 50%;
+  display: block;
 }
 .imm .brand-name {
   font-weight: 600;

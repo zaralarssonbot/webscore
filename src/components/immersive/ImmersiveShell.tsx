@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import "./immersive.css";
+import wMark from "@/assets/brand/webscore-w-mark.webp";
 
 /**
  * Minimal chrome for secondary pages that sit inside the studio journey.
@@ -26,8 +27,8 @@ export default function ImmersiveShell({
       <header className="nav-wrap">
         <nav className="nav" aria-label="Huvudmeny">
           <Link className="brand" to="/">
-            <span className="brand-mark" aria-hidden="true" />
-            <span className="brand-name">webscore</span>
+            <img className="brand-mark" src={wMark} alt="" aria-hidden="true" />
+            <span className="brand-name">Webscore</span>
           </Link>
           <Link className="nav-cta nav-cta-back" to="/">
             Till startsidan
