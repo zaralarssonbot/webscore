@@ -262,10 +262,21 @@
 .bw-cap-k { color: var(--w-marine); opacity: 0.7 }
 .bw-cap-v { color: var(--w-ink); opacity: 0.86 }
 
+/* A label column sized to the label, which is the same correction "Vad vi gör"
+   already got and for the same reason.
+
+   `1fr 1.4fr` gave the station a 483px track at 1440 to carry "02 — HANTVERKET",
+   which sets about 130px. The other 350px was empty, and because the body starts
+   at the far side of it the row read as two things at opposite ends of the page
+   rather than one composed line — the exact defect the services list was
+   narrowed to close, where the note reads "two voids in one row read as
+   accidental rather than composed". This is that fix, applied to the row that
+   did not get it: the station keeps its own column and its alignment, the body
+   moves in beside it, and nothing else about the section changes. */
 .bw-s2-meta {
   margin-top: 40px;
   display: grid;
-  grid-template-columns: 1fr 1.4fr;
+  grid-template-columns: minmax(0, 190px) 1fr;
   gap: clamp(24px, 4vw, 72px);
   align-items: start;
 }
