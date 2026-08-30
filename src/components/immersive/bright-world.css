@@ -549,11 +549,17 @@
    The extra class settles it without an `!important`.
    The nav CTA is styled in BOTH chrome states — the rule is that no orange
    survives anywhere in this journey, and on the dark bar the navy still reads
-   because of the icy top edge and the white label. */
+   because of the icy top edge and the white label.
+   `.mobile-menu .mobile-cta` for the same reason, and it is not decoration: as
+   `.mobile-cta` alone this rule tied `immersive.css`'s own `.imm .mobile-cta`
+   at (0,2,0) and lost on source order, so the phone menu's primary CTA was
+   still painted `--flare`. It was the one bright-blue button left in the
+   journey, on the mobile conversion path, where every other primary action is
+   this navy. The parent class buys the (0,3,0) the other three already had. */
 .imm .btn.btn-primary,
 .imm .nav-wrap .nav-cta,
 .imm .nav-wrap.is-light .nav-cta,
-.imm .mobile-cta {
+.imm .mobile-menu .mobile-cta {
   background: #0a1220;
   color: #ffffff;
   border: 1px solid rgba(198, 219, 245, 0.14);
@@ -566,7 +572,7 @@
 .imm .btn.btn-primary:hover,
 .imm .nav-wrap .nav-cta:hover,
 .imm .nav-wrap.is-light .nav-cta:hover,
-.imm .mobile-cta:hover {
+.imm .mobile-menu .mobile-cta:hover {
   background: #16417c;
   box-shadow:
     inset 0 1px 0 rgba(198, 219, 245, 0.42),

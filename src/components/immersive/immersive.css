@@ -14,6 +14,35 @@
  * re-flows the hero on swap.
  */
 
+/**
+ * Metric-matched stand-in for Instrument Serif.
+ *
+ * `display=swap` renders the fallback first and swaps on arrival, which is the
+ * right trade for a face this central — but Instrument Serif is a condensed
+ * display serif and Georgia is not. Measured at 100px, the hero line "Kliv in i
+ * det vi skapar." sets 725.9px in Instrument and 957.13px in Georgia: 32 %
+ * wider. At the hero's min(150px, 10.4vw) inside a 1140px column that is 1087px
+ * against 1433px — so the fallback WRAPPED and the real face did not, and the
+ * headline collapsed by a whole 129px line the moment the swap landed. Measured
+ * CLS 0.1101 at 1440 and 0.0645 at 1920; 0.1 is the point where Core Web Vitals
+ * stops calling a page good.
+ *
+ * `size-adjust` is that same width ratio (725.9 / 957.13), so the stand-in sets
+ * to Instrument's measure and breaks its lines in the same places. The ascent
+ * and descent are Instrument's own, so the glyphs also sit on the same baseline
+ * rather than stepping vertically as the face arrives. Nothing here changes what
+ * the reader ends up looking at — it changes what they look at for the first
+ * 380ms, and whether the page moves under them afterwards.
+ */
+@font-face {
+  font-family: "Instrument Serif Fallback";
+  src: local("Georgia"), local("Times New Roman"), local("Times");
+  size-adjust: 75.84%;
+  ascent-override: 99%;
+  descent-override: 31%;
+  line-gap-override: 0%;
+}
+
 .imm {
   --void: #07080b;
   --near: #0d0f15;
@@ -33,7 +62,7 @@
      the value clip E was graded to land on. */
   --portal-landing: #f1f4f8;
   --sans: "Inter", system-ui, sans-serif;
-  --serif: "Instrument Serif", Georgia, serif;
+  --serif: "Instrument Serif", "Instrument Serif Fallback", Georgia, serif;
   --mono: "JetBrains Mono", ui-monospace, monospace;
   --pad: clamp(20px, 5vw, 80px);
 
