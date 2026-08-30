@@ -6,6 +6,7 @@ import {
 import { createBackdrop, type Backdrop } from "./backdrop";
 import type { MediaState } from "./media";
 import flatHero from "@/assets/immersive/flat-hero.webp";
+import wHeroMark from "@/assets/brand/webscore-w-hero.webp";
 import "./spatial-hero.css";
 
 /* ────────────────────────────────────────────────────────────────────────────
@@ -37,6 +38,67 @@ function preferStill() {
     window.matchMedia("(max-width: 860px)").matches ||
     window.matchMedia("(pointer: coarse)").matches
   );
+}
+
+/**
+ * POSITIVE evidence that this machine or link will not carry the film.
+ *
+ * The film is 46.3 MB of 2560×1440 H.264 scrubbed frame-by-frame on the main
+ * thread. Measured on the live site cold, at 25 Mbit/s with the CPU throttled
+ * 4× — an ordinary mid-range laptop — that is a p95 frame of 133.6 ms and a
+ * worst frame of 1066.7 ms. One second, frozen, on the opening shot. The film
+ * is approved and it is not the problem; asking every machine to decode it is.
+ *
+ * The direction of the test is deliberate, and it is the same one `chain.ts`
+ * argues for its own quality ladder: fall back only on evidence that the
+ * hardware is weak, never on the absence of evidence. `deviceMemory` and
+ * `connection` are Chromium-only, so treating "unknown" as "weak" would hand
+ * every Safari and Firefox visitor the fallback on a fast machine and quietly
+ * retire the approved experience for a large part of the audience.
+ * `hardwareConcurrency` is the one signal all three report, so it carries most
+ * of the decision; the rest only ever confirm.
+ *
+ * Guessing wrong upward costs a stutter for someone whose machine was already
+ * struggling. Guessing wrong downward costs everyone else the film.
+ */
+function filmWillStruggle() {
+  const n = navigator as Navigator & {
+    deviceMemory?: number;
+    connection?: { effectiveType?: string; downlink?: number; saveData?: boolean };
+  };
+  if (window.matchMedia("(update: slow)").matches) return true;
+  const cores = n.hardwareConcurrency;
+  if (typeof cores === "number" && cores > 0 && cores < 8) return true;
+  const mem = n.deviceMemory;
+  if (typeof mem === "number" && mem > 0 && mem <= 4) return true;
+  const c = n.connection;
+  if (c) {
+    if (c.saveData) return true;
+    if (c.effectiveType && c.effectiveType !== "4g") return true;
+    if (typeof c.downlink === "number" && c.downlink > 0 && c.downlink < 5) return true;
+  }
+  return false;
+}
+
+export type HeroMode = "film" | "still" | "w";
+
+/**
+ * Decided ONCE, synchronously, before the first paint — the same way `still`
+ * and `quality` already are.
+ *
+ * That is not a stylistic choice. Anything that resolves later — an effect, a
+ * measurement, a network probe — would mount one hero and then swap it, which
+ * is a flash and a layout shift on the first screen of the site. Reading the
+ * environment during the initial render means the branch is taken before
+ * anything is committed, so exactly one hero ever exists in the document.
+ *
+ * `?hero=film|still|w` forces a path so both can be looked at in one browser.
+ */
+function heroModeFromEnvironment(): HeroMode {
+  const forced = new URLSearchParams(window.location.search).get("hero");
+  if (forced === "film" || forced === "still" || forced === "w") return forced;
+  if (preferStill()) return "still";
+  return filmWillStruggle() ? "w" : "film";
 }
 
 /**
@@ -109,10 +171,14 @@ interface Props {
 
 export default function SpatialHero({ children, onCoverChange, onLightChrome }: Props) {
   const reduced = !!useReducedMotion();
-  const still = useRef(typeof window === "undefined" ? true : preferStill()).current;
+  const mode = useRef<HeroMode>(
+    typeof window === "undefined" ? "still" : heroModeFromEnvironment(),
+  ).current;
+  const still = mode === "still";
+  const wHero = mode === "w";
   const quality = useRef(typeof window === "undefined" ? ("m1440" as Quality) : qualityFromUrl()).current;
   const [failed, setFailed] = useState(false);
-  const film = !still && !reduced && !failed;
+  const film = mode === "film" && !reduced && !failed;
 
   const trackRef = useRef<HTMLDivElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -390,6 +456,21 @@ export default function SpatialHero({ children, onCoverChange, onLightChrome }: 
       if (video) sampleLuminance(video, heroRef.current);
     });
   }, [film, scrollYProgress]);
+
+  /* The performance fallback. Same section, same id, same `sp-hero-inner`, and
+     the same hand-over ramp as the still — so the join into the bright world is
+     the one that is already locked, and switching paths moves nothing on the
+     page but the picture behind the type. */
+  if (wHero && !reduced && !failed) {
+    return (
+      <section className="sp-hero sp-hero-still sp-hero-w" id="top">
+        <div className="sp-w-field" aria-hidden="true">
+          <img className="sp-w-mark" src={wHeroMark} alt="" decoding="async" />
+        </div>
+        <div className="sp-hero-inner">{children}</div>
+      </section>
+    );
+  }
 
   if (!film) {
     return (

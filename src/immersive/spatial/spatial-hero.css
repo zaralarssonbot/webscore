@@ -334,6 +334,75 @@
   white-space: nowrap;
 }
 
+/* ── THE PERFORMANCE FALLBACK ──────────────────────────────────────────────
+   Shown only where `filmWillStruggle()` finds positive evidence the machine or
+   the link cannot carry 46 MB of scrubbed 1440p. It carries `sp-hero-still` as
+   well as `sp-hero-w`, which is the point: it inherits the still's box, its
+   z-index order and its per-block contrast carriers, so the only thing that
+   differs between the two paths is what is painted behind the type.
+
+   The composition is NOT redesigned. The copy stays exactly where the film puts
+   it — centred, same measure, same sizes — and the mark is a backdrop behind it
+   rather than a second column. A fallback that recomposed the first screen would
+   be a different homepage for the people whose machines are slowest, which is
+   the opposite of what a fallback is for. */
+.imm .sp-hero-w {
+  background: #060a14;
+}
+.imm .sp-w-field {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  /* The film opens on a sunrise and closes on the landing colour. This opens on
+     the brand's own deep navy and closes on the same landing colour, so the two
+     paths differ in picture but agree about where the page is going. */
+  background:
+    radial-gradient(128% 96% at 60% 38%, rgba(23, 62, 148, 0.5) 0%, rgba(9, 18, 42, 0) 64%),
+    linear-gradient(180deg, #060a14 0%, #081226 44%, #0a1730 68%);
+}
+.imm .sp-w-mark {
+  position: absolute;
+  right: -4%;
+  top: 50%;
+  width: min(720px, 50vw);
+  height: auto;
+  transform: translateY(-50%);
+  /* Off the centre line, and that is the whole trick. Centred behind centred
+     copy the mark can only ever be a glow — the headline sits exactly where its
+     middle is, so at any opacity that keeps the type readable the W stops being
+     a W. Moved right it is whole, legible and unmistakably the brand, and the
+     type it shares the screen with has not moved a pixel: the hero's
+     composition is the approved one, this is the backdrop behind it. */
+  opacity: 0.72;
+  filter: saturate(1.05);
+  pointer-events: none;
+  user-select: none;
+}
+/* The locked join, and it is the still's ramp rather than a new one. Below 66%
+   these stops are copied from `.sp-still::after` unchanged, because that is the
+   join the bright world is built against — a fallback that met #F1F4F8 on its
+   own curve would put a visible seam on exactly the machines least able to
+   hide it. Above 66% there is no photograph to protect, so the scrim only has
+   to seat the mark into the ground. */
+.imm .sp-w-field::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(6, 10, 20, 0.1) 0%,
+    rgba(8, 16, 34, 0.24) 38%,
+    rgba(12, 24, 50, 0.5) 66%,
+    rgba(58, 104, 172, 0.44) 78%,
+    rgba(150, 188, 232, 0.68) 86%,
+    rgba(206, 224, 244, 0.88) 92%,
+    rgba(236, 241, 247, 0.97) 97%,
+    var(--portal-landing, #f1f4f8) 100%);
+}
+@media (max-width: 1100px) {
+  .imm .sp-w-mark { right: -12%; width: min(560px, 62vw); opacity: 0.5; }
+}
+
 /* The display line was sized for height, never for width. Measured on the
    current line it sets at 7.59× its font size and the hero column is 79vw, so
    the largest size that still fits one line is 10.4vw — which `min()` above
