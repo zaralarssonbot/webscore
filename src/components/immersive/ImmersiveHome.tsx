@@ -142,39 +142,33 @@ interface Project {
  */
 
 /**
- * Four self-authored concept studies. Every one carries a visible
- * "Konceptstudie" tag, an explicit sentence stating it is not a customer or a
- * delivered assignment, and — unlike Papa Jun — no host in its browser chrome.
- * No logo walls, no testimonials, no metrics.
+ * The self-authored concept studies shown on the homepage.
+ *
+ * One, not four, and the reason is resolution rather than taste. Measured at
+ * their rendered size the studies do not deliver the same picture: Verk is a
+ * 2400px source rendered into 709–724 CSS px, so 3.3x, and its interface type
+ * stays crisp on a 2x screen. Veyra and Lumera are 1280px sources in the same
+ * box — 1.8x — and what degrades first is exactly the small UI type a web
+ * design study exists to show: nav items, field labels, button text. Beside
+ * Verk and beside a native 2560px capture of Papa Jun they read as softer work,
+ * which is not what they are.
+ *
+ * They are removed from the page, not from the repository. Their assets are
+ * untouched and `concept-visuals.ts` still carries them, so a higher-resolution
+ * master is the only thing standing between them and coming back. Asteron is
+ * held back separately: its near-black and orange treatment was drawn for the
+ * previous dark homepage and needs regenerating, not grading.
+ *
+ * The study still carries an explicit sentence stating it is not a customer or
+ * a delivered assignment. No logo walls, no testimonials, no metrics.
  */
 const PROJECTS: ConceptStudyData[] = [
-  {
-    id: "veyra",
-    name: "Veyra Hotels",
-    sector: "Boutiquehotell",
-    line: "Direktbokning som en designad upplevelse, inte ett formulär.",
-    visual: conceptVisuals.veyra,
-  },
   {
     id: "verk",
     name: "Verk",
     sector: "Digitalt magasin",
     line: "Innehållet är gränssnittet — typografi, bild och ljud i ett system.",
     visual: conceptVisuals.verk,
-  },
-  {
-    id: "lumera",
-    name: "Lumera Skin",
-    sector: "Premiumhandel",
-    line: "Lugn produktyta där materialet och ljuset gör försäljningen.",
-    visual: conceptVisuals.lumera,
-  },
-  {
-    id: "asteron",
-    name: "Asteron Systems",
-    sector: "Affärssystem",
-    line: "Trovärdighet genom produktyta, inte genom loggväggar.",
-    visual: conceptVisuals.asteron,
   },
 ];
 
@@ -337,9 +331,9 @@ export default function ImmersiveHome() {
                   met under the portfolio heading — accurate, but it volunteered
                   the weakness before the work had been seen. */}
               <p className="section-lead">
-                Ett kunduppdrag och fyra konceptstudier. Konceptstudierna är egna
-                varumärken vi tagit fram för att visa hur vi tänker — de är märkta som
-                sådana och är inte utförda uppdrag.
+                Ett kunduppdrag och en konceptstudie. Konceptstudien är ett eget
+                varumärke vi tagit fram för att visa hur vi tänker — den är märkt som
+                sådan och är inte ett utfört uppdrag.
               </p>
             </Reveal>
             {/* The real engagement, given the weight of one — and given it
