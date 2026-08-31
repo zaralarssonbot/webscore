@@ -773,13 +773,48 @@
   border-top: 1px solid var(--line);
   max-width: 1000px;
 }
+/* The numbers are gone with the numbering. Five capabilities do not need to be
+   counted for a reader to understand them, and the ordinal column was a third
+   track carrying two characters. */
 .imm .cap-row {
   display: grid;
-  grid-template-columns: 56px minmax(0, 190px) 1fr;
+  grid-template-columns: minmax(0, 190px) 1fr;
   gap: 28px;
   align-items: baseline;
   padding: 30px 0;
   border-bottom: 1px solid var(--line);
+}
+
+/* The monolith, given the section rather than a caption. It is the strongest
+   still on the site and it was being spent as decoration beside 38 words. */
+.imm .caps-shot {
+  margin: 0 0 clamp(56px, 7vw, 96px);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--panel);
+}
+.imm .caps-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* The study opens from its own picture. A button, so it is reachable by
+   keyboard and announced as an action — but with nothing of a button about it,
+   because the picture is the affordance. */
+.imm .cs-open {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  border-radius: inherit;
+}
+.imm .cs-open img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 .imm .cap-n {
   font-family: var(--mono);

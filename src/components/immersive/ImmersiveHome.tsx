@@ -5,10 +5,9 @@ import SpatialHero from "@/immersive/spatial/SpatialHero";
 import ConceptStudy, { type ConceptStudyData } from "./ConceptStudy";
 import BrightWorld from "./BrightWorld";
 import { conceptVisuals } from "@/components/portfolio/concept-visuals";
-import papajun from "@/assets/portfolio/papajun.webp";
-import papajun1 from "@/assets/portfolio/papajun-1.webp";
-import papajun2 from "@/assets/portfolio/papajun-2.webp";
-import papajun3 from "@/assets/portfolio/papajun-3.webp";
+import FeaturedReveal from "./FeaturedReveal";
+import s2Desktop from "@/assets/immersive/bw-s2-monolith-desktop.webp";
+import s2Mobile from "@/assets/immersive/bw-s2-monolith-mobile.webp";
 import wMark from "@/assets/brand/webscore-w-mark.webp";
 import "./immersive.css";
 
@@ -33,10 +32,8 @@ import "./immersive.css";
  */
 
 const NAV = [
-  { id: "projekt", label: "Projekt" },
-  { id: "tjanster", label: "Tjänster" },
-  { id: "process", label: "Process" },
-  { id: "om", label: "Om Webscore" },
+  { id: "projekt", label: "Utvalt arbete" },
+  { id: "tjanster", label: "Vad vi gör" },
   { id: "kontakt", label: "Kontakt" },
 ];
 
@@ -143,24 +140,6 @@ interface Project {
  * delivered, nothing more. No metrics, no uplift claims, no testimonial: we did
  * not measure them, so we do not state them.
  */
-const PAPAJUN = {
-  name: "Papa Jun",
-  sector: "Restaurang · Kvicksund, Mälaren",
-  domain: "papajun.se",
-  image: papajun,
-  alt: "Startsidan för Papa Jun: varm restaurangsajt med meny och bokning.",
-  line: "En mysig restaurang vid Mälaren som behövde en sajt som förmedlade deras atmosfär. Vi formgav och utvecklade en visuellt varm närvaro med integrerad meny och bokning.",
-  delivered: [
-    "Visuell storytelling",
-    "Integrerad meny och bokning",
-    "Lokal SEO för Kvicksund-området",
-  ],
-  gallery: [
-    { src: papajun1, alt: "Papa Jun: meny presenterad som en redaktionell sida." },
-    { src: papajun2, alt: "Papa Jun: sektion för catering och event." },
-    { src: papajun3, alt: "Papa Jun: bokningsvy med öppettider och kontaktuppgifter." },
-  ],
-};
 
 /**
  * Four self-authored concept studies. Every one carries a visible
@@ -207,21 +186,6 @@ const CAPS = [
   { k: "AI", d: "Där det gör verklig nytta: research, produktion, personalisering." },
 ];
 
-/** The creative-technology disciplines. Kept concise: the page is the argument. */
-const DISCIPLINES = [
-  { k: "Design", d: "System, typografi och komposition — inte mallar." },
-  { k: "Kod", d: "Vi utvecklar det vi formger. Ingen överlämning som tappar detaljerna." },
-  { k: "Rörelse", d: "Animation med syfte: riktning, tyngd och kontinuitet." },
-  { k: "3D", d: "Realtidsgrafik och rörlig bild direkt i webbläsaren." },
-  { k: "AI", d: "Research, produktion och system som anpassar sig." },
-];
-
-const STEPS = [
-  { n: "01", t: "Riktning", d: "Vi kartlägger mål, publik och kant. Ni får en tydlig hypotes." },
-  { n: "02", t: "Form", d: "Designspråk och struktur tas fram och testas mot innehåll." },
-  { n: "03", t: "Utveckling", d: "Vi utvecklar snabbt, tillgängligt och mätbart från start." },
-  { n: "04", t: "Lansering", d: "Testad övergång — och en plan för vad som händer sen." },
-];
 
 /**
  * Restrained browser chrome. The label is React text, so it stays sharp.
@@ -342,7 +306,6 @@ export default function ImmersiveHome() {
             neighbour puts the building back in play — the film under this line
             is an aerial of a residential tower. */}
         <SpatialHero onLightChrome={setFilmWhite}>
-          <p className="eyebrow">Kreativ teknikstudio · Sverige</p>
           <h1>Kliv in i <em>det vi skapar.</em></h1>
           <p className="lede">
             Webbplatser, digitala produkter, innehåll och AI&#8209;system.
@@ -351,7 +314,6 @@ export default function ImmersiveHome() {
             <a className="btn btn-primary" href="#kontakt">
               Starta ett projekt <span className="arrow" aria-hidden="true">→</span>
             </a>
-            <a className="btn btn-ghost" href="#projekt">Se våra projekt</a>
           </div>
         </SpatialHero>
 
@@ -365,20 +327,6 @@ export default function ImmersiveHome() {
             structure, the components and the grid are untouched — only the
             ground, the ink and the accent change. */}
         <div className="post-portal">
-          {/* The bridge. One short chapter that carries the bright world out of
-              the image sections and into the argument. It used to restate the
-              five capabilities that "Vad vi gör" states in full a screen later,
-              word for word; the list is gone and the transition stays. */}
-          <section className="transform-band bw-bridge" aria-labelledby="tf-h">
-            <Reveal>
-              <h2 id="tf-h" className="band-h">Ett system som tar form.</h2>
-              <p className="band-p">
-                Samma team håller i hela kedjan — strategi, design, utveckling,
-                innehåll och AI. Det är därför delarna sitter ihop när de möter
-                verkligheten.
-              </p>
-            </Reveal>
-          </section>
 
           <section id="projekt" className="work" aria-labelledby="work-h">
             <Reveal>
@@ -394,33 +342,13 @@ export default function ImmersiveHome() {
                 sådana och är inte utförda uppdrag.
               </p>
             </Reveal>
+            {/* The real engagement, given the weight of one — and given it
+                once. This surface used to appear twice: as the reveal at the end
+                of the bright world and again as the first card here, so the only
+                client on the site was also the only thing shown twice. */}
+            <FeaturedReveal />
+
             <div className="work-stack">
-              {/* The real engagement, given the weight of one. */}
-              <Reveal>
-                <article className="work-item work-featured">
-                  <div className="work-visual">
-                    <Shot label={PAPAJUN.domain} live image={PAPAJUN.image} alt={PAPAJUN.alt} />
-                  </div>
-                  <div className="work-meta">
-                    <p className="tag client">✓ Kundprojekt</p>
-                    <h3>{PAPAJUN.name}</h3>
-                    <p className="sector">{PAPAJUN.sector}</p>
-                    <p className="line">{PAPAJUN.line}</p>
-                    <ul className="delivered">
-                      {PAPAJUN.delivered.map((d) => (
-                        <li key={d}>{d}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="work-gallery">
-                    {PAPAJUN.gallery.map((g) => (
-                      <figure key={g.src}>
-                        <img src={g.src} alt={g.alt} loading="lazy" decoding="async" />
-                      </figure>
-                    ))}
-                  </div>
-                </article>
-              </Reveal>
 
               {PROJECTS.map((p, i) => (
                 <Reveal key={p.id} delay={i * 0.05}>
@@ -430,20 +358,41 @@ export default function ImmersiveHome() {
             </div>
           </section>
 
+          {/* ONE section where there were six. "01 — Studion", "02 —
+              Hantverket", "Vad vi gör", "Kreativ teknik", "Så arbetar vi" and
+              "Om Webscore" each opened by saying the team does not hand off
+              between disciplines — five sections, one sentence, in nearly the
+              same words. It is said once here, and the monolith carries the
+              section because it is the strongest image on the site and it was
+              being spent on a caption. */}
           <section id="tjanster" className="caps" aria-labelledby="caps-h">
             <Reveal>
-              <div className="rule" />
+              <figure className="caps-shot">
+                <picture>
+                  <source media="(max-width: 860px)" srcSet={s2Mobile} />
+                  <img
+                    src={s2Desktop}
+                    alt="En stor gjuten glasmonolit med frostade kanter står på blankt betonggolv med en tunn vattenhinna, i strykande dagsljus från höger."
+                    width={2400}
+                    height={1350}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
+              </figure>
+            </Reveal>
+            <Reveal>
               <h2 id="caps-h" className="section-h">Vad vi gör</h2>
               <p className="section-lead">
-                Fem förmågor i samma team. Vi lämnar inte över mellan discipliner — det är
-                därför resultatet håller ihop.
+                Strategi, design, utveckling, innehåll och AI i samma team — och vi
+                utvecklar det vi formger. Det är därför detaljerna överlever hela
+                vägen till lansering.
               </p>
             </Reveal>
             <div className="cap-seq">
               {CAPS.map((c, i) => (
-                <Reveal key={c.k} delay={i * 0.06}>
+                <Reveal key={c.k} delay={i * 0.05}>
                   <div className="cap-row">
-                    <span className="cap-n">{String(i + 1).padStart(2, "0")}</span>
                     <h3>{c.k}</h3>
                     <p>{c.d}</p>
                   </div>
@@ -452,84 +401,8 @@ export default function ImmersiveHome() {
             </div>
           </section>
 
-          <section id="teknik" className="tech" aria-labelledby="tech-h">
-            <Reveal>
-              <div className="rule" />
-              <h2 id="tech-h" className="section-h">Kreativ teknik</h2>
-              {/* This lead used to point at a live 3D field behind the page and
-                  invite the reader to look at it. The field is gone, so the
-                  claim is gone with it — the film at the top of this page is the
-                  demonstration now, and it is one we can actually stand behind. */}
-              <p className="section-lead">
-                Design, kod, rörelse, 3D och AI i samma team. Sidan du läser är gjord
-                med exakt de förmågorna — filmen högst upp är vår egen produktion.
-              </p>
-            </Reveal>
-            <ol className="disciplines">
-              {DISCIPLINES.map((d, i) => (
-                <Reveal as="li" key={d.k} delay={i * 0.06}>
-                  <span className="disc-i">{String(i + 1).padStart(2, "0")}</span>
-                  <h3>{d.k}</h3>
-                  <p>{d.d}</p>
-                </Reveal>
-              ))}
-            </ol>
-          </section>
 
-          <section id="process" className="process" aria-labelledby="proc-h">
-            <Reveal>
-              <div className="rule" />
-              <h2 id="proc-h" className="section-h">Så arbetar vi</h2>
-              <p className="section-lead">
-                Fyra steg, samma varje gång. Ni vet hela tiden var projektet står och vad
-                nästa beslut är.
-              </p>
-            </Reveal>
-            <ol className="steps">
-              {STEPS.map((s, i) => (
-                <Reveal as="li" key={s.n} delay={i * 0.06}>
-                  <span className="step-n">{s.n}</span>
-                  <h3>{s.t}</h3>
-                  <p>{s.d}</p>
-                </Reveal>
-              ))}
-            </ol>
-          </section>
 
-          <section id="om" className="about" aria-labelledby="om-h">
-            <Reveal>
-              <div className="rule" />
-              <h2 id="om-h" className="section-h">Om Webscore</h2>
-              <p className="section-lead">
-                Webscore är en kreativ teknikstudio i Sverige. Strategi, design, utveckling,
-                innehåll och AI ligger i samma team — och vi utvecklar det vi formger.
-              </p>
-            </Reveal>
-            <div className="about-body">
-              <Reveal delay={0.05}>
-                <p>
-                  De flesta digitala projekt tappar något mellan disciplinerna. Strategin
-                  lämnas över till design, designen till utveckling, och innehållet kommer
-                  sist. Vi arbetar tvärtom: samma team håller i hela kedjan, från första
-                  hypotesen till det som ligger live.
-                </p>
-              </Reveal>
-              <Reveal delay={0.1}>
-                <p>
-                  Det är därför detaljerna överlever. Rörelsen som fanns i designen finns
-                  kvar i koden. Texten är skriven för ytan den sitter på. Tekniken väljs för
-                  att den löser problemet — inte för att den står på en lista.
-                </p>
-              </Reveal>
-              <Reveal delay={0.15}>
-                <p>
-                  Den här sidan är gjord på precis det sättet. Filmen, typografin,
-                  rörelsen och koden kommer från samma team — och det är det ärligaste
-                  sättet vi vet att visa vad vi kan göra.
-                </p>
-              </Reveal>
-            </div>
-          </section>
 
           <section id="kontakt" className="final" aria-labelledby="final-h">
             <Reveal>

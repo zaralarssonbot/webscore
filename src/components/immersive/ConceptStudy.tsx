@@ -168,8 +168,19 @@ export default function ConceptStudy({
   return (
     <>
       <article className={`work-item cs-item${flip ? " cs-flip" : ""}`}>
+        {/* The study, at the size a study deserves. The browser chrome, the tag
+            pill and the four-thumbnail strip are gone: at 276px those thumbnails
+            resolved to something too small to read a page from, and the chrome
+            repeated identical furniture around every project so the set read as
+            a template rather than as work. The picture carries it now, and the
+            viewer it used to need a strip to reach opens from the picture. */}
         <div className="work-visual">
-          <Frame label="Konceptstudie">
+          <button
+            type="button"
+            className="cs-open"
+            onClick={(e) => openAt(0, e.currentTarget)}
+            aria-label={`${study.name}: öppna studien`}
+          >
             <img
               className="cs-scroll"
               src={study.visual.desktop}
@@ -177,42 +188,19 @@ export default function ConceptStudy({
               loading="lazy"
               decoding="async"
             />
-          </Frame>
+          </button>
         </div>
 
         <div className="work-meta">
-          <p className="tag concept">◇ Konceptstudie</p>
           <h3>{study.name}</h3>
           <p className="sector">{study.sector}</p>
           <p className="line">{study.line}</p>
-
+          {/* The identification stays, and stays plain. It is the honest part of
+              the section and it should read as a sentence, not as a badge. */}
           <p className="disclaim">
-            Påhittat varumärke framtaget för att visa en designriktning — inte ett
-            företag, en kund eller ett utfört uppdrag.
+            Konceptstudie — påhittat varumärke framtaget för att visa en
+            designriktning, inte ett företag, en kund eller ett utfört uppdrag.
           </p>
-        </div>
-
-        {/* Full width under the card rather than inside the meta column: four
-            thumbnails in a 430px column resolved to 75px each, too small to read
-            a page from and too small to be worth clicking. Across the card they
-            get ~290px and the strip also does compositional work — the big
-            preview is the site, this row is the rest of it. */}
-        <div className="cs-pages">
-          <p className="cs-pages-label">Sidor i studien</p>
-          <ul>
-            {study.visual.pages.map((p, i) => (
-              <li key={p.src}>
-                <button
-                  type="button"
-                  onClick={(e) => openAt(i + 1, e.currentTarget)}
-                  aria-label={`${study.name}: öppna ${p.label}`}
-                >
-                  <img src={p.src} alt="" loading="lazy" decoding="async" />
-                  <span>{p.label}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
         </div>
       </article>
 

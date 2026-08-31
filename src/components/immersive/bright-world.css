@@ -93,11 +93,18 @@
    The ground is already #F1F4F8 when the film hands over, so nothing about the
    background animates — animating it would re-introduce the cut this exists to
    remove. Only the icy light and the words arrive, from inside the white. */
+/* The conclusion of the portal, not a section of its own.
+   The transition above it is untouched — same film, same ramp, same landing
+   colour, same locked join. What changes is that the line no longer occupies a
+   full 100svh screen after it: at 900px tall it read as the first CONTENT of
+   the bright world and made the reader scroll a whole viewport of one sentence
+   before any work appeared. Sized to its own copy with generous air, it reads
+   as the last beat of the journey the film starts. */
 .bw-arrival {
-  min-height: 100svh;
+  min-height: 0;
   display: flex;
   align-items: center;
-  padding: 0 var(--w-pad);
+  padding: clamp(120px, 20vh, 220px) var(--w-pad) clamp(96px, 15vh, 168px);
   overflow: hidden;
 }
 .bw-arrival-inner {
@@ -700,4 +707,47 @@
 .imm .nav-wrap .nav-links a,
 .imm .nav-wrap .brand-name {
   transition: background 420ms ease, color 420ms ease, border-color 420ms ease;
+}
+
+/* ── CONCEPT STUDIES — editorial, not cards ───────────────────────────────
+   The container's border, radius, panel fill and backdrop blur are what made
+   four studies read as four instances of one component. Removed, the picture
+   sits on the page's own ground and the section is carried by the work rather
+   than by the furniture around it. The image keeps a radius of its own; the
+   panel does not need one to be a shape. */
+.imm .post-portal .work-item.cs-item {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  grid-template-columns: 1.62fr 0.82fr;
+  gap: clamp(36px, 4.5vw, 72px);
+  align-items: center;
+}
+.imm .post-portal .work-item.cs-item .work-visual {
+  border-radius: 14px;
+  overflow: hidden;
+}
+.imm .post-portal .work-item.cs-item .work-meta {
+  border: 0;
+  background: none;
+  padding: 0;
+}
+/* The alternating study mirrors the ORDER of its two children, so the column
+   widths have to mirror with it. Without this the flipped studies put the
+   picture in the narrow track — 387px against 764px — and every second project
+   was rendered at half the size of its neighbours. */
+.imm .post-portal .work-item.cs-flip {
+  grid-template-columns: 0.82fr 1.62fr;
+}
+.imm .post-portal .work-item.cs-flip .work-meta {
+  border-right: 0;
+}
+@media (max-width: 860px) {
+  .imm .post-portal .work-item.cs-item,
+  .imm .post-portal .work-item.cs-flip {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
 }
